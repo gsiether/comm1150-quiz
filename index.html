@@ -113,6 +113,24 @@
     .model-ans-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: var(--text-3); margin-bottom: 5px; }
     .model-ans-text { font-size: 14px; color: var(--text); line-height: 1.6; }
 
+    /* ─── SA MARKING ─── */
+    .sa-score-row { display: flex; align-items: center; gap: 12px; margin-bottom: 16px; padding-bottom: 14px; border-bottom: 1px solid rgba(0,0,0,0.07); }
+    .sa-score-num { font-size: 32px; font-weight: 800; line-height: 1; color: var(--text); }
+    .sa-score-num span { font-size: 18px; font-weight: 600; color: var(--text-3); }
+    .sa-score-meta { display: flex; flex-direction: column; gap: 2px; }
+    .sa-score-label { font-size: 15px; font-weight: 700; color: var(--text); }
+    .sa-score-sub   { font-size: 12px; color: var(--text-3); }
+
+    .sa-block { margin-bottom: 12px; }
+    .sa-block:last-child { margin-bottom: 0; }
+    .sa-block-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.07em; color: var(--text-3); margin-bottom: 6px; }
+    .your-answer-quote { background: rgba(0,0,0,0.03); border-left: 3px solid var(--indigo-mid); border-radius: 0 8px 8px 0; padding: 10px 13px; font-size: 14px; color: var(--text-2); line-height: 1.6; font-style: italic; word-break: break-word; }
+    .concept-chips { display: flex; flex-wrap: wrap; gap: 6px; }
+    .chip { font-size: 12px; font-weight: 600; padding: 4px 10px; border-radius: 99px; }
+    .chip-green { background: var(--green-light); color: var(--green); border: 1px solid var(--green-border); }
+    .chip-amber { background: var(--amber-light); color: var(--amber); border: 1px solid var(--amber-border); }
+    .chip-none  { font-size: 13px; color: var(--text-3); font-style: italic; }
+
     .action-row { display: flex; flex-direction: column; gap: 8px; margin-top: 12px; }
     .btn-check { display: block; width: 100%; background: var(--indigo); color: white; border: none; border-radius: 12px; padding: 15px; font-size: 16px; font-weight: 700; cursor: pointer; font-family: inherit; transition: all 0.15s; -webkit-appearance: none; }
     .btn-check:active { background: var(--indigo-dark); transform: scale(0.98); }
@@ -657,6 +675,8 @@ function renderQuestion() {
 
   var fb = document.getElementById("feedback");
   fb.className = "feedback";
+  document.getElementById("feedback-head").style.display = "";
+  document.getElementById("feedback-body").innerHTML = "";
   document.getElementById("model-ans").style.display = "none";
 
   document.getElementById("check-btn").disabled = true;
@@ -730,7 +750,7 @@ function submitAnswer() {
   document.getElementById("hint-btn").style.display = "none";
   document.getElementById("hint-box").classList.remove("show");
 
-  var isCorrect = false, fbClass = "wrong", iconTxt = "✗", titleTxt = "", bodyTxt = "", showModel = false;
+  var isCorrect = false, fbClass = "wrong", iconTxt = "✗", titleTxt = "", bodyTxt = "", showModel = false, isSaHtml = false;
 
   if (q.type === "mcq") {
     isCorrect = (selectedOption === q.correct);
@@ -758,24 +778,45 @@ function submitAnswer() {
   } else {
     var answer = (selectedOption || "").toLowerCase();
     var found  = q.keywords.filter(function(kw) { return answer.indexOf(kw.toLowerCase()) !== -1; });
+    var missed = q.keywords.filter(function(kw) { return answer.indexOf(kw.toLowerCase()) === -1; });
     var ratio  = found.length / q.minKeywords;
     var ta = document.querySelector(".sa-textarea");
     if (ta) ta.disabled = true;
     showModel = true;
     document.getElementById("model-ans-text").textContent = q.modelAnswer;
-    if (ratio >= 1) {
-      isCorrect = true; fbClass = "correct"; iconTxt = "✓";
-      titleTxt = "Great answer!"; bodyTxt = "You covered the key concepts. Compare with the model answer below.";
-    } else if (ratio >= 0.5) {
-      isCorrect = false; fbClass = "partial"; iconTxt = "~";
-      titleTxt = "Partially there";
-      var missing = q.keywords.filter(function(kw) { return answer.indexOf(kw.toLowerCase()) === -1; }).slice(0, 3);
-      bodyTxt = "Good start! Try to also cover: " + missing.join(", ") + ".";
-    } else {
-      isCorrect = false; fbClass = "wrong"; iconTxt = "✗";
-      titleTxt = "Keep studying this one";
-      bodyTxt = "Key concepts to include: " + q.keywords.slice(0, 4).join(", ") + ".";
-    }
+
+    var mark;
+    if      (ratio >= 1)    { mark = 3; isCorrect = true;  fbClass = "correct"; iconTxt = "✓"; }
+    else if (ratio >= 0.67) { mark = 2; isCorrect = false; fbClass = "partial"; iconTxt = "~"; }
+    else if (ratio >= 0.33) { mark = 1; isCorrect = false; fbClass = "partial"; iconTxt = "~"; }
+    else                    { mark = 0; isCorrect = false; fbClass = "wrong";   iconTxt = "✗"; }
+
+    var scoreLabel = ["Keep studying", "Needs more depth", "Good attempt", "Strong answer"][mark];
+    var scoreSub   = ["Review your notes and try again", "Some ideas there — review the rest", "Most key ideas covered", "You covered all the key concepts"][mark];
+
+    var ansDisplay = (selectedOption || "").trim();
+    if (ansDisplay.length > 280) ansDisplay = ansDisplay.slice(0, 280) + "…";
+
+    var foundChips = found.length > 0
+      ? found.map(function(kw) { return "<span class='chip chip-green'>" + escHtml(kw) + "</span>"; }).join("")
+      : "<span class='chip-none'>None identified</span>";
+    var missedChips = missed.length > 0
+      ? missed.map(function(kw) { return "<span class='chip chip-amber'>" + escHtml(kw) + "</span>"; }).join("")
+      : "<span class='chip-none'>Nothing major missed!</span>";
+
+    titleTxt = "";
+    bodyTxt  =
+      "<div class='sa-score-row'>" +
+        "<div class='sa-score-num'>" + mark + "<span> / 3</span></div>" +
+        "<div class='sa-score-meta'><div class='sa-score-label'>" + scoreLabel + "</div><div class='sa-score-sub'>" + scoreSub + "</div></div>" +
+      "</div>" +
+      "<div class='sa-block'><div class='sa-block-label'>Your answer</div>" +
+        "<div class='your-answer-quote'>" + escHtml(ansDisplay) + "</div></div>" +
+      "<div class='sa-block'><div class='sa-block-label'>&#10003; Concepts you covered</div>" +
+        "<div class='concept-chips'>" + foundChips + "</div></div>" +
+      "<div class='sa-block'><div class='sa-block-label'>+ Could also include</div>" +
+        "<div class='concept-chips'>" + missedChips + "</div></div>";
+    isSaHtml = true;
   }
 
   if (isCorrect) score++;
@@ -783,7 +824,13 @@ function submitAnswer() {
   fb.className = "feedback " + fbClass;
   document.getElementById("feedback-icon").textContent  = iconTxt;
   document.getElementById("feedback-title").textContent = titleTxt;
-  document.getElementById("feedback-body").textContent  = bodyTxt;
+  if (isSaHtml) {
+    document.getElementById("feedback-head").style.display = "none";
+    document.getElementById("feedback-body").innerHTML = bodyTxt;
+  } else {
+    document.getElementById("feedback-head").style.display = "";
+    document.getElementById("feedback-body").textContent = bodyTxt;
+  }
   if (showModel) document.getElementById("model-ans").style.display = "block";
   document.getElementById("score-label").textContent = "Score: " + score;
   results.push({ question: q.question, correct: isCorrect, week: q.week, type: q.type });
@@ -840,6 +887,10 @@ function showScreen(id) {
   document.querySelectorAll(".screen").forEach(function(s) { s.classList.remove("active"); });
   document.getElementById(id).classList.add("active");
   window.scrollTo({ top: 0, behavior: "smooth" });
+}
+
+function escHtml(str) {
+  return String(str).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
 }
 
 function shuffle(arr) {
