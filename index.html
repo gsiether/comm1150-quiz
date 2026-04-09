@@ -152,6 +152,42 @@
     .result-right { flex: 1; }
     .result-q { font-size: 13.5px; font-weight: 600; color: var(--text); line-height: 1.4; margin-bottom: 2px; }
     .result-meta { font-size: 12px; color: var(--text-3); }
+
+    /* ─── NOTES BUTTON ─── */
+    .notes-open-btn { margin-left: auto; background: none; border: 1px solid var(--border); border-radius: 8px; padding: 5px 11px; font-size: 12px; font-weight: 600; color: var(--text-3); cursor: pointer; font-family: inherit; transition: all 0.15s; white-space: nowrap; }
+    .notes-open-btn:active { background: var(--bg); color: var(--text-2); }
+
+    /* ─── NOTES SHEET ─── */
+    .notes-overlay { position: fixed; inset: 0; background: rgba(15,23,42,0.45); z-index: 200; display: none; align-items: flex-end; -webkit-backdrop-filter: blur(2px); backdrop-filter: blur(2px); }
+    .notes-overlay.open { display: flex; }
+    .notes-sheet { background: var(--surface); border-radius: 22px 22px 0 0; width: 100%; max-height: 88dvh; display: flex; flex-direction: column; animation: slideUp 0.3s cubic-bezier(0.32,0.72,0,1); }
+    @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
+    .notes-handle { width: 36px; height: 4px; background: var(--border); border-radius: 99px; margin: 10px auto 0; flex-shrink: 0; }
+    .notes-hdr { display: flex; align-items: center; justify-content: space-between; padding: 12px 20px 10px; flex-shrink: 0; }
+    .notes-hdr-title { font-size: 16px; font-weight: 800; color: var(--text); }
+    .notes-close-btn { background: var(--bg); border: none; border-radius: 50%; width: 28px; height: 28px; font-size: 14px; cursor: pointer; display: flex; align-items: center; justify-content: center; color: var(--text-3); }
+    .notes-tabs { display: flex; gap: 6px; padding: 0 16px 12px; flex-shrink: 0; border-bottom: 1px solid var(--border); }
+    .notes-tab { flex: 1; border: 1.5px solid var(--border); border-radius: 8px; padding: 8px 4px; text-align: center; font-size: 13px; font-weight: 700; cursor: pointer; background: var(--surface); color: var(--text-3); font-family: inherit; transition: all 0.15s; }
+    .notes-tab.active { background: var(--indigo-light); border-color: var(--indigo); color: var(--indigo); }
+    .notes-tab:active { transform: scale(0.97); }
+    .notes-body { flex: 1; overflow-y: auto; padding: 16px 20px 40px; -webkit-overflow-scrolling: touch; }
+    .notes-panel { display: none; }
+    .notes-panel.active { display: block; }
+
+    /* ─── NOTE CONTENT ─── */
+    .note-h1 { font-size: 15px; font-weight: 800; color: var(--text); margin: 20px 0 8px; padding-bottom: 6px; border-bottom: 2px solid var(--indigo-light); }
+    .note-h1:first-child { margin-top: 0; }
+    .note-h2 { font-size: 13px; font-weight: 700; color: var(--indigo); margin: 10px 0 5px; }
+    .note-ul { margin: 0 0 6px 16px; }
+    .note-ul li { font-size: 13.5px; color: var(--text-2); line-height: 1.65; margin-bottom: 3px; }
+    .nk { font-weight: 700; color: var(--text); }
+    .note-box { background: var(--indigo-light); border-left: 3px solid var(--indigo); border-radius: 0 8px 8px 0; padding: 9px 12px; margin: 10px 0; font-size: 13px; color: var(--text); line-height: 1.6; }
+    .note-warn { background: var(--amber-light); border-left: 3px solid var(--amber-border); border-radius: 0 8px 8px 0; padding: 9px 12px; margin: 10px 0; font-size: 13px; color: #78350F; line-height: 1.6; }
+    .note-formula { display: block; background: var(--bg); border: 1px solid var(--border); border-radius: 7px; padding: 8px 12px; font-family: "SF Mono", "Fira Code", monospace; font-size: 13px; color: var(--text); margin: 8px 0; }
+    .note-table { width: 100%; font-size: 13px; border-collapse: collapse; margin: 8px 0 12px; }
+    .note-table th { background: var(--bg); padding: 7px 10px; text-align: left; font-weight: 700; font-size: 11px; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-3); border: 1px solid var(--border); }
+    .note-table td { padding: 7px 10px; border: 1px solid var(--border); font-size: 13px; color: var(--text-2); line-height: 1.5; }
+    .note-table tr:nth-child(even) td { background: var(--bg); }
   </style>
 </head>
 <body>
@@ -162,6 +198,7 @@
     <div class="tag">UNSW · COMM1150</div>
     <h1>Economics Lens Quiz</h1>
   </div>
+  <button class="notes-open-btn" onclick="openNotes()">📖 Notes</button>
 </div>
 
 <div class="screen active" id="screen-home">
@@ -253,6 +290,240 @@
   <div class="results-card" id="results-list"></div>
   <button class="btn btn-primary" onclick="restartQuiz()">Play Again →</button>
 </div>
+
+<!-- ══ NOTES SHEET ══ -->
+<div class="notes-overlay" id="notes-overlay" onclick="overlayClick(event)">
+  <div class="notes-sheet" id="notes-sheet">
+    <div class="notes-handle"></div>
+    <div class="notes-hdr">
+      <div class="notes-hdr-title">Course Notes</div>
+      <button class="notes-close-btn" onclick="closeNotes()">✕</button>
+    </div>
+    <div class="notes-tabs">
+      <button class="notes-tab active" onclick="switchTab(this,'notes-w5')">Week 5</button>
+      <button class="notes-tab"        onclick="switchTab(this,'notes-w7')">Week 7</button>
+      <button class="notes-tab"        onclick="switchTab(this,'notes-w8')">Week 8</button>
+    </div>
+    <div class="notes-body">
+
+      <!-- ── WEEK 5 ── -->
+      <div class="notes-panel active" id="notes-w5">
+        <div class="note-h1">Why Countries Trade</div>
+        <div class="note-h2">Comparative Advantage</div>
+        <ul class="note-ul">
+          <li><span class="nk">Opportunity cost (OC)</span> — what you give up to produce one more unit of something</li>
+          <li><span class="nk">Comparative advantage</span> — you have a lower OC than your trading partner for that good</li>
+          <li><span class="nk">Absolute advantage</span> — you can produce something using fewer resources overall. Sets relative wages but does <em>not</em> determine who exports what</li>
+          <li>Trade pattern is decided by CA, not AA. A country exports whatever it produces at the lowest OC — even if it's worse at everything</li>
+        </ul>
+        <div class="note-box">💡 Even a country that is less productive at everything still has a comparative advantage in something — it will always have a lower OC in at least one good.</div>
+
+        <div class="note-h2">Economies of Scale</div>
+        <ul class="note-ul">
+          <li>Producing more lowers cost per unit</li>
+          <li><span class="nk">Internal EoS:</span> the firm's own size reduces its costs → leads to large firms dominating, countries trading similar products (e.g. Germany &amp; Japan both selling cars to each other)</li>
+          <li><span class="nk">External EoS:</span> whole industries cluster together — Silicon Valley, Hollywood, Bangalore. Shared skills, equipment, and ideas nearby</li>
+        </ul>
+        <div class="note-box">💡 <strong>Proximity-concentration trade-off:</strong> Firms want to concentrate production for scale benefits but also want to be near customers. As trade costs fall, production concentrates more.</div>
+
+        <div class="note-h1">Gains &amp; Losses from Trade</div>
+        <table class="note-table">
+          <tr><th>Gains</th><th>Losses</th></tr>
+          <tr><td>Specialisation &amp; efficiency</td><td>Local industries shut down</td></tr>
+          <tr><td>Cheaper goods (competition)</td><td>Job losses in some regions</td></tr>
+          <tr><td>More variety</td><td>Shipping pollution</td></tr>
+          <tr><td>More innovation</td><td>Lower profits for some firms</td></tr>
+          <tr><td>Scale efficiencies</td><td></td></tr>
+        </table>
+        <div class="note-box">💡 Overall gains outweigh losses — but trade creates real winners and real losers. This matters politically.</div>
+
+        <div class="note-h1">Case Study: Vietnam &amp; Child Labour</div>
+        <ul class="note-ul">
+          <li>1993–1998: Vietnam lifted rice export restrictions → rice prices rose ~30%</li>
+          <li>Higher household income → families kept kids in school → <span class="nk">child labour fell by 9%</span></li>
+          <li><span class="nk">Nicaragua contrast:</span> coffee price boom <em>increased</em> child labour — demand for farm labour rose faster than income gains helped</li>
+        </ul>
+        <div class="note-box">💡 Trade's effect on child labour depends on context — which force is stronger: the income effect or the labour demand effect?</div>
+
+        <div class="note-h1">The "Buy Local" Myth</div>
+        <ul class="note-ul">
+          <li>Global freight ≈ 7% of greenhouse gas emissions</li>
+          <li>Food transport = only ~6% of food's total emissions</li>
+          <li>Food <em>production</em> itself ≈ 25% of global emissions</li>
+          <li><span class="nk">What you eat matters far more than where it comes from</span> — switching beef → vegetables cuts emissions far more than buying local beef</li>
+        </ul>
+      </div>
+
+      <!-- ── WEEK 7 ── -->
+      <div class="notes-panel" id="notes-w7">
+        <div class="note-h1">Macro vs. Micro</div>
+        <ul class="note-ul">
+          <li><span class="nk">Microeconomics:</span> individual decisions by firms and households</li>
+          <li><span class="nk">Macroeconomics:</span> the whole economy — growth, inflation, unemployment</li>
+          <li>Macro builds on micro — the economy is the sum of millions of individual decisions</li>
+        </ul>
+        <table class="note-table">
+          <tr><th>Long-run questions</th><th>Short-run questions</th></tr>
+          <tr><td>Why are some countries richer?</td><td>Why does unemployment rise and fall?</td></tr>
+          <tr><td>How do living standards grow?</td><td>Why does output fluctuate?</td></tr>
+          <tr><td>How is income distributed?</td><td></td></tr>
+        </table>
+
+        <div class="note-h1">GDP &amp; Well-being</div>
+        <ul class="note-ul">
+          <li><span class="nk">GDP per capita</span> = total output ÷ population — rough measure of average living standards</li>
+          <li>Most well-being measures (health, education, life expectancy) are highly correlated with income</li>
+          <li>Most poverty reduction comes from growth within poor countries — not from transfers from rich countries</li>
+        </ul>
+        <div class="note-box">💡 Global average income ≈ $18/day. Ending extreme poverty (&lt;$2.15/day) is nearly within reach. Ending poverty as defined in rich countries (&lt;$30/day) would require a 57× increase in global GDP.</div>
+
+        <div class="note-h1">The Production Function (Solow-Swan)</div>
+        <code class="note-formula">Y = A × K^α × (h × L)^(1-α)</code>
+        <table class="note-table">
+          <tr><th>Input</th><th>Symbol</th><th>What it means</th></tr>
+          <tr><td>Labour</td><td><strong>L</strong></td><td>Number of people working</td></tr>
+          <tr><td>Human Capital</td><td><strong>H</strong></td><td>Skills and education of workers</td></tr>
+          <tr><td>Physical Capital</td><td><strong>K</strong></td><td>Machines, buildings, tools</td></tr>
+          <tr><td>Productivity</td><td><strong>A</strong></td><td>Technology &amp; organisation — no diminishing returns</td></tr>
+        </table>
+
+        <div class="note-h2">Two Key Properties</div>
+        <ul class="note-ul">
+          <li><span class="nk">Constant returns to scale:</span> double all inputs → output exactly doubles. Build an identical factory next door → identical output</li>
+          <li><span class="nk">Diminishing returns to capital:</span> add more machines while keeping workers constant → each new machine adds less and less. The 100th machine adds less than the 1st</li>
+        </ul>
+        <div class="note-box">💡 Diminishing returns mean you can't grow forever by buying more machines. Eventually adding more capital stops being worth it — growth stalls unless something else changes.</div>
+
+        <div class="note-h1">Why Are Some Countries Richer?</div>
+        <table class="note-table">
+          <tr><th>Factor</th><th>What it means</th><th>Limited?</th></tr>
+          <tr><td>Capital intensity (K/L)</td><td>More machines per worker</td><td>Yes — diminishing returns</td></tr>
+          <tr><td>Human capital (H/L)</td><td>More skilled workers</td><td>Yes — ceiling exists</td></tr>
+          <tr><td>Productivity (A)</td><td>Better tech &amp; organisation</td><td>No — can keep growing</td></tr>
+        </table>
+        <div class="note-box">💡 Capital and human capital drive "catch-up growth." Long-run sustained growth requires ongoing improvements in productivity — i.e. technological progress.</div>
+
+        <div class="note-h1">Romer Model — Ideas &amp; Technology</div>
+        <ul class="note-ul">
+          <li>Technology comes from new ideas</li>
+          <li>Ideas are <span class="nk">non-rival</span> — one person using an idea doesn't stop another from using it (unlike a machine)</li>
+          <li>This creates a positive externality — one person creates an idea, everyone benefits</li>
+          <li>"Standing on the shoulders of giants" — each new idea makes the next one easier to find</li>
+        </ul>
+        <div class="note-box">💡 Because ideas are non-rival, technology can keep improving indefinitely — unlike physical capital which faces diminishing returns.</div>
+
+        <div class="note-h1">Policy Lessons for Growth</div>
+        <ul class="note-ul">
+          <li><span class="nk">Property rights</span> → people invest more when assets are protected</li>
+          <li><span class="nk">Political stability</span> → instability kills investment (e.g. Argentina: 6 military coups 1930–1976)</li>
+          <li><span class="nk">Efficient regulation</span> → misallocation of resources (putting capital and labour in wrong places) explains much of the rich-poor gap</li>
+          <li><span class="nk">IP laws &amp; R&amp;D subsidies</span> → encourage innovation by making it profitable</li>
+        </ul>
+
+        <div class="note-h1">Growth &amp; the Environment</div>
+        <ul class="note-ul">
+          <li>Production function doesn't account for resource depletion or pollution — these are negative externalities</li>
+          <li>Climate change = <span class="nk">global externality</span> — each country only gets a small share of the benefit from cutting its own emissions → free-rider problem → no country has enough incentive to act alone</li>
+          <li>Solution requires multinational cooperation (e.g. Montreal Protocol for ozone, WTO for trade disputes)</li>
+        </ul>
+        <div class="note-box">💡 "Climate change economics and technological change are manifestations of the same fundamental phenomenon — a global externality."</div>
+      </div>
+
+      <!-- ── WEEK 8 ── -->
+      <div class="notes-panel" id="notes-w8">
+        <div class="note-h1">The Basic GDP Equation</div>
+        <code class="note-formula">GDP = Y = C + I + G + Ex − Im</code>
+        <table class="note-table">
+          <tr><th>Component</th><th>What it is</th></tr>
+          <tr><td><strong>C</strong></td><td>Consumer spending by households</td></tr>
+          <tr><td><strong>I</strong></td><td>Investment — businesses buying equipment, housing</td></tr>
+          <tr><td><strong>G</strong></td><td>Government spending</td></tr>
+          <tr><td><strong>Ex</strong></td><td>Exports</td></tr>
+          <tr><td><strong>Im</strong></td><td>Imports</td></tr>
+        </table>
+        <div class="note-box">💡 Everything produced must be bought by someone — all models and policies connect back to changing one of these components.</div>
+
+        <div class="note-h1">Two Views of the Economy</div>
+        <ul class="note-ul">
+          <li><span class="nk">Neoclassical:</span> prices adjust quickly — demand changes → prices move → balance restored. Government spending doesn't change real output, only technology does</li>
+          <li><span class="nk">Keynesian:</span> prices are sticky — when demand rises, businesses produce more instead of just raising prices. Governments can boost real output</li>
+        </ul>
+        <div class="note-box">💡 Week 8 uses the Keynesian approach — sticky prices mean demand shocks change output and employment in the short run.</div>
+
+        <div class="note-h1">Consumer Spending &amp; MPC</div>
+        <code class="note-formula">C = C̄ + a × (Y − T)</code>
+        <ul class="note-ul">
+          <li><span class="nk">MPC (a)</span> = fraction of each extra $1 of income that households spend. Always between 0 and 1</li>
+          <li>Example: MPC = 0.8 → for every $1 earned, 80c spent, 20c saved</li>
+          <li><span class="nk">Consumption smoothers:</span> plan spending based on lifetime income, save windfalls, borrow in bad times → low effective MPC</li>
+          <li><span class="nk">Hand-to-mouth households:</span> can't borrow, spend every dollar earned now → MPC ≈ 1, common among low-income households</li>
+        </ul>
+
+        <div class="note-h1">The Expenditure Multiplier</div>
+        <code class="note-formula">Multiplier = 1 ÷ (1 − MPC)</code>
+        <ul class="note-ul">
+          <li>When government spends $1 more, total GDP rises by more than $1 — spending becomes income → spent again → chain reaction</li>
+          <li>Example: MPC = 0.5 → Multiplier = 2 → $10b spending = $20b increase in GDP</li>
+          <li>Higher MPC = bigger multiplier = larger ripple effect</li>
+        </ul>
+        <div class="note-box">💡 The multiplier is the key mechanism behind fiscal stimulus — a small increase in government spending can have a large effect on total output.</div>
+
+        <div class="note-h1">Fiscal Policy</div>
+        <ul class="note-ul">
+          <li>Government using spending (G) and taxes (T) to stabilise the economy</li>
+          <li><span class="nk">Automatic stabilisers:</span> work without any new decisions — in a recession, unemployment insurance pays out automatically and tax revenue falls automatically</li>
+          <li><span class="nk">Discretionary policy:</span> deliberate government decisions, e.g. Australia's COVID stimulus — $90b JobKeeper + $20b Coronavirus Supplement = $120b (~7% of GDP)</li>
+        </ul>
+        <div class="note-warn">⚠️ Problems with fiscal policy: (1) <strong>Time lags</strong> — slow to notice a problem, pass legislation and see effects; (2) <strong>Funding</strong> — needs higher taxes or borrowing (can crowd out private investment, may be unsustainable long-run)</div>
+
+        <div class="note-h1">Money</div>
+        <ul class="note-ul">
+          <li>Three functions: <span class="nk">medium of exchange</span>, <span class="nk">unit of account</span>, <span class="nk">store of value</span></li>
+          <li><span class="nk">Commodity money:</span> has intrinsic value (gold, silver, salt)</li>
+          <li><span class="nk">Fiat money:</span> no intrinsic value — backed by government. All modern money is fiat</li>
+        </ul>
+        <table class="note-table">
+          <tr><th>Measure</th><th>What it includes</th></tr>
+          <tr><td>Currency</td><td>Notes and coins in circulation</td></tr>
+          <tr><td>Money base</td><td>Currency + bank deposits held at RBA</td></tr>
+          <tr><td>M1</td><td>Currency + cheque and savings accounts</td></tr>
+          <tr><td>M3</td><td>M1 + all private non-bank deposits (broadest)</td></tr>
+        </table>
+
+        <div class="note-h1">Inflation</div>
+        <ul class="note-ul">
+          <li>Caused by too much money chasing too few goods — money growth drives inflation long-run</li>
+          <li><span class="nk">Headline inflation</span> = % change in CPI</li>
+          <li><span class="nk">Underlying inflation</span> = excludes volatile items (e.g. weather-affected food) — cleaner trend</li>
+          <li><span class="nk">Expected inflation costs:</span> menu costs (reprinting prices), shoe-leather costs (more bank trips), complicated contracts</li>
+          <li><span class="nk">Unexpected inflation costs:</span> hard to plan, distorts relative prices, discourages investment, redistributes wealth</li>
+        </ul>
+        <div class="note-box">💡 <strong>Redistributive effect:</strong> unexpected inflation hurts lenders (retirees, banks) and helps borrowers (homeowners, govt) — debts repaid in dollars worth less than expected.</div>
+        <div class="note-box">💡 <strong>Phillips curve:</strong> when the economy runs above potential (positive output gap), inflation tends to be higher than expected. When weak, inflation tends to be lower.</div>
+
+        <div class="note-h1">Monetary Policy — The RBA</div>
+        <ul class="note-ul">
+          <li>Three legal goals (Reserve Bank Act 1959): currency stability, full employment, economic welfare</li>
+          <li><span class="nk">Main tool:</span> the cash rate = interest rate on overnight loans between banks — the benchmark rate for the whole economy</li>
+        </ul>
+        <div class="note-h2">To stimulate (↓ rates):</div>
+        <ul class="note-ul">
+          <li>RBA buys government bonds → injects cash into banks → cash rate falls → borrowing cheaper → C and I rise → GDP rises</li>
+        </ul>
+        <div class="note-h2">To cool (↑ rates):</div>
+        <ul class="note-ul">
+          <li>RBA sells government bonds → removes cash → cash rate rises → borrowing expensive → spending falls → GDP falls</li>
+        </ul>
+        <code class="note-formula">Fisher equation: i = r + πe &nbsp;(nominal rate = real rate + expected inflation)</code>
+        <ul class="note-ul">
+          <li>Lower rates affect the economy through: cheaper borrowing, higher asset prices, weaker dollar (boosts exports), lower government debt costs</li>
+        </ul>
+        <div class="note-warn">⚠️ Why policy is hard: <strong>Blunt instruments</strong> (few tools, many goals) · <strong>Data lags</strong> (don't know what's happening until weeks later) · <strong>Hard to measure potential output</strong> · <strong>Zero lower bound</strong> (can't cut nominal rates below ~0%, so monetary policy runs out of ammunition in deep recessions)</div>
+      </div>
+
+    </div><!-- end notes-body -->
+  </div><!-- end notes-sheet -->
+</div><!-- end notes-overlay -->
 
 <script>
 var QUESTIONS = [
@@ -899,6 +1170,24 @@ function shuffle(arr) {
     var tmp = arr[i]; arr[i] = arr[j]; arr[j] = tmp;
   }
   return arr;
+}
+
+function openNotes() {
+  document.getElementById("notes-overlay").classList.add("open");
+  document.body.style.overflow = "hidden";
+}
+function closeNotes() {
+  document.getElementById("notes-overlay").classList.remove("open");
+  document.body.style.overflow = "";
+}
+function overlayClick(e) {
+  if (e.target === document.getElementById("notes-overlay")) closeNotes();
+}
+function switchTab(el, panelId) {
+  document.querySelectorAll(".notes-tab").forEach(function(t) { t.classList.remove("active"); });
+  document.querySelectorAll(".notes-panel").forEach(function(p) { p.classList.remove("active"); });
+  el.classList.add("active");
+  document.getElementById(panelId).classList.add("active");
 }
 </script>
 </body>
