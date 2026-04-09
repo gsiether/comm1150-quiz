@@ -1,0 +1,1062 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <title>COMM1150 · Economics Quiz</title>
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+    :root {
+      --navy: #002060;
+      --navy-light: #1a3a7a;
+      --gold: #FFD100;
+      --gold-dark: #e6bb00;
+      --green: #16a34a;
+      --green-bg: #f0fdf4;
+      --green-border: #86efac;
+      --red: #dc2626;
+      --red-bg: #fef2f2;
+      --red-border: #fca5a5;
+      --amber-bg: #fffbeb;
+      --amber-border: #fde68a;
+      --surface: #ffffff;
+      --bg: #eef1f6;
+      --border: #e2e8f0;
+      --text: #0f172a;
+      --muted: #64748b;
+      --radius: 18px;
+      --radius-sm: 12px;
+    }
+
+    html { font-size: 16px; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Segoe UI', Helvetica, Arial, sans-serif;
+      background: var(--bg);
+      min-height: 100dvh;
+      color: var(--text);
+      padding-bottom: max(24px, env(safe-area-inset-bottom));
+    }
+
+    /* ── HEADER ── */
+    .app-header {
+      background: var(--navy);
+      padding: 14px 20px 18px;
+      padding-top: max(14px, calc(env(safe-area-inset-top) + 6px));
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .app-header .tag {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 3px;
+    }
+    .app-header h1 {
+      font-size: 19px;
+      font-weight: 700;
+      color: white;
+      letter-spacing: -0.3px;
+    }
+
+    /* ── SCREENS ── */
+    .screen { display: none; padding: 18px 16px; max-width: 620px; margin: 0 auto; }
+    .screen.active { display: block; }
+
+    /* ── CARDS ── */
+    .card {
+      background: var(--surface);
+      border-radius: var(--radius);
+      padding: 22px 20px;
+      box-shadow: 0 2px 14px rgba(0,0,0,0.07);
+      margin-bottom: 14px;
+    }
+
+    /* ── HOME ── */
+    .welcome-card h2 { font-size: 21px; font-weight: 800; margin-bottom: 6px; letter-spacing: -0.3px; }
+    .welcome-card p { font-size: 15px; color: var(--muted); line-height: 1.55; }
+
+    .section-label {
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.07em;
+      color: var(--muted);
+      margin: 18px 0 10px;
+    }
+
+    .week-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    .week-chip {
+      background: var(--surface);
+      border: 2px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 14px 12px;
+      cursor: pointer;
+      text-align: center;
+      transition: border-color 0.18s, background 0.18s;
+      user-select: none;
+    }
+    .week-chip:active { transform: scale(0.97); }
+    .week-chip.span2 { grid-column: span 2; }
+    .week-chip.selected { border-color: var(--navy); background: var(--navy); }
+    .week-chip.selected .chip-title,
+    .week-chip.selected .chip-sub { color: white; }
+    .chip-title { font-size: 16px; font-weight: 700; color: var(--text); }
+    .chip-sub { font-size: 12px; color: var(--muted); margin-top: 3px; }
+
+    .info-row {
+      background: var(--surface);
+      border-radius: var(--radius-sm);
+      padding: 14px 16px;
+      font-size: 13px;
+      color: var(--muted);
+      line-height: 1.6;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    }
+    .info-row span { margin-right: 10px; }
+
+    /* ── BUTTONS ── */
+    .btn-primary, .btn-secondary {
+      display: block;
+      width: 100%;
+      border: none;
+      border-radius: 14px;
+      padding: 16px;
+      font-size: 17px;
+      font-weight: 700;
+      cursor: pointer;
+      font-family: inherit;
+      transition: all 0.15s;
+      -webkit-appearance: none;
+      text-align: center;
+    }
+    .btn-primary { background: var(--gold); color: var(--navy); margin-top: 18px; }
+    .btn-primary:active { transform: scale(0.98); background: var(--gold-dark); }
+    .btn-primary:disabled { opacity: 0.35; cursor: default; pointer-events: none; }
+    .btn-secondary { background: var(--navy); color: white; }
+    .btn-secondary:active { transform: scale(0.98); opacity: 0.9; }
+
+    /* ── PROGRESS ── */
+    .progress-wrap { margin-bottom: 16px; }
+    .progress-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+    .progress-label { font-size: 14px; font-weight: 600; color: var(--muted); }
+    .progress-score { font-size: 14px; font-weight: 800; color: var(--navy); }
+    .progress-bar-outer { height: 6px; background: var(--border); border-radius: 99px; overflow: hidden; }
+    .progress-bar-inner { height: 100%; background: var(--gold); border-radius: 99px; transition: width 0.45s cubic-bezier(0.4,0,0.2,1); }
+
+    /* ── QUESTION CARD ── */
+    .q-meta { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 14px; }
+    .badge {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      padding: 4px 10px;
+      border-radius: 99px;
+    }
+    .badge-week { background: #dbeafe; color: #1e40af; }
+    .badge-mcq  { background: #fef3c7; color: #92400e; }
+    .badge-tf   { background: #d1fae5; color: #065f46; }
+    .badge-sa   { background: #ede9fe; color: #5b21b6; }
+
+    .question-text {
+      font-size: 17px;
+      font-weight: 600;
+      line-height: 1.45;
+      margin-bottom: 20px;
+      letter-spacing: -0.1px;
+    }
+
+    /* ── MCQ ── */
+    .options-list { display: flex; flex-direction: column; gap: 10px; }
+    .option-btn {
+      background: var(--bg);
+      border: 2px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 13px 14px;
+      text-align: left;
+      cursor: pointer;
+      font-size: 15.5px;
+      font-family: inherit;
+      color: var(--text);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      transition: all 0.15s;
+      width: 100%;
+      line-height: 1.4;
+    }
+    .option-btn:active:not(:disabled) { transform: scale(0.99); }
+    .option-letter {
+      width: 28px; height: 28px; min-width: 28px;
+      border-radius: 8px;
+      background: white;
+      border: 1.5px solid var(--border);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 12px; font-weight: 800; color: var(--muted);
+      flex-shrink: 0;
+    }
+    .option-btn.selected { border-color: var(--navy); background: #e8edf8; }
+    .option-btn.selected .option-letter { background: var(--navy); border-color: var(--navy); color: white; }
+    .option-btn.correct { border-color: var(--green); background: var(--green-bg); }
+    .option-btn.correct .option-letter { background: var(--green); border-color: var(--green); color: white; }
+    .option-btn.wrong { border-color: var(--red); background: var(--red-bg); }
+    .option-btn.wrong .option-letter { background: var(--red); border-color: var(--red); color: white; }
+
+    /* ── TRUE/FALSE ── */
+    .tf-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .tf-btn {
+      border: 2px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 20px 10px;
+      font-size: 18px; font-weight: 800;
+      cursor: pointer; font-family: inherit;
+      transition: all 0.15s;
+      background: var(--bg); color: var(--text);
+    }
+    .tf-btn:active:not(:disabled) { transform: scale(0.97); }
+    .tf-btn.selected { background: var(--navy); border-color: var(--navy); color: white; }
+    .tf-btn.correct { background: var(--green); border-color: var(--green); color: white; }
+    .tf-btn.wrong   { background: var(--red);   border-color: var(--red);   color: white; }
+
+    /* ── SHORT ANSWER ── */
+    .sa-textarea {
+      width: 100%;
+      min-height: 130px;
+      border: 2px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 13px 14px;
+      font-size: 16px; font-family: inherit; color: var(--text);
+      resize: vertical; background: var(--bg);
+      transition: border-color 0.2s;
+      -webkit-appearance: none; line-height: 1.5;
+    }
+    .sa-textarea:focus { outline: none; border-color: var(--navy); background: white; }
+    .sa-textarea:disabled { opacity: 0.7; background: var(--bg); }
+
+    /* ── HINT ── */
+    .hint-btn {
+      display: flex; align-items: center; gap: 6px;
+      background: none;
+      border: 1.5px solid #f0c000;
+      border-radius: 10px;
+      padding: 9px 14px;
+      color: #7c5500;
+      font-size: 13.5px; font-weight: 600;
+      cursor: pointer; font-family: inherit;
+      margin-top: 14px;
+      transition: all 0.15s;
+    }
+    .hint-btn:active { transform: scale(0.97); }
+    .hint-box {
+      display: none;
+      background: var(--amber-bg);
+      border: 1.5px solid var(--amber-border);
+      border-radius: var(--radius-sm);
+      padding: 13px 14px;
+      margin-top: 10px;
+      font-size: 14px; color: #78350f; line-height: 1.55;
+    }
+    .hint-box.visible { display: block; }
+
+    /* ── FEEDBACK ── */
+    .feedback-box {
+      display: none;
+      border-radius: var(--radius-sm);
+      padding: 14px 16px;
+      margin-top: 14px;
+      line-height: 1.5;
+    }
+    .feedback-box.correct { display: block; background: var(--green-bg); border: 1.5px solid var(--green-border); }
+    .feedback-box.wrong   { display: block; background: var(--red-bg);   border: 1.5px solid var(--red-border); }
+    .feedback-box.partial { display: block; background: var(--amber-bg); border: 1.5px solid var(--amber-border); }
+    .feedback-header {
+      display: flex; align-items: center; gap: 7px;
+      font-weight: 800; font-size: 14.5px; margin-bottom: 7px;
+    }
+    .feedback-body { font-size: 14px; color: var(--text); }
+    .model-answer {
+      margin-top: 10px;
+      padding-top: 10px;
+      border-top: 1px solid rgba(0,0,0,0.08);
+      font-size: 13.5px;
+      color: var(--text);
+    }
+    .model-answer strong { display: block; margin-bottom: 4px; color: var(--muted); font-size: 11px; text-transform: uppercase; letter-spacing: 0.05em; }
+
+    /* ── ACTION ROW ── */
+    .action-row { display: flex; flex-direction: column; gap: 10px; margin-top: 14px; }
+    .btn-submit {
+      display: block; width: 100%;
+      background: var(--navy); color: white;
+      border: none; border-radius: 14px; padding: 16px;
+      font-size: 17px; font-weight: 700;
+      cursor: pointer; font-family: inherit;
+      transition: all 0.15s; -webkit-appearance: none;
+    }
+    .btn-submit:active { transform: scale(0.98); opacity: 0.9; }
+    .btn-submit:disabled { opacity: 0.35; cursor: default; pointer-events: none; }
+    .btn-next {
+      display: none; width: 100%;
+      background: var(--gold); color: var(--navy);
+      border: none; border-radius: 14px; padding: 16px;
+      font-size: 17px; font-weight: 700;
+      cursor: pointer; font-family: inherit;
+      transition: all 0.15s; -webkit-appearance: none;
+    }
+    .btn-next.visible { display: block; }
+    .btn-next:active { transform: scale(0.98); background: var(--gold-dark); }
+
+    /* ── SUMMARY ── */
+    .summary-card { text-align: center; }
+    .score-circle {
+      width: 118px; height: 118px; border-radius: 50%;
+      background: var(--navy);
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      margin: 0 auto 18px;
+      box-shadow: 0 4px 20px rgba(0,32,96,0.25);
+    }
+    .score-num  { font-size: 38px; font-weight: 800; color: var(--gold); line-height: 1; }
+    .score-den  { font-size: 13px; color: rgba(255,255,255,0.65); margin-top: 3px; }
+    .score-pct  { font-size: 30px; font-weight: 800; letter-spacing: -0.5px; margin-bottom: 8px; }
+    .score-msg  { font-size: 15px; color: var(--muted); line-height: 1.45; max-width: 280px; margin: 0 auto; }
+
+    .results-list { background: var(--surface); border-radius: var(--radius); overflow: hidden; box-shadow: 0 2px 14px rgba(0,0,0,0.07); margin-bottom: 14px; }
+    .result-item { padding: 13px 16px; border-bottom: 1px solid var(--border); display: flex; gap: 12px; align-items: flex-start; }
+    .result-item:last-child { border-bottom: none; }
+    .result-icon { font-size: 17px; min-width: 22px; margin-top: 1px; }
+    .result-q { flex: 1; }
+    .result-q strong { display: block; font-size: 14px; line-height: 1.4; margin-bottom: 3px; }
+    .result-q span { font-size: 12px; color: var(--muted); }
+
+    /* ── ANIMATIONS ── */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(10px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .screen.active { animation: fadeUp 0.25s ease; }
+    .card { animation: fadeUp 0.2s ease; }
+  </style>
+</head>
+<body>
+
+<div class="app-header">
+  <div class="tag">UNSW · COMM1150 · Economics Lens</div>
+  <h1>Study Quiz</h1>
+</div>
+
+<!-- ════ HOME ════ -->
+<div class="screen active" id="screen-home">
+  <div class="card welcome-card">
+    <h2>Ready to revise? 📚</h2>
+    <p>Test yourself on the Economics Lens content from Weeks 5, 7 and 8. Get instant feedback, hints, and model answers as you go.</p>
+  </div>
+
+  <div class="section-label">Select Week(s)</div>
+  <div class="week-grid">
+    <div class="week-chip" data-week="5" onclick="toggleWeek(this)">
+      <div class="chip-title">Week 5</div>
+      <div class="chip-sub">Trade &amp; Globalisation</div>
+    </div>
+    <div class="week-chip" data-week="7" onclick="toggleWeek(this)">
+      <div class="chip-title">Week 7</div>
+      <div class="chip-sub">Growth &amp; Inequality</div>
+    </div>
+    <div class="week-chip span2" data-week="8" onclick="toggleWeek(this)">
+      <div class="chip-title">Week 8</div>
+      <div class="chip-sub">Short-run Fluctuations &amp; Policy</div>
+    </div>
+    <div class="week-chip span2" data-week="all" onclick="selectAll(this)">
+      <div class="chip-title">All Weeks</div>
+      <div class="chip-sub">Mixed revision — W5, W7 &amp; W8</div>
+    </div>
+  </div>
+
+  <div class="section-label">Session Details</div>
+  <div class="info-row">
+    <span>✦ 10 questions</span>
+    <span>✦ Instant feedback</span>
+    <span>✦ Hints on demand</span>
+    <span>✦ Model answers for short-answer Qs</span>
+  </div>
+
+  <button class="btn-primary" id="start-btn" onclick="startQuiz()" disabled>Start Quiz →</button>
+</div>
+
+<!-- ════ QUIZ ════ -->
+<div class="screen" id="screen-quiz">
+  <div class="progress-wrap">
+    <div class="progress-top">
+      <span class="progress-label" id="q-counter">Question 1 of 10</span>
+      <span class="progress-score" id="score-label">Score: 0</span>
+    </div>
+    <div class="progress-bar-outer">
+      <div class="progress-bar-inner" id="progress-bar" style="width:0%"></div>
+    </div>
+  </div>
+
+  <div class="card" id="question-card">
+    <div class="q-meta">
+      <span class="badge badge-week" id="q-week-badge">Week 5</span>
+      <span class="badge" id="q-type-badge">MCQ</span>
+    </div>
+    <div class="question-text" id="q-text"></div>
+    <div id="q-answer-area"></div>
+
+    <button class="hint-btn" id="hint-btn" onclick="showHint()">💡 Show Hint</button>
+    <div class="hint-box" id="hint-box"></div>
+
+    <div class="feedback-box" id="feedback-box">
+      <div class="feedback-header" id="feedback-header"></div>
+      <div class="feedback-body" id="feedback-body"></div>
+      <div class="model-answer" id="model-answer" style="display:none">
+        <strong>Model Answer</strong>
+        <span id="model-answer-text"></span>
+      </div>
+    </div>
+  </div>
+
+  <div class="action-row">
+    <button class="btn-submit" id="submit-btn" onclick="submitAnswer()" disabled>Check Answer</button>
+    <button class="btn-next" id="next-btn" onclick="nextQuestion()">Next Question →</button>
+  </div>
+</div>
+
+<!-- ════ SUMMARY ════ -->
+<div class="screen" id="screen-summary">
+  <div class="card summary-card">
+    <div class="score-circle">
+      <div class="score-num" id="final-score">0</div>
+      <div class="score-den" id="final-total">out of 10</div>
+    </div>
+    <div class="score-pct" id="final-pct">0%</div>
+    <div class="score-msg" id="final-msg"></div>
+  </div>
+
+  <div class="section-label">Question Review</div>
+  <div class="results-list" id="results-list"></div>
+
+  <button class="btn-primary" onclick="restartQuiz()">Play Again →</button>
+</div>
+
+<script>
+// ══════════════════════════════════════════════════════════════
+// QUESTION BANK
+// ══════════════════════════════════════════════════════════════
+const QUESTIONS = [
+
+  // ══════════ WEEK 5 — Trade & Globalisation ══════════
+
+  {
+    week: 5, type: 'mcq',
+    question: 'What primarily determines the pattern of trade between countries — i.e., which goods a country exports?',
+    options: ['Absolute advantage', 'Comparative advantage', 'Economies of scale', 'Total resource endowment'],
+    correct: 1,
+    hint: 'Think about opportunity cost. Which concept says a country should export whatever it produces at the lowest opportunity cost — even if it's worse at everything than its trading partner?',
+    explanation: 'Trade patterns are decided by comparative advantage (lowest opportunity cost), not absolute advantage. A country exports whatever it produces at the lowest OC — even if it's worse at everything than its partner.'
+  },
+  {
+    week: 5, type: 'mcq',
+    question: 'In the Australia vs. New Zealand example, what is Australia's opportunity cost of producing 1 tonne of iron ore?',
+    options: ['10 litres of milk', '6 litres of milk', '2 litres of milk', '12 litres of milk'],
+    correct: 2,
+    hint: 'Australia produces 12L of milk per hour and 6T of iron ore per hour. To get 1 tonne of iron ore, how many litres of milk must you give up?',
+    explanation: 'Australia produces 12L milk/hr and 6T iron ore/hr, so producing 1T of iron ore costs 12 ÷ 6 = 2L of milk. NZ's cost is 10L — so Australia has the comparative advantage in iron ore and exports it.'
+  },
+  {
+    week: 5, type: 'mcq',
+    question: 'What happened to child labour in Vietnam after rice export restrictions were lifted between 1993–1998?',
+    options: ['It increased by 9%', 'It fell by 9%', 'It stayed the same', 'It increased then gradually fell'],
+    correct: 1,
+    hint: 'When rice prices rose ~30%, Vietnamese rice-farming households earned more income. What would higher household income allow families to do for their children?',
+    explanation: 'Higher rice export prices increased household incomes, so families could afford to keep children in school. Child labour fell by 9% — the income effect dominated. This contrasts with Nicaragua, where coffee booms increased child labour demand on farms.'
+  },
+  {
+    week: 5, type: 'mcq',
+    question: 'According to the "buy local" argument analysis, food transport accounts for approximately what share of food's total greenhouse gas emissions?',
+    options: ['25%', '50%', '6%', '15%'],
+    correct: 2,
+    hint: 'Food production itself = ~25% of global emissions. Transport is only a small slice of that 25%. Think very small.',
+    explanation: 'Food production = ~25% of global emissions, but transport is only ~6% of food's total emissions. What you eat matters far more than where it comes from — switching from beef to vegetables cuts emissions dramatically more than buying locally produced beef.'
+  },
+  {
+    week: 5, type: 'mcq',
+    question: 'Which of the following best describes the "proximity-concentration trade-off"?',
+    options: [
+      'Countries must choose between specialising in one industry or diversifying',
+      'Firms want scale benefits from concentrated production but also want to be near customers',
+      'Governments trade off protecting local firms against lowering consumer prices',
+      'Exporters trade off product quality for lower shipping costs'
+    ],
+    correct: 1,
+    hint: 'Think about what a firm gains by putting all production in one location vs. the cost of being far away from its buyers.',
+    explanation: 'Firms want to concentrate production in one location to gain economies of scale, but they also want to be near customers. As trade costs fall, concentration increases because firms can afford to be further from customers.'
+  },
+  {
+    week: 5, type: 'mcq',
+    question: 'Silicon Valley, Hollywood, and Bangalore are examples of which economic concept?',
+    options: ['Internal economies of scale', 'External economies of scale', 'Comparative advantage clustering', 'Vertical integration'],
+    correct: 1,
+    hint: 'These are whole industries concentrated in one place — not just one big firm. Shared skills, equipment, and ideas all nearby.',
+    explanation: 'These are examples of external economies of scale — whole industries cluster in a single location, sharing skills, talent, equipment and ideas. Cost savings come from the industry cluster, not from any single firm's size alone.'
+  },
+  {
+    week: 5, type: 'tf',
+    question: 'True or False: A country with an absolute advantage in producing every good will export all goods and import nothing.',
+    correct: false,
+    hint: 'Remember: absolute advantage ≠ comparative advantage. What actually determines which goods get exported?',
+    explanation: 'False. Even if a country is better at producing everything (absolute advantage), trade is still governed by comparative advantage. Each country exports the good it produces at the lowest opportunity cost. Both countries still gain from specialisation and exchange.'
+  },
+  {
+    week: 5, type: 'tf',
+    question: 'True or False: Overall, the economic gains from international trade outweigh the losses — but trade still creates real winners and real losers.',
+    correct: true,
+    hint: 'Think about both sides: cheaper goods, specialisation, and innovation vs. job losses and industry shutdowns.',
+    explanation: 'True. Trade generates net gains through specialisation, cheaper goods, greater variety, and innovation. However, it also creates real losers — workers in uncompetitive industries and firms that lose profits. This political tension is why trade policy is contested.'
+  },
+  {
+    week: 5, type: 'tf',
+    question: 'True or False: In Nicaragua, coffee price booms led to a fall in child labour because households earned higher incomes.',
+    correct: false,
+    hint: 'Compare this to Vietnam. Did the income effect win in Nicaragua as it did in Vietnam?',
+    explanation: 'False. In Nicaragua, coffee price booms actually increased child labour — demand for farm labour rose faster than income gains helped. This contrasts with Vietnam's rice case, demonstrating that trade's effect on child labour is highly context-dependent.'
+  },
+  {
+    week: 5, type: 'sa',
+    question: 'Explain why comparative advantage — not absolute advantage — determines trade patterns. Use the Australia/NZ example to support your answer.',
+    keywords: ['opportunity cost', 'comparative advantage', 'absolute advantage', 'iron ore', 'milk', 'lower', 'specialise', 'exports', 'opportunity'],
+    minKeywords: 3,
+    hint: 'Cover: (1) what opportunity cost means, (2) which country gives up less to produce each good, (3) why a less productive country still gains from trade.',
+    modelAnswer: 'Comparative advantage means having a lower opportunity cost than your trading partner for a particular good. Australia gives up only 2L of milk to produce 1T of iron ore, while NZ gives up 10L — so Australia has the comparative advantage in iron ore and exports it. NZ has the comparative advantage in milk. Even if Australia were better at producing both goods (absolute advantage), both countries still gain by specialising in what they give up the least to produce and then trading.'
+  },
+  {
+    week: 5, type: 'sa',
+    question: 'What is the "buy local" myth regarding food and emissions? What actually matters more for reducing your food's carbon footprint?',
+    keywords: ['transport', 'production', 'emissions', 'what you eat', 'beef', 'vegetables', 'local'],
+    minKeywords: 2,
+    hint: 'Think about the percentage of food's emissions from transport vs. production. Then: what single dietary change dramatically cuts emissions?',
+    modelAnswer: 'The "buy local" myth assumes buying locally grown food significantly reduces emissions. However, food transport is only ~6% of food's total emissions, while food production accounts for ~25% of global emissions. What you eat matters far more than where it comes from — switching from beef to vegetables cuts emissions far more than buying locally produced beef does.'
+  },
+
+  // ══════════ WEEK 7 — Long-run Growth & Inequality ══════════
+
+  {
+    week: 7, type: 'mcq',
+    question: 'In the Solow-Swan production function Y = A × Kᵅ × (h × L)^(1-ᵅ), what does "A" represent?',
+    options: ['Labour force size (number of workers)', 'Physical capital stock (machines and buildings)', 'Human capital per worker (skills and education)', 'Productivity / total factor productivity'],
+    correct: 3,
+    hint: 'It's not a tangible input like a machine or a worker. Think about how efficiently all the inputs are being used — technology and organisation.',
+    explanation: '"A" represents productivity (Total Factor Productivity) — how efficiently labour, capital, and human capital are combined. It captures technology, management quality, and institutions. Crucially, it's the only input with no diminishing returns.'
+  },
+  {
+    week: 7, type: 'mcq',
+    question: 'Which factor in the Solow-Swan model can drive long-run sustained economic growth indefinitely, without facing diminishing returns?',
+    options: ['Physical capital (K)', 'Labour (L)', 'Human capital (H)', 'Productivity / Technology (A)'],
+    correct: 3,
+    hint: 'Both K and H hit ceilings or face diminishing returns. Which factor is based on ideas — and why are ideas different from machines?',
+    explanation: 'Only productivity (A) can grow indefinitely. Physical capital faces diminishing returns; human capital has a ceiling. Technology and ideas (captured in A) are non-rival and can keep improving without limit — this is the central insight of the Romer model.'
+  },
+  {
+    week: 7, type: 'mcq',
+    question: 'According to the Romer model, why can technology improve indefinitely, unlike physical capital?',
+    options: [
+      'Because governments always increase R&D budgets over time',
+      'Because ideas are non-rival — one person using an idea doesn't stop another from using it',
+      'Because human capital keeps accumulating without limit',
+      'Because physical capital depreciates, freeing up resources for research'
+    ],
+    correct: 1,
+    hint: 'What's special about an idea compared to a machine? If you use a machine, can someone else use the same machine simultaneously?',
+    explanation: 'Ideas are non-rival — one person using an idea doesn't prevent another from using it simultaneously. Unlike a machine, an idea can spread to everyone. This is why technology can keep improving ("standing on the shoulders of giants"), while capital faces diminishing returns.'
+  },
+  {
+    week: 7, type: 'mcq',
+    question: 'Argentina had 6 military coups between 1930–1976. In the context of economic growth, this example illustrates the importance of:',
+    options: ['Strong property rights legislation', 'Political stability', 'IP laws and R&D subsidies', 'Efficient regulation and resource allocation'],
+    correct: 1,
+    hint: 'Think about what coups destroy — not machines or factories, but the confidence that your investments are safe tomorrow.',
+    explanation: 'Argentina's coup history illustrates the critical role of political stability. Instability kills investment — when businesses and individuals fear that rules could change overnight or assets could be seized, they stop investing. Stable institutions are a prerequisite for long-run growth.'
+  },
+  {
+    week: 7, type: 'mcq',
+    question: 'Which statement best explains why "diminishing returns to capital" prevents capital accumulation alone from sustaining long-run growth?',
+    options: [
+      'More capital raises the cost of labour and reduces employment',
+      'Each additional unit of capital adds less and less to output, so growth stalls without other changes',
+      'Capital depreciates over time, reducing the total capital stock',
+      'Large capital stocks crowd out human capital investment'
+    ],
+    correct: 1,
+    hint: 'Think about adding the 1st machine to a factory vs. the 100th machine. Does each new machine add the same extra output?',
+    explanation: 'Diminishing returns means each additional unit of capital (holding labour constant) adds less and less to output. Eventually the return on new investment falls so low that growth stalls — you cannot grow forever just by buying more machines. Long-run growth requires ongoing productivity improvements.'
+  },
+  {
+    week: 7, type: 'mcq',
+    question: 'What does GDP per capita measure, and what is a key limitation of using it as a welfare measure?',
+    options: [
+      'Total national output — it perfectly measures living standards',
+      'Total output ÷ population — a rough measure of average living standards, but doesn't capture inequality or non-market goods',
+      'Government spending per person — a measure of public investment quality',
+      'Household income after tax — the most comprehensive welfare measure available'
+    ],
+    correct: 1,
+    hint: 'GDP per capita divides total economic output by population. Why is it only a "rough" measure? Think about what it misses.',
+    explanation: 'GDP per capita = total output ÷ population — a rough measure of average living standards. Most well-being indicators (health, education, life expectancy) correlate highly with income. However, it doesn't capture inequality, environmental quality, or non-market production (e.g. unpaid care work).'
+  },
+  {
+    week: 7, type: 'tf',
+    question: 'True or False: In the Solow-Swan model, doubling all inputs simultaneously (labour, human capital, and physical capital) exactly doubles total output.',
+    correct: true,
+    hint: 'This is the "constant returns to scale" property. Imagine building an identical factory next door with the same workers.',
+    explanation: 'True — this is constant returns to scale. If you double all inputs at once, output exactly doubles. The intuition: build an identical factory next door with the same workers and machines, and you get exactly twice the output. Note: this is different from adding just one input (which has diminishing returns).'
+  },
+  {
+    week: 7, type: 'tf',
+    question: 'True or False: Historically, most poverty reduction in poor countries has come from foreign aid and transfers from rich countries.',
+    correct: false,
+    hint: 'Think about China, South Korea, and Vietnam — what drove their dramatic poverty reductions? Was it foreign aid or domestic growth?',
+    explanation: 'False. Most poverty reduction has come from economic growth within poor countries — not from foreign aid. Countries like China, South Korea, and Vietnam lifted hundreds of millions out of poverty through sustained domestic growth, investment in capital and human capital, and rising productivity.'
+  },
+  {
+    week: 7, type: 'tf',
+    question: 'True or False: Climate change is a "global externality" because the costs of cutting emissions are shared equally among all countries.',
+    correct: false,
+    hint: 'Think about the incentive problem. Each country bears the full domestic cost of cutting emissions, but only gets a small share of the global benefit. Does that create equal sharing?',
+    explanation: 'False. It's a global externality because each country only captures a small share of the benefit from cutting its own emissions, while bearing the full domestic cost. This creates a free-rider problem — no country has enough incentive to act alone, requiring multinational cooperation.'
+  },
+  {
+    week: 7, type: 'sa',
+    question: 'Name the three inputs in the Solow-Swan production function. Which one can drive unlimited long-run growth, and why?',
+    keywords: ['labour', 'human capital', 'physical capital', 'productivity', 'technology', 'non-rival', 'ideas', 'diminishing returns', 'unlimited'],
+    minKeywords: 3,
+    hint: 'Three inputs: workers, their skills/education, and machines/buildings. Then explain why one of them has no ceiling — think about the nature of ideas.',
+    modelAnswer: 'The three inputs are: Labour (L) — number of workers; Human Capital (H) — workers' skills and education; Physical Capital (K) — machines, buildings and equipment. Productivity/Technology (A) drives unlimited long-run growth because it is based on ideas, which are non-rival. Unlike capital (which faces diminishing returns) or human capital (which has a ceiling), technology can keep improving indefinitely — each new idea makes the next one easier to find ("standing on the shoulders of giants").'
+  },
+  {
+    week: 7, type: 'sa',
+    question: 'Why is climate change classified as an economic problem as much as an environmental one? Use the concept of externalities in your answer.',
+    keywords: ['externality', 'global', 'incentive', 'cooperation', 'benefit', 'cost', 'free rider', 'multinational', 'emissions'],
+    minKeywords: 3,
+    hint: 'Why don't individual countries cut emissions enough on their own? Think about who bears the cost vs. who gets the benefit — and what that has in common with other global coordination problems.',
+    modelAnswer: 'Climate change is a global externality — each country's emissions impose costs on the entire world, but each country only receives a small fraction of the benefit from cutting its own emissions. This creates a free-rider problem: every country has an incentive to let others cut emissions while free-riding on their efforts. No individual country has sufficient incentive to act alone, so the solution requires multinational cooperation — just as the Montreal Protocol addressed the ozone layer.'
+  },
+
+  // ══════════ WEEK 8 — Short-run Fluctuations & Policy ══════════
+
+  {
+    week: 8, type: 'mcq',
+    question: 'In the GDP equation Y = C + I + G + Ex − Im, what does the component "C" represent?',
+    options: ['Capital investment spending by businesses', 'Consumer spending by households', 'Cost of government public services', 'Currency and credit in circulation'],
+    correct: 1,
+    hint: 'Think about the largest component of GDP in most economies — everyday household purchases of goods and services.',
+    explanation: 'C = Consumer spending by households — typically the largest GDP component. I = Investment (business equipment, housing), G = Government spending, Ex = Exports, Im = Imports. Every unit of output must be purchased by one of these four sectors.'
+  },
+  {
+    week: 8, type: 'mcq',
+    question: 'If the Marginal Propensity to Consume (MPC) is 0.5, what is the expenditure multiplier?',
+    options: ['0.5', '1.5', '2', '5'],
+    correct: 2,
+    hint: 'The formula is: Multiplier = 1 ÷ (1 − MPC). Substitute 0.5 for MPC: what is 1 ÷ (1 − 0.5)?',
+    explanation: 'Multiplier = 1 ÷ (1 − 0.5) = 1 ÷ 0.5 = 2. So a $10b increase in government spending leads to a $20b rise in GDP — each dollar of income generates 50c of new spending, which generates 25c more, and so on in a chain.'
+  },
+  {
+    week: 8, type: 'mcq',
+    question: 'The fundamental difference between the Keynesian and Neoclassical views of the short-run economy is:',
+    options: [
+      'Keynesians support free markets; Neoclassicals support government intervention',
+      'Keynesians say sticky prices mean demand shocks change output; Neoclassicals say prices adjust quickly',
+      'Keynesians focus on long-run growth; Neoclassicals focus on short-run business cycles',
+      'Keynesians use monetary policy; Neoclassicals prefer fiscal policy'
+    ],
+    correct: 1,
+    hint: 'The key phrase is "sticky prices." What happens to output when prices can't instantly adjust to changes in demand?',
+    explanation: 'Keynesians argue that prices are "sticky" — they don't adjust instantly. So when demand changes, firms change output (produce more or less) rather than just adjusting prices. This means governments can boost real GDP via stimulus in the short run. Neoclassicals say prices adjust quickly, so only technology drives real output.'
+  },
+  {
+    week: 8, type: 'mcq',
+    question: 'What is the Reserve Bank of Australia's (RBA) main monetary policy tool?',
+    options: ['The exchange rate target', 'The cash rate (overnight interbank lending rate)', 'The headline inflation target', 'The level of government bond issuance'],
+    correct: 1,
+    hint: 'It's the interest rate on overnight loans between banks — it acts as the benchmark rate for the whole Australian economy.',
+    explanation: 'The RBA's main tool is the cash rate — the interest rate on overnight loans between banks. By buying or selling government bonds, the RBA injects or removes cash from the banking system, moving the cash rate up or down, which then ripples through all interest rates in the economy.'
+  },
+  {
+    week: 8, type: 'mcq',
+    question: 'Which of the following best describes a "hand-to-mouth" household?',
+    options: [
+      'A household that saves a large fraction of income for retirement',
+      'A high-income household with a diversified investment portfolio',
+      'A household that cannot borrow and spends essentially every dollar it earns, with MPC close to 1',
+      'A household that plans spending based on expected lifetime income'
+    ],
+    correct: 2,
+    hint: 'Think about households that can't access credit. When they receive income, do they save it or spend it immediately?',
+    explanation: 'Hand-to-mouth households can't borrow, so they spend essentially every dollar they receive right now — MPC ≈ 1. They're common among low-income households. This contrasts with "consumption smoothers" who spread spending across their lifetime and have a lower effective MPC, responding less to short-term income changes.'
+  },
+  {
+    week: 8, type: 'mcq',
+    question: 'Unexpected inflation has a "redistributive effect." Who does it typically hurt and who does it help?',
+    options: [
+      'Hurts borrowers and helps lenders',
+      'Hurts lenders/creditors and helps borrowers/debtors',
+      'Hurts everyone equally through higher prices',
+      'Hurts businesses and helps workers through wage gains'
+    ],
+    correct: 1,
+    hint: 'When inflation is higher than expected, debts are repaid in dollars worth less than originally agreed. Who wins — the person who lent the money, or the one who borrowed it?',
+    explanation: 'Unexpected inflation hurts lenders (banks, retirees on fixed incomes) because debts are repaid in dollars worth less than when the loan was made. It helps borrowers (young homeowners, governments) who repay with cheaper dollars. This redistribution is why unexpected inflation is more damaging than expected inflation.'
+  },
+  {
+    week: 8, type: 'tf',
+    question: 'True or False: Automatic stabilisers like unemployment insurance require new government legislation to activate during each recession.',
+    correct: false,
+    hint: 'The word "automatic" is the key. Do these kick in by themselves when a recession hits, or does parliament have to vote on them each time?',
+    explanation: 'False. Automatic stabilisers work without any new policy decisions. When recession hits, unemployment insurance automatically pays out more and tax revenue automatically falls (because people earn less). Both cushion the downturn immediately — that's precisely what makes them "automatic," unlike discretionary fiscal policy.'
+  },
+  {
+    week: 8, type: 'tf',
+    question: 'True or False: A higher Marginal Propensity to Consume (MPC) leads to a larger expenditure multiplier.',
+    correct: true,
+    hint: 'Use the formula: Multiplier = 1 ÷ (1 − MPC). What happens to the result as MPC rises from 0.5 toward 1?',
+    explanation: 'True. Multiplier = 1 ÷ (1 − MPC). As MPC increases (closer to 1), the denominator (1 − MPC) gets smaller, making the multiplier larger. If people spend more of each extra dollar received, the chain of re-spending through the economy is longer — each round generates more income and more spending.'
+  },
+  {
+    week: 8, type: 'tf',
+    question: 'True or False: The "zero lower bound" problem means that cutting interest rates is always available to the RBA as a stimulus tool, regardless of current rate levels.',
+    correct: false,
+    hint: 'Think about what happens when the cash rate is already close to 0%. Can the RBA cut it much further? What does this mean in a deep recession?',
+    explanation: 'False. The zero lower bound means the RBA cannot easily cut nominal interest rates below zero. So when rates are already near zero (as in 2020), the RBA's conventional rate-cutting tool runs out of ammunition. This is one of the key limitations of monetary policy in deep recessions — it requires unconventional tools like quantitative easing.'
+  },
+  {
+    week: 8, type: 'sa',
+    question: 'Explain how the RBA uses the cash rate to stimulate the economy. Trace the full chain of effects from the RBA's initial action through to a rise in GDP.',
+    keywords: ['cash rate', 'bonds', 'buy', 'injects', 'falls', 'borrowing', 'cheaper', 'spending', 'gdp', 'investment', 'consumer', 'multiplier'],
+    minKeywords: 4,
+    hint: 'Start with: RBA buys government bonds → what happens to cash in the banking system? → cash rate? → borrowing costs? → C, I, G? → GDP?',
+    modelAnswer: 'To stimulate the economy, the RBA buys government bonds in the open market, injecting cash into the banking system. This increases the supply of funds available for overnight lending, pushing the cash rate down. Lower rates make borrowing cheaper for households and businesses, boosting consumer spending (C) and business investment (I). A weaker dollar (from lower rates) also makes exports more competitive, raising Ex. These effects increase aggregate demand and GDP, amplified by the expenditure multiplier as each dollar of new spending becomes someone else's income.'
+  },
+  {
+    week: 8, type: 'sa',
+    question: 'What are two key problems with using fiscal policy to manage the economy? Briefly explain each.',
+    keywords: ['time lag', 'lags', 'legislation', 'funding', 'taxes', 'borrowing', 'crowd out', 'crowding out', 'debt', 'slow'],
+    minKeywords: 2,
+    hint: 'Think about (1) the time it takes from identifying a recession to effects being felt in the economy, and (2) where the money for stimulus actually comes from.',
+    modelAnswer: 'Two key problems: (1) Time lags — it takes time to identify a problem, pass legislation, implement the spending programme, and for the effects to ripple through the economy. By the time stimulus arrives, the recession may already be ending. (2) Funding — fiscal stimulus must be financed by either higher taxes (reduces private spending, politically unpopular) or borrowing. Borrowing can crowd out private investment by putting upward pressure on interest rates, and may be unsustainable long-run if government debt keeps growing.'
+  }
+
+];
+
+// ══════════════════════════════════════════════════════════════
+// STATE
+// ══════════════════════════════════════════════════════════════
+let selectedWeeks = new Set();
+let quizQuestions  = [];
+let currentIndex   = 0;
+let score          = 0;
+let results        = [];
+let answered       = false;
+let selectedOption = null;
+
+// ══════════════════════════════════════════════════════════════
+// HOME
+// ══════════════════════════════════════════════════════════════
+function toggleWeek(el) {
+  const w = el.dataset.week;
+  if (w === 'all') return;
+  if (el.classList.contains('selected')) {
+    el.classList.remove('selected');
+    selectedWeeks.delete(parseInt(w));
+  } else {
+    el.classList.add('selected');
+    selectedWeeks.add(parseInt(w));
+  }
+  document.querySelector('[data-week="all"]').classList.remove('selected');
+  updateStartBtn();
+}
+
+function selectAll(el) {
+  document.querySelectorAll('.week-chip:not([data-week="all"])').forEach(c => c.classList.remove('selected'));
+  selectedWeeks = new Set([5, 7, 8]);
+  el.classList.add('selected');
+  updateStartBtn();
+}
+
+function updateStartBtn() {
+  document.getElementById('start-btn').disabled = selectedWeeks.size === 0;
+}
+
+// ══════════════════════════════════════════════════════════════
+// QUIZ
+// ══════════════════════════════════════════════════════════════
+function startQuiz() {
+  const pool = QUESTIONS.filter(q => selectedWeeks.has(q.week));
+  quizQuestions = shuffle([...pool]).slice(0, Math.min(10, pool.length));
+  currentIndex = 0; score = 0; results = [];
+  showScreen('screen-quiz');
+  renderQuestion();
+}
+
+function renderQuestion() {
+  const q = quizQuestions[currentIndex];
+  answered = false;
+  selectedOption = null;
+
+  // Progress
+  const pct = (currentIndex / quizQuestions.length) * 100;
+  document.getElementById('progress-bar').style.width = pct + '%';
+  document.getElementById('q-counter').textContent = `Question ${currentIndex + 1} of ${quizQuestions.length}`;
+  document.getElementById('score-label').textContent = `Score: ${score}`;
+
+  // Badges
+  document.getElementById('q-week-badge').textContent = `Week ${q.week}`;
+  const tb = document.getElementById('q-type-badge');
+  if (q.type === 'mcq')      { tb.textContent = 'Multiple Choice'; tb.className = 'badge badge-mcq'; }
+  else if (q.type === 'tf')  { tb.textContent = 'True / False';    tb.className = 'badge badge-tf'; }
+  else                       { tb.textContent = 'Short Answer';    tb.className = 'badge badge-sa'; }
+
+  // Question text
+  document.getElementById('q-text').textContent = q.question;
+
+  // Reset hint
+  const hintBox = document.getElementById('hint-box');
+  hintBox.textContent = q.hint;
+  hintBox.classList.remove('visible');
+  document.getElementById('hint-btn').style.display = 'flex';
+
+  // Reset feedback
+  const fb = document.getElementById('feedback-box');
+  fb.className = 'feedback-box';
+  document.getElementById('model-answer').style.display = 'none';
+
+  // Buttons
+  document.getElementById('submit-btn').disabled = true;
+  document.getElementById('submit-btn').style.display = 'block';
+  document.getElementById('next-btn').classList.remove('visible');
+
+  // Answer area
+  const area = document.getElementById('q-answer-area');
+  area.innerHTML = '';
+  if (q.type === 'mcq')     renderMCQ(q, area);
+  else if (q.type === 'tf') renderTF(q, area);
+  else                      renderSA(q, area);
+}
+
+function renderMCQ(q, area) {
+  const list = document.createElement('div');
+  list.className = 'options-list';
+  ['A','B','C','D'].forEach((letter, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'option-btn';
+    btn.innerHTML = `<span class="option-letter">${letter}</span><span>${q.options[i]}</span>`;
+    btn.onclick = () => {
+      if (answered) return;
+      selectedOption = i;
+      list.querySelectorAll('.option-btn').forEach((b, j) => b.classList.toggle('selected', j === i));
+      document.getElementById('submit-btn').disabled = false;
+    };
+    list.appendChild(btn);
+  });
+  area.appendChild(list);
+}
+
+function renderTF(q, area) {
+  const grid = document.createElement('div');
+  grid.className = 'tf-grid';
+  ['True', 'False'].forEach(label => {
+    const btn = document.createElement('button');
+    btn.className = 'tf-btn';
+    btn.textContent = label;
+    btn.onclick = () => {
+      if (answered) return;
+      selectedOption = label === 'True';
+      grid.querySelectorAll('.tf-btn').forEach(b => b.classList.toggle('selected', b.textContent === label));
+      document.getElementById('submit-btn').disabled = false;
+    };
+    grid.appendChild(btn);
+  });
+  area.appendChild(grid);
+}
+
+function renderSA(q, area) {
+  const ta = document.createElement('textarea');
+  ta.className = 'sa-textarea';
+  ta.placeholder = 'Write your answer here...';
+  ta.oninput = () => {
+    selectedOption = ta.value.trim();
+    document.getElementById('submit-btn').disabled = selectedOption.length < 10;
+  };
+  area.appendChild(ta);
+}
+
+// ── SUBMIT ──
+function submitAnswer() {
+  const q = quizQuestions[currentIndex];
+  answered = true;
+
+  document.getElementById('submit-btn').style.display = 'none';
+  document.getElementById('next-btn').classList.add('visible');
+  document.getElementById('hint-btn').style.display = 'none';
+  document.getElementById('hint-box').classList.remove('visible');
+
+  let isCorrect = false;
+  let fbClass   = 'wrong';
+  let icon      = '✗';
+  let title     = '';
+  let bodyText  = '';
+  let showModel = false;
+
+  if (q.type === 'mcq') {
+    isCorrect = selectedOption === q.correct;
+    document.querySelectorAll('.option-btn').forEach((btn, i) => {
+      btn.disabled = true;
+      if (i === q.correct)                           btn.classList.add('correct');
+      else if (i === selectedOption && !isCorrect)   btn.classList.add('wrong');
+    });
+    icon      = isCorrect ? '✓' : '✗';
+    title     = isCorrect ? 'Correct!' : 'Not quite';
+    fbClass   = isCorrect ? 'correct' : 'wrong';
+    bodyText  = q.explanation;
+  }
+  else if (q.type === 'tf') {
+    isCorrect = selectedOption === q.correct;
+    document.querySelectorAll('.tf-btn').forEach(btn => {
+      btn.disabled = true;
+      const val = btn.textContent === 'True';
+      if (val === q.correct)                        btn.classList.add('correct');
+      else if (val === selectedOption && !isCorrect) btn.classList.add('wrong');
+    });
+    icon    = isCorrect ? '✓' : '✗';
+    title   = isCorrect ? 'Correct!' : 'Not quite';
+    fbClass = isCorrect ? 'correct' : 'wrong';
+    bodyText = q.explanation;
+  }
+  else {
+    // Short answer — keyword matching
+    const answer = (selectedOption || '').toLowerCase();
+    const found  = q.keywords.filter(kw => answer.includes(kw.toLowerCase()));
+    const ratio  = found.length / q.minKeywords;
+
+    const ta = document.querySelector('.sa-textarea');
+    if (ta) ta.disabled = true;
+
+    showModel = true;
+    document.getElementById('model-answer-text').textContent = q.modelAnswer;
+
+    if (ratio >= 1) {
+      isCorrect = true;
+      fbClass   = 'correct';
+      icon      = '✓';
+      title     = 'Great answer!';
+      bodyText  = `You covered the key concepts. Check the model answer below to see if you can add anything.`;
+    } else if (ratio >= 0.5) {
+      isCorrect = false;
+      fbClass   = 'partial';
+      icon      = '~';
+      title     = 'Partially there';
+      const missing = q.keywords.filter(kw => !answer.includes(kw.toLowerCase())).slice(0, 3);
+      bodyText  = `Good start! Try to also include concepts like: ${missing.join(', ')}.`;
+    } else {
+      isCorrect = false;
+      fbClass   = 'wrong';
+      icon      = '✗';
+      title     = 'Keep studying this one';
+      bodyText  = `Key concepts to include: ${q.keywords.slice(0, 4).join(', ')}.`;
+    }
+  }
+
+  if (isCorrect) score++;
+
+  // Render feedback
+  const fb = document.getElementById('feedback-box');
+  fb.className = 'feedback-box ' + fbClass;
+  document.getElementById('feedback-header').innerHTML = `<span>${icon}</span><span>${title}</span>`;
+  document.getElementById('feedback-body').textContent = bodyText;
+  if (showModel) document.getElementById('model-answer').style.display = 'block';
+
+  document.getElementById('score-label').textContent = `Score: ${score}`;
+
+  results.push({ question: q.question, correct: isCorrect, week: q.week, type: q.type });
+}
+
+function nextQuestion() {
+  currentIndex++;
+  if (currentIndex >= quizQuestions.length) showSummary();
+  else renderQuestion();
+}
+
+function showHint() {
+  document.getElementById('hint-box').classList.add('visible');
+  document.getElementById('hint-btn').style.display = 'none';
+}
+
+// ══════════════════════════════════════════════════════════════
+// SUMMARY
+// ══════════════════════════════════════════════════════════════
+function showSummary() {
+  const total = quizQuestions.length;
+  const pct   = Math.round((score / total) * 100);
+
+  document.getElementById('final-score').textContent = score;
+  document.getElementById('final-total').textContent = `out of ${total}`;
+  document.getElementById('final-pct').textContent   = pct + '%';
+
+  let msg = '';
+  if      (pct >= 90) msg = "Outstanding — you've nailed this content! 🎉";
+  else if (pct >= 75) msg = "Great work! A few more passes and you'll be exam-ready.";
+  else if (pct >= 60) msg = "Solid effort. Review the ones you missed and give it another go.";
+  else if (pct >= 40) msg = "Keep going — revisit your notes and try again.";
+  else                msg = "This content needs more attention. Re-read your week notes and retry.";
+  document.getElementById('final-msg').textContent = msg;
+
+  // Review list
+  const list = document.getElementById('results-list');
+  list.innerHTML = '';
+  results.forEach((r, i) => {
+    const item = document.createElement('div');
+    item.className = 'result-item';
+    const short = r.question.length > 75 ? r.question.slice(0, 75) + '…' : r.question;
+    const typeLabel = r.type === 'mcq' ? 'MCQ' : r.type === 'tf' ? 'True/False' : 'Short Answer';
+    item.innerHTML = `
+      <div class="result-icon">${r.correct ? '✅' : '❌'}</div>
+      <div class="result-q">
+        <strong>Q${i + 1}: ${short}</strong>
+        <span>Week ${r.week} · ${typeLabel}</span>
+      </div>`;
+    list.appendChild(item);
+  });
+
+  showScreen('screen-summary');
+}
+
+function restartQuiz() {
+  selectedWeeks = new Set();
+  document.querySelectorAll('.week-chip').forEach(c => c.classList.remove('selected'));
+  document.getElementById('start-btn').disabled = true;
+  showScreen('screen-home');
+}
+
+// ══════════════════════════════════════════════════════════════
+// UTILS
+// ══════════════════════════════════════════════════════════════
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function shuffle(arr) {
+  for (let i = arr.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [arr[i], arr[j]] = [arr[j], arr[i]];
+  }
+  return arr;
+}
+</script>
+</body>
+</html>
