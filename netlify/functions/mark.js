@@ -17,11 +17,13 @@ exports.handler = async (event) => {
       "Key concepts expected: " + keywords.join(", ") + "\n\n" +
       "Model answer for reference: " + modelAnswer + "\n\n" +
       "Student wrote: \"" + studentAnswer.replace(/"/g, "'") + "\"\n\n" +
-      "Mark out of 3:\n" +
-      "3 = covers all key concepts with clear understanding\n" +
-      "2 = covers most concepts but lacks depth or misses something important\n" +
-      "1 = some relevant ideas but significant gaps\n" +
-      "0 = largely off track or missing key concepts\n\n" +
+      "Mark out of 5:\n" +
+      "5 = thorough, accurate, covers all key concepts with clear understanding\n" +
+      "4 = strong answer with only minor omissions or lack of depth\n" +
+      "3 = solid attempt covering most key concepts but missing some depth or detail\n" +
+      "2 = some relevant ideas present but significant gaps or misconceptions\n" +
+      "1 = minimal relevant content, mostly off track\n" +
+      "0 = entirely off track or blank\n\n" +
       "Reply ONLY with valid compact JSON — no markdown, no extra text:\n" +
       "{\"mark\":0,\"covered\":[\"what student addressed well\"],\"improve\":[\"specific thing to add or develop\"],\"feedback\":\"One sentence overall assessment\"}";
 

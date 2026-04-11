@@ -1626,18 +1626,18 @@ async function submitAnswer() {
 
     var mark;
     if (aiResult && typeof aiResult.mark === "number") {
-      mark = Math.max(0, Math.min(3, aiResult.mark));
+      mark = Math.max(0, Math.min(5, aiResult.mark));
     } else {
       var ans = studentAnswer.toLowerCase();
       var found = q.keywords.filter(function(kw) { return ans.indexOf(kw.toLowerCase()) !== -1; });
       var ratio = found.length / q.minKeywords;
-      mark = ratio >= 1 ? 3 : ratio >= 0.67 ? 2 : ratio >= 0.33 ? 1 : 0;
+      mark = ratio >= 1 ? 5 : ratio >= 0.8 ? 4 : ratio >= 0.6 ? 3 : ratio >= 0.4 ? 2 : ratio >= 0.2 ? 1 : 0;
     }
 
-    var isCorrect = mark === 3;
-    var fbClass   = mark === 3 ? "correct" : mark >= 1 ? "partial" : "wrong";
-    var scoreLabel = ["Keep studying", "Needs more depth", "Good attempt", "Strong answer"][mark];
-    var scoreSub   = ["Review your notes and try again", "Some ideas there — review the rest", "Most key ideas covered", "You covered all the key concepts"][mark];
+    var isCorrect = mark >= 3;
+    var fbClass   = mark >= 4 ? "correct" : mark >= 2 ? "partial" : "wrong";
+    var scoreLabel = ["Keep studying", "Minimal — review notes", "Developing — key gaps", "Good attempt", "Strong answer", "Excellent!"][mark];
+    var scoreSub   = ["Review your notes and try again", "Some ideas there — keep going", "Most ideas there — add more depth", "Covers the key concepts well", "Nearly complete — well done", "You covered all the key concepts"][mark];
     var ansDisplay = studentAnswer.length > 280 ? studentAnswer.slice(0, 280) + "…" : studentAnswer;
 
     var bodyTxt;
@@ -1647,7 +1647,7 @@ async function submitAnswer() {
       bodyTxt =
         "<div class=\"sa-ai-badge\">✦ AI marked</div>" +
         "<div class=\"sa-score-row\">" +
-          "<div class=\"sa-score-num\">" + mark + "<span> / 3</span></div>" +
+          "<div class=\"sa-score-num\">" + mark + "<span> / 5</span></div>" +
           "<div class=\"sa-score-meta\"><div class=\"sa-score-label\">" + scoreLabel + "</div><div class=\"sa-score-sub\">" + scoreSub + "</div></div>" +
         "</div>" +
         "<div class=\"sa-block\"><div class=\"sa-block-label\">Your answer</div>" +
@@ -1667,7 +1667,7 @@ async function submitAnswer() {
         : "<span class=\"chip-none\">Nothing major missed!</span>";
       bodyTxt =
         "<div class=\"sa-score-row\">" +
-          "<div class=\"sa-score-num\">" + mark + "<span> / 3</span></div>" +
+          "<div class=\"sa-score-num\">" + mark + "<span> / 5</span></div>" +
           "<div class=\"sa-score-meta\"><div class=\"sa-score-label\">" + scoreLabel + "</div><div class=\"sa-score-sub\">" + scoreSub + "</div></div>" +
         "</div>" +
         "<div class=\"sa-block\"><div class=\"sa-block-label\">Your answer</div>" +
@@ -1678,15 +1678,15 @@ async function submitAnswer() {
           "<div class=\"concept-chips\">" + missedChips + "</div></div>";
     }
 
-    if (isCorrect) score++;
+    score += mark;
     document.getElementById("model-ans-text").textContent = q.modelAnswer;
     var fb = document.getElementById("feedback");
     fb.className = "feedback " + fbClass;
     document.getElementById("feedback-head").style.display = "none";
     document.getElementById("feedback-body").innerHTML = bodyTxt;
     document.getElementById("model-ans").style.display = "block";
-    document.getElementById("score-label").textContent = "Score: " + score;
-    results.push({ question: q.question, correct: isCorrect, week: q.week, type: q.type });
+    document.getElementById("score-label").textContent = score + " pts";
+    results.push({ question: q.question, correct: isCorrect, week: q.week, type: q.type, mark: mark, maxMark: 5 });
     checkBtn.style.display = "none";
     checkBtn.classList.remove("loading");
     checkBtn.textContent = "Check Answer";
@@ -1720,15 +1720,16 @@ async function submitAnswer() {
       fbClass = isCorrect ? "correct" : "wrong";
       bodyTxt = q.explanation;
     }
-    if (isCorrect) score++;
+    var qMark = isCorrect ? 3 : 0;
+    score += qMark;
     var fb = document.getElementById("feedback");
     fb.className = "feedback " + fbClass;
     document.getElementById("feedback-icon").textContent  = iconTxt;
     document.getElementById("feedback-title").textContent = titleTxt;
     document.getElementById("feedback-head").style.display = "";
     document.getElementById("feedback-body").textContent = bodyTxt;
-    document.getElementById("score-label").textContent = "Score: " + score;
-    results.push({ question: q.question, correct: isCorrect, week: q.week, type: q.type });
+    document.getElementById("score-label").textContent = score + " pts";
+    results.push({ question: q.question, correct: isCorrect, week: q.week, type: q.type, mark: qMark, maxMark: 3 });
   }
 }
 
@@ -1744,10 +1745,10 @@ function showHint() {
 }
 
 function showSummary() {
-  var total = quizQuestions.length;
-  var pct   = Math.round((score / total) * 100);
+  var maxScore = 40;
+  var pct = Math.round((score / maxScore) * 100);
   document.getElementById("final-score").textContent = score;
-  document.getElementById("final-of").textContent    = "out of " + total;
+  document.getElementById("final-of").textContent    = "out of " + maxScore;
   document.getElementById("final-pct").textContent   = pct + "%";
   var msg;
   if      (pct >= 90) msg = "Outstanding — exam-ready!";
@@ -1759,14 +1760,15 @@ function showSummary() {
 
   var list = document.getElementById("results-list");
   list.innerHTML = "";
-  results.forEach(function(r, i) {
+  results.forEach(function(r) {
     var row = document.createElement("div");
     row.className = "result-row";
     var short = r.question.length > 72 ? r.question.slice(0, 72) + "..." : r.question;
     var typeLabel = r.type === "mcq" ? "MCQ" : r.type === "tf" ? "True/False" : "Short Answer";
+    var markLabel = r.mark + " / " + r.maxMark;
     row.innerHTML = "<div class='result-icon'>" + (r.correct ? "✅" : "❌") + "</div>" +
       "<div class='result-right'><div class='result-q'>" + short + "</div>" +
-      "<div class='result-meta'>Week " + r.week + " &nbsp;·&nbsp; " + typeLabel + "</div></div>";
+      "<div class='result-meta'>Week " + r.week + " &nbsp;·&nbsp; " + typeLabel + " &nbsp;·&nbsp; <strong>" + markLabel + "</strong></div></div>";
     list.appendChild(row);
   });
   showScreen("screen-summary");
