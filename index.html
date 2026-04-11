@@ -228,7 +228,6 @@
     <h1>Economics Lens Quiz</h1>
   </div>
   <button class="notes-open-btn" onclick="openNotes()">📖 Notes</button>
-  <button class="settings-btn" onclick="openSettings()" title="Settings">⚙️</button>
 </div>
 
 <div class="screen active" id="screen-home">
@@ -681,26 +680,6 @@
   </div><!-- end notes-sheet -->
 </div><!-- end notes-overlay -->
 
-<!-- ══ SETTINGS SHEET ══ -->
-<div class="settings-overlay" id="settings-overlay" onclick="settingsOverlayClick(event)">
-  <div class="settings-sheet">
-    <div class="notes-handle"></div>
-    <div class="notes-hdr">
-      <div class="notes-hdr-title">Settings</div>
-      <button class="notes-close-btn" onclick="closeSettings()">✕</button>
-    </div>
-    <div class="settings-body">
-      <div class="settings-section-label">Claude API Key</div>
-      <div class="settings-desc">Paste your Anthropic API key to enable AI-powered short answer marking. Your key is stored only in your browser and sent directly to Anthropic — never to anyone else.</div>
-      <input class="api-key-input" id="api-key-input" type="password" placeholder="sk-ant-api03-…" autocomplete="off" spellcheck="false" />
-      <div class="settings-btn-row">
-        <button class="btn-save-key" onclick="saveApiKey()">Save Key</button>
-        <button class="btn-clear-key" onclick="clearApiKey()">Clear</button>
-      </div>
-      <div class="key-status unset" id="key-status">No API key set — using keyword matching</div>
-    </div>
-  </div>
-</div>
 
 <script>
 var QUESTIONS = [
@@ -1711,63 +1690,24 @@ function switchTab(el, panelId) {
 }
 
 // ── Settings ──
-function openSettings() {
-  updateKeyStatus();
-  var key = localStorage.getItem("claude_api_key");
-  document.getElementById("api-key-input").value = key ? "sk-ant-••••••••" : "";
-  document.getElementById("settings-overlay").classList.add("open");
-  document.body.style.overflow = "hidden";
-}
-function closeSettings() {
-  document.getElementById("settings-overlay").classList.remove("open");
-  document.body.style.overflow = "";
-}
-function settingsOverlayClick(e) {
-  if (e.target === document.getElementById("settings-overlay")) closeSettings();
-}
-function saveApiKey() {
-  var val = document.getElementById("api-key-input").value.trim();
-  if (val && val.indexOf("••••") === -1) {
-    localStorage.setItem("claude_api_key", val);
-    document.getElementById("api-key-input").value = "sk-ant-••••••••";
-  }
-  updateKeyStatus();
-}
-function clearApiKey() {
-  localStorage.removeItem("claude_api_key");
-  document.getElementById("api-key-input").value = "";
-  updateKeyStatus();
-}
-function updateKeyStatus() {
-  var el = document.getElementById("key-status");
-  var has = !!localStorage.getItem("claude_api_key");
-  el.textContent = has ? "✓ API key saved — AI marking active" : "No API key set — using keyword matching";
-  el.className = "key-status " + (has ? "set" : "unset");
-}
-
-// ── AI Marking ──
+// ── AI Marking — proxied via Netlify Function ──
 async function markWithAI(q, studentAnswer) {
-  var apiKey = localStorage.getItem("claude_api_key");
-  if (!apiKey) return null;
-  var prompt = "You are marking a student short answer for a COMM1150 Global Business Environments exam at UNSW Australia.\n\nQuestion: " + q.question + "\n\nKey concepts expected: " + q.keywords.join(", ") + "\n\nModel answer for reference: " + q.modelAnswer + "\n\nStudent wrote: \"" + studentAnswer.replace(/"/g, "'") + "\"\n\nMark out of 3:\n3 = covers all key concepts with clear understanding\n2 = covers most concepts but lacks depth or misses something important\n1 = some relevant ideas but significant gaps\n0 = largely off track or missing key concepts\n\nReply ONLY with valid compact JSON — no markdown, no extra text:\n{\"mark\":0,\"covered\":[\"what student addressed well\"],\"improve\":[\"specific thing to add or develop\"],\"feedback\":\"One sentence overall assessment\"}";
-  var resp = await fetch("https://api.anthropic.com/v1/messages", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      "x-api-key": apiKey,
-      "anthropic-version": "2023-06-01",
-      "anthropic-dangerous-direct-browser-access": "true"
-    },
-    body: JSON.stringify({
-      model: "claude-haiku-4-5",
-      max_tokens: 450,
-      messages: [{ role: "user", content: prompt }]
-    })
-  });
-  if (!resp.ok) return null;
-  var data = await resp.json();
-  var text = (data.content[0].text || "").trim().replace(/^```(?:json)?\s*/i, "").replace(/\s*```$/, "");
-  return JSON.parse(text);
+  try {
+    var resp = await fetch("/.netlify/functions/mark", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        question: q.question,
+        keywords: q.keywords,
+        modelAnswer: q.modelAnswer,
+        studentAnswer: studentAnswer
+      })
+    });
+    if (!resp.ok) return null;
+    return await resp.json();
+  } catch(e) {
+    return null;
+  }
 }
 </script>
 </body>
