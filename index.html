@@ -188,6 +188,35 @@
     .note-table th { background: var(--bg); padding: 7px 10px; text-align: left; font-weight: 700; font-size: 11px; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-3); border: 1px solid var(--border); }
     .note-table td { padding: 7px 10px; border: 1px solid var(--border); font-size: 13px; color: var(--text-2); line-height: 1.5; }
     .note-table tr:nth-child(even) td { background: var(--bg); }
+
+    /* ─── SETTINGS BUTTON ─── */
+    .settings-btn { margin-left: 6px; background: none; border: 1px solid var(--border); border-radius: 8px; padding: 5px 9px; font-size: 15px; cursor: pointer; color: var(--text-3); transition: all 0.15s; line-height: 1; }
+    .settings-btn:active { background: var(--bg); }
+
+    /* ─── SETTINGS SHEET ─── */
+    .settings-overlay { position: fixed; inset: 0; background: rgba(15,23,42,0.45); z-index: 200; display: none; align-items: flex-end; -webkit-backdrop-filter: blur(2px); backdrop-filter: blur(2px); }
+    .settings-overlay.open { display: flex; }
+    .settings-sheet { background: var(--surface); border-radius: 22px 22px 0 0; width: 100%; display: flex; flex-direction: column; animation: slideUp 0.3s cubic-bezier(0.32,0.72,0,1); }
+    .settings-body { padding: 4px 20px 44px; }
+    .settings-section-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.07em; color: var(--text-3); margin: 18px 0 5px; }
+    .settings-desc { font-size: 13px; color: var(--text-2); line-height: 1.55; margin-bottom: 10px; }
+    .api-key-input { width: 100%; border: 1.5px solid var(--border); border-radius: 10px; padding: 11px 13px; font-size: 14px; font-family: "SF Mono","Fira Code",monospace; color: var(--text); background: var(--bg); box-sizing: border-box; -webkit-appearance: none; outline: none; transition: border-color 0.15s; }
+    .api-key-input:focus { border-color: var(--indigo); }
+    .settings-btn-row { display: flex; gap: 8px; margin-top: 10px; }
+    .btn-save-key { flex: 1; background: var(--indigo); color: white; border: none; border-radius: 10px; padding: 12px; font-size: 14px; font-weight: 700; cursor: pointer; font-family: inherit; transition: background 0.15s; }
+    .btn-save-key:active { background: var(--indigo-dark); }
+    .btn-clear-key { background: var(--bg); color: var(--text-2); border: 1.5px solid var(--border); border-radius: 10px; padding: 12px 16px; font-size: 14px; font-weight: 600; cursor: pointer; font-family: inherit; }
+    .key-status { margin-top: 9px; font-size: 13px; font-weight: 600; min-height: 18px; }
+    .key-status.set { color: var(--green); }
+    .key-status.unset { color: var(--text-3); }
+
+    /* ─── AI SA FEEDBACK ─── */
+    .sa-ai-badge { display: inline-flex; align-items: center; gap: 4px; background: var(--indigo-light); border: 1px solid var(--indigo-mid); border-radius: 99px; padding: 3px 9px; font-size: 11px; font-weight: 700; color: var(--indigo); margin-bottom: 10px; }
+    .sa-improve-list { display: flex; flex-direction: column; gap: 7px; }
+    .sa-improve-item { display: flex; gap: 9px; align-items: flex-start; background: rgba(0,0,0,0.03); border-radius: 8px; padding: 9px 12px; font-size: 13.5px; color: var(--text-2); line-height: 1.5; }
+    .sa-improve-arrow { color: var(--amber); font-weight: 800; flex-shrink: 0; }
+    .sa-feedback-summary { margin-top: 12px; padding: 10px 13px; background: var(--indigo-light); border-left: 3px solid var(--indigo); border-radius: 0 8px 8px 0; font-size: 13.5px; color: var(--text); line-height: 1.55; font-style: italic; }
+    .btn-check.loading { background: var(--indigo-dark); pointer-events: none; }
   </style>
 </head>
 <body>
@@ -199,6 +228,7 @@
     <h1>Economics Lens Quiz</h1>
   </div>
   <button class="notes-open-btn" onclick="openNotes()">📖 Notes</button>
+  <button class="settings-btn" onclick="openSettings()" title="Settings">⚙️</button>
 </div>
 
 <div class="screen active" id="screen-home">
@@ -650,6 +680,27 @@
     </div><!-- end notes-body -->
   </div><!-- end notes-sheet -->
 </div><!-- end notes-overlay -->
+
+<!-- ══ SETTINGS SHEET ══ -->
+<div class="settings-overlay" id="settings-overlay" onclick="settingsOverlayClick(event)">
+  <div class="settings-sheet">
+    <div class="notes-handle"></div>
+    <div class="notes-hdr">
+      <div class="notes-hdr-title">Settings</div>
+      <button class="notes-close-btn" onclick="closeSettings()">✕</button>
+    </div>
+    <div class="settings-body">
+      <div class="settings-section-label">Claude API Key</div>
+      <div class="settings-desc">Paste your Anthropic API key to enable AI-powered short answer marking. Your key is stored only in your browser and sent directly to Anthropic — never to anyone else.</div>
+      <input class="api-key-input" id="api-key-input" type="password" placeholder="sk-ant-api03-…" autocomplete="off" spellcheck="false" />
+      <div class="settings-btn-row">
+        <button class="btn-save-key" onclick="saveApiKey()">Save Key</button>
+        <button class="btn-clear-key" onclick="clearApiKey()">Clear</button>
+      </div>
+      <div class="key-status unset" id="key-status">No API key set — using keyword matching</div>
+    </div>
+  </div>
+</div>
 
 <script>
 var QUESTIONS = [
@@ -1451,98 +1502,129 @@ function renderSA(q, area) {
   area.appendChild(ta);
 }
 
-function submitAnswer() {
+async function submitAnswer() {
   var q = quizQuestions[currentIndex];
   answered = true;
-  document.getElementById("check-btn").style.display = "none";
-  document.getElementById("next-btn").classList.add("show");
   document.getElementById("hint-btn").style.display = "none";
   document.getElementById("hint-box").classList.remove("show");
 
-  var isCorrect = false, fbClass = "wrong", iconTxt = "✗", titleTxt = "", bodyTxt = "", showModel = false, isSaHtml = false;
-
-  if (q.type === "mcq") {
-    isCorrect = (selectedOption === q.correct);
-    document.querySelectorAll(".option-btn").forEach(function(btn, i) {
-      btn.disabled = true;
-      if (i === q.correct) btn.classList.add("correct");
-      else if (i === selectedOption && !isCorrect) btn.classList.add("wrong");
-    });
-    iconTxt = isCorrect ? "✓" : "✗";
-    titleTxt = isCorrect ? "Correct!" : "Not quite";
-    fbClass = isCorrect ? "correct" : "wrong";
-    bodyTxt = q.explanation;
-  } else if (q.type === "tf") {
-    isCorrect = (selectedOption === q.correct);
-    document.querySelectorAll(".tf-btn").forEach(function(btn) {
-      btn.disabled = true;
-      var val = (btn.textContent === "True");
-      if (val === q.correct) btn.classList.add("correct");
-      else if (val === selectedOption && !isCorrect) btn.classList.add("wrong");
-    });
-    iconTxt = isCorrect ? "✓" : "✗";
-    titleTxt = isCorrect ? "Correct!" : "Not quite";
-    fbClass = isCorrect ? "correct" : "wrong";
-    bodyTxt = q.explanation;
-  } else {
-    var answer = (selectedOption || "").toLowerCase();
-    var found  = q.keywords.filter(function(kw) { return answer.indexOf(kw.toLowerCase()) !== -1; });
-    var missed = q.keywords.filter(function(kw) { return answer.indexOf(kw.toLowerCase()) === -1; });
-    var ratio  = found.length / q.minKeywords;
+  if (q.type === "sa") {
+    var checkBtn = document.getElementById("check-btn");
+    checkBtn.textContent = "Marking…";
+    checkBtn.classList.add("loading");
     var ta = document.querySelector(".sa-textarea");
     if (ta) ta.disabled = true;
-    showModel = true;
-    document.getElementById("model-ans-text").textContent = q.modelAnswer;
+
+    var studentAnswer = (selectedOption || "").trim();
+    var aiResult = null;
+    try { aiResult = await markWithAI(q, studentAnswer); } catch(e) { aiResult = null; }
 
     var mark;
-    if      (ratio >= 1)    { mark = 3; isCorrect = true;  fbClass = "correct"; iconTxt = "✓"; }
-    else if (ratio >= 0.67) { mark = 2; isCorrect = false; fbClass = "partial"; iconTxt = "~"; }
-    else if (ratio >= 0.33) { mark = 1; isCorrect = false; fbClass = "partial"; iconTxt = "~"; }
-    else                    { mark = 0; isCorrect = false; fbClass = "wrong";   iconTxt = "✗"; }
+    if (aiResult && typeof aiResult.mark === "number") {
+      mark = Math.max(0, Math.min(3, aiResult.mark));
+    } else {
+      var ans = studentAnswer.toLowerCase();
+      var found = q.keywords.filter(function(kw) { return ans.indexOf(kw.toLowerCase()) !== -1; });
+      var ratio = found.length / q.minKeywords;
+      mark = ratio >= 1 ? 3 : ratio >= 0.67 ? 2 : ratio >= 0.33 ? 1 : 0;
+    }
 
+    var isCorrect = mark === 3;
+    var fbClass   = mark === 3 ? "correct" : mark >= 1 ? "partial" : "wrong";
     var scoreLabel = ["Keep studying", "Needs more depth", "Good attempt", "Strong answer"][mark];
     var scoreSub   = ["Review your notes and try again", "Some ideas there — review the rest", "Most key ideas covered", "You covered all the key concepts"][mark];
+    var ansDisplay = studentAnswer.length > 280 ? studentAnswer.slice(0, 280) + "…" : studentAnswer;
 
-    var ansDisplay = (selectedOption || "").trim();
-    if (ansDisplay.length > 280) ansDisplay = ansDisplay.slice(0, 280) + "…";
+    var bodyTxt;
+    if (aiResult) {
+      var coveredChips = (aiResult.covered || []).map(function(c) { return "<span class=\"chip chip-green\">" + escHtml(c) + "</span>"; }).join("");
+      var improveItems = (aiResult.improve || []).map(function(i) { return "<div class=\"sa-improve-item\"><span class=\"sa-improve-arrow\">→</span><span>" + escHtml(i) + "</span></div>"; }).join("");
+      bodyTxt =
+        "<div class=\"sa-ai-badge\">✦ AI marked</div>" +
+        "<div class=\"sa-score-row\">" +
+          "<div class=\"sa-score-num\">" + mark + "<span> / 3</span></div>" +
+          "<div class=\"sa-score-meta\"><div class=\"sa-score-label\">" + scoreLabel + "</div><div class=\"sa-score-sub\">" + scoreSub + "</div></div>" +
+        "</div>" +
+        "<div class=\"sa-block\"><div class=\"sa-block-label\">Your answer</div>" +
+          "<div class=\"your-answer-quote\">" + escHtml(ansDisplay) + "</div></div>" +
+        (coveredChips ? "<div class=\"sa-block\"><div class=\"sa-block-label\">✓ What you covered</div><div class=\"concept-chips\">" + coveredChips + "</div></div>" : "") +
+        (improveItems ? "<div class=\"sa-block\"><div class=\"sa-block-label\">↑ Where to improve</div><div class=\"sa-improve-list\">" + improveItems + "</div></div>" : "") +
+        (aiResult.feedback ? "<div class=\"sa-feedback-summary\">" + escHtml(aiResult.feedback) + "</div>" : "");
+    } else {
+      var ans2 = studentAnswer.toLowerCase();
+      var found2 = q.keywords.filter(function(kw) { return ans2.indexOf(kw.toLowerCase()) !== -1; });
+      var missed2 = q.keywords.filter(function(kw) { return ans2.indexOf(kw.toLowerCase()) === -1; });
+      var foundChips = found2.length > 0
+        ? found2.map(function(kw) { return "<span class=\"chip chip-green\">" + escHtml(kw) + "</span>"; }).join("")
+        : "<span class=\"chip-none\">None identified</span>";
+      var missedChips = missed2.length > 0
+        ? missed2.map(function(kw) { return "<span class=\"chip chip-amber\">" + escHtml(kw) + "</span>"; }).join("")
+        : "<span class=\"chip-none\">Nothing major missed!</span>";
+      bodyTxt =
+        "<div class=\"sa-score-row\">" +
+          "<div class=\"sa-score-num\">" + mark + "<span> / 3</span></div>" +
+          "<div class=\"sa-score-meta\"><div class=\"sa-score-label\">" + scoreLabel + "</div><div class=\"sa-score-sub\">" + scoreSub + "</div></div>" +
+        "</div>" +
+        "<div class=\"sa-block\"><div class=\"sa-block-label\">Your answer</div>" +
+          "<div class=\"your-answer-quote\">" + escHtml(ansDisplay) + "</div></div>" +
+        "<div class=\"sa-block\"><div class=\"sa-block-label\">&#10003; Concepts covered</div>" +
+          "<div class=\"concept-chips\">" + foundChips + "</div></div>" +
+        "<div class=\"sa-block\"><div class=\"sa-block-label\">+ Where to improve</div>" +
+          "<div class=\"concept-chips\">" + missedChips + "</div></div>";
+    }
 
-    var foundChips = found.length > 0
-      ? found.map(function(kw) { return "<span class='chip chip-green'>" + escHtml(kw) + "</span>"; }).join("")
-      : "<span class='chip-none'>None identified</span>";
-    var missedChips = missed.length > 0
-      ? missed.map(function(kw) { return "<span class='chip chip-amber'>" + escHtml(kw) + "</span>"; }).join("")
-      : "<span class='chip-none'>Nothing major missed!</span>";
-
-    titleTxt = "";
-    bodyTxt  =
-      "<div class='sa-score-row'>" +
-        "<div class='sa-score-num'>" + mark + "<span> / 3</span></div>" +
-        "<div class='sa-score-meta'><div class='sa-score-label'>" + scoreLabel + "</div><div class='sa-score-sub'>" + scoreSub + "</div></div>" +
-      "</div>" +
-      "<div class='sa-block'><div class='sa-block-label'>Your answer</div>" +
-        "<div class='your-answer-quote'>" + escHtml(ansDisplay) + "</div></div>" +
-      "<div class='sa-block'><div class='sa-block-label'>&#10003; Concepts you covered</div>" +
-        "<div class='concept-chips'>" + foundChips + "</div></div>" +
-      "<div class='sa-block'><div class='sa-block-label'>+ Could also include</div>" +
-        "<div class='concept-chips'>" + missedChips + "</div></div>";
-    isSaHtml = true;
-  }
-
-  if (isCorrect) score++;
-  var fb = document.getElementById("feedback");
-  fb.className = "feedback " + fbClass;
-  document.getElementById("feedback-icon").textContent  = iconTxt;
-  document.getElementById("feedback-title").textContent = titleTxt;
-  if (isSaHtml) {
+    if (isCorrect) score++;
+    document.getElementById("model-ans-text").textContent = q.modelAnswer;
+    var fb = document.getElementById("feedback");
+    fb.className = "feedback " + fbClass;
     document.getElementById("feedback-head").style.display = "none";
     document.getElementById("feedback-body").innerHTML = bodyTxt;
+    document.getElementById("model-ans").style.display = "block";
+    document.getElementById("score-label").textContent = "Score: " + score;
+    results.push({ question: q.question, correct: isCorrect, week: q.week, type: q.type });
+    checkBtn.style.display = "none";
+    checkBtn.classList.remove("loading");
+    checkBtn.textContent = "Check Answer";
+    document.getElementById("next-btn").classList.add("show");
+
   } else {
+    document.getElementById("check-btn").style.display = "none";
+    document.getElementById("next-btn").classList.add("show");
+    var isCorrect = false, fbClass = "wrong", iconTxt = "✗", titleTxt = "", bodyTxt = "";
+    if (q.type === "mcq") {
+      isCorrect = (selectedOption === q.correct);
+      document.querySelectorAll(".option-btn").forEach(function(btn, i) {
+        btn.disabled = true;
+        if (i === q.correct) btn.classList.add("correct");
+        else if (i === selectedOption && !isCorrect) btn.classList.add("wrong");
+      });
+      iconTxt = isCorrect ? "✓" : "✗";
+      titleTxt = isCorrect ? "Correct!" : "Not quite";
+      fbClass = isCorrect ? "correct" : "wrong";
+      bodyTxt = q.explanation;
+    } else {
+      isCorrect = (selectedOption === q.correct);
+      document.querySelectorAll(".tf-btn").forEach(function(btn) {
+        btn.disabled = true;
+        var val = (btn.textContent === "True");
+        if (val === q.correct) btn.classList.add("correct");
+        else if (val === selectedOption && !isCorrect) btn.classList.add("wrong");
+      });
+      iconTxt = isCorrect ? "✓" : "✗";
+      titleTxt = isCorrect ? "Correct!" : "Not quite";
+      fbClass = isCorrect ? "correct" : "wrong";
+      bodyTxt = q.explanation;
+    }
+    if (isCorrect) score++;
+    var fb = document.getElementById("feedback");
+    fb.className = "feedback " + fbClass;
+    document.getElementById("feedback-icon").textContent  = iconTxt;
+    document.getElementById("feedback-title").textContent = titleTxt;
     document.getElementById("feedback-head").style.display = "";
     document.getElementById("feedback-body").textContent = bodyTxt;
+    document.getElementById("score-label").textContent = "Score: " + score;
+    results.push({ question: q.question, correct: isCorrect, week: q.week, type: q.type });
   }
-  if (showModel) document.getElementById("model-ans").style.display = "block";
-  document.getElementById("score-label").textContent = "Score: " + score;
-  results.push({ question: q.question, correct: isCorrect, week: q.week, type: q.type });
 }
 
 function nextQuestion() {
@@ -1626,6 +1708,66 @@ function switchTab(el, panelId) {
   document.querySelectorAll(".notes-panel").forEach(function(p) { p.classList.remove("active"); });
   el.classList.add("active");
   document.getElementById(panelId).classList.add("active");
+}
+
+// ── Settings ──
+function openSettings() {
+  updateKeyStatus();
+  var key = localStorage.getItem("claude_api_key");
+  document.getElementById("api-key-input").value = key ? "sk-ant-••••••••" : "";
+  document.getElementById("settings-overlay").classList.add("open");
+  document.body.style.overflow = "hidden";
+}
+function closeSettings() {
+  document.getElementById("settings-overlay").classList.remove("open");
+  document.body.style.overflow = "";
+}
+function settingsOverlayClick(e) {
+  if (e.target === document.getElementById("settings-overlay")) closeSettings();
+}
+function saveApiKey() {
+  var val = document.getElementById("api-key-input").value.trim();
+  if (val && val.indexOf("••••") === -1) {
+    localStorage.setItem("claude_api_key", val);
+    document.getElementById("api-key-input").value = "sk-ant-••••••••";
+  }
+  updateKeyStatus();
+}
+function clearApiKey() {
+  localStorage.removeItem("claude_api_key");
+  document.getElementById("api-key-input").value = "";
+  updateKeyStatus();
+}
+function updateKeyStatus() {
+  var el = document.getElementById("key-status");
+  var has = !!localStorage.getItem("claude_api_key");
+  el.textContent = has ? "✓ API key saved — AI marking active" : "No API key set — using keyword matching";
+  el.className = "key-status " + (has ? "set" : "unset");
+}
+
+// ── AI Marking ──
+async function markWithAI(q, studentAnswer) {
+  var apiKey = localStorage.getItem("claude_api_key");
+  if (!apiKey) return null;
+  var prompt = "You are marking a student short answer for a COMM1150 Global Business Environments exam at UNSW Australia.\n\nQuestion: " + q.question + "\n\nKey concepts expected: " + q.keywords.join(", ") + "\n\nModel answer for reference: " + q.modelAnswer + "\n\nStudent wrote: \"" + studentAnswer.replace(/"/g, "'") + "\"\n\nMark out of 3:\n3 = covers all key concepts with clear understanding\n2 = covers most concepts but lacks depth or misses something important\n1 = some relevant ideas but significant gaps\n0 = largely off track or missing key concepts\n\nReply ONLY with valid compact JSON — no markdown, no extra text:\n{\"mark\":0,\"covered\":[\"what student addressed well\"],\"improve\":[\"specific thing to add or develop\"],\"feedback\":\"One sentence overall assessment\"}";
+  var resp = await fetch("https://api.anthropic.com/v1/messages", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "x-api-key": apiKey,
+      "anthropic-version": "2023-06-01",
+      "anthropic-dangerous-direct-browser-access": "true"
+    },
+    body: JSON.stringify({
+      model: "claude-haiku-4-5",
+      max_tokens: 450,
+      messages: [{ role: "user", content: prompt }]
+    })
+  });
+  if (!resp.ok) return null;
+  var data = await resp.json();
+  var text = (data.content[0].text || "").trim().replace(/^```(?:json)?\s*/i, "").replace(/\s*```$/, "");
+  return JSON.parse(text);
 }
 </script>
 </body>
