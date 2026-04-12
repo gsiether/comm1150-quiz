@@ -98,6 +98,9 @@
     .hint-toggle:active { transform: scale(0.97); }
     .hint-box { display: none; background: var(--amber-light); border: 1.5px solid var(--amber-border); border-radius: 10px; padding: 13px 14px; margin-top: 10px; font-size: 14px; color: #78350F; line-height: 1.6; }
     .hint-box.show { display: block; animation: fadeUp 0.18s ease; }
+    .hint-toggle-2 { border-color: #A78BFA; color: #7C3AED; margin-top: 8px; }
+    .hint-toggle-2:active { background: #F5F3FF; }
+    .hint-box-2 { background: #F5F3FF; border-color: #A78BFA; color: #4C1D95; }
 
     .feedback { display: none; border-radius: 10px; padding: 14px 16px; margin-top: 14px; }
     .feedback.correct { display: block; background: var(--green-light); border: 1.5px solid var(--green-border); }
@@ -356,6 +359,8 @@
     <div class="hint-row">
       <button class="hint-toggle" id="hint-btn" onclick="showHint()">💡 Show hint</button>
       <div class="hint-box" id="hint-box"></div>
+      <button class="hint-toggle hint-toggle-2" id="hint-btn2" onclick="showHint2()" style="display:none">🔍 Further hint</button>
+      <div class="hint-box hint-box-2" id="hint-box2"></div>
     </div>
     <div class="feedback" id="feedback">
       <div class="feedback-head" id="feedback-head">
@@ -826,6 +831,7 @@ var QUESTIONS = [
     ],
     correct: 1,
     hint: "Each country should specialise in the good where it has the lower opportunity cost — regardless of which country is more productive overall.",
+    hint2: "Key term: comparative advantage = lower opportunity cost. The country with lower OC in wheat exports wheat; lower OC in steel exports steel. It does NOT matter who is more productive overall — that would be absolute advantage.",
     explanation: "This is comparative advantage in action. Each country exports the good it produces at the lowest opportunity cost. It does not matter which country is more productive overall — as long as opportunity costs differ, both gain from specialisation and trade."
   },
   {
@@ -839,6 +845,7 @@ var QUESTIONS = [
     ],
     correct: 2,
     hint: "Think about who benefits and who gets hurt when a country opens up to trade. Gains go to consumers and efficient firms — but what about workers in less competitive industries?",
+    hint2: "The answer is option C. Workers in 'import-competing industries' (domestic sectors facing cheaper foreign competition) lose jobs. Consumers gain lower prices. This creates concentrated losers vs diffuse winners.",
     explanation: "Job losses in import-competing industries are a real cost of trade. While trade produces net gains for the economy overall (cheaper goods, specialisation, innovation), it creates genuine losers — particularly workers in sectors that shrink when faced with foreign competition. This is why trade is politically contested."
   },
   {
@@ -852,6 +859,7 @@ var QUESTIONS = [
     ],
     correct: 2,
     hint: "The firm wants to concentrate production to capture scale benefits, but that means being further from its customers. What do economists call this tension?",
+    hint2: "Answer: option C — the proximity-concentration trade-off. Concentration = one big factory = scale benefits. Proximity = staying near customers. These two goals conflict. As trade costs fall, concentration becomes more attractive.",
     explanation: "This is the proximity-concentration trade-off. Concentrating production in one place lowers costs through economies of scale, but increases distance from customers. As trade costs fall (cheaper shipping, lower tariffs), firms can concentrate more because the penalty for being far from customers shrinks."
   },
   {
@@ -865,6 +873,7 @@ var QUESTIONS = [
     ],
     correct: 2,
     hint: "In Vietnam, higher incomes let families keep kids in school. In Nicaragua, higher labour demand pulled kids onto farms. Why did the same type of event produce opposite results?",
+    hint2: "Answer: option C. Two competing forces: (1) Income effect — higher income → families can afford school. (2) Labour demand effect — higher demand for farm labour → working beats school. Vietnam: income dominated. Nicaragua: demand dominated.",
     explanation: "The lesson is that trade's effect on child labour is context-dependent. In Vietnam, the income effect dominated — higher rice prices raised household income enough for families to take children out of work. In Nicaragua, the labour demand effect dominated — coffee booms pulled children onto farms. There is no single answer."
   },
   {
@@ -878,6 +887,7 @@ var QUESTIONS = [
     ],
     correct: 1,
     hint: "Think about where most of food's emissions come from — is it production (growing, raising animals) or getting it to the shop?",
+    hint2: "Numbers: food transport ≈ 6% of food's total emissions. Food production ≈ 25% of ALL global emissions. Switching from beef to vegetables saves far more than switching from imported to local beef. Answer: option B.",
     explanation: "Food production itself accounts for roughly 25% of global emissions, but transport is only about 6% of food's total emissions. The type of food matters far more than its origin — switching from beef to vegetables cuts emissions dramatically more than choosing locally produced beef over imported vegetables."
   },
   {
@@ -891,6 +901,7 @@ var QUESTIONS = [
     ],
     correct: 2,
     hint: "Are the cost savings coming from any one firm getting bigger, or from the fact that many firms are located together, sharing resources?",
+    hint2: "External = savings come from OUTSIDE the firm, from the industry cluster. Firms share specialised workers, suppliers, and knowledge. Answer: option C — external EoS. Internal EoS would be one firm growing larger.",
     explanation: "External economies of scale occur when industries cluster geographically and cost savings arise from shared infrastructure, talent pools, and knowledge spillovers — not from any individual firm's size. Silicon Valley, Hollywood, and Bangalore are classic examples. This is distinct from internal economies of scale, which come from a single firm growing larger."
   },
   {
@@ -898,6 +909,7 @@ var QUESTIONS = [
     question: "True or False: A country that is less productive than its trading partner in every industry will still benefit from specialising and engaging in international trade.",
     correct: true,
     hint: "Does a country need to be the best at anything to have a comparative advantage? Think about what comparative advantage actually requires.",
+    hint2: "True. Comparative advantage only needs opportunity costs to DIFFER between countries — not that one country is better overall. The less productive country still has a lower OC in something. Both gain from specialising and trading.",
     explanation: "True. Comparative advantage only requires that opportunity costs differ between countries — not that one country is more productive than the other in absolute terms. Even if Country A is worse at producing everything, it will still have a comparative advantage in whatever it gives up least to produce, and trade will benefit both countries."
   },
   {
@@ -905,6 +917,7 @@ var QUESTIONS = [
     question: "True or False: External economies of scale arise when a single firm grows large enough to reduce its own average production costs.",
     correct: false,
     hint: "Think about the word 'external' — the source of the cost saving is outside the individual firm.",
+    hint2: "False. External EoS = industry clusters together, savings come from shared pool of workers/suppliers/knowledge across many firms. Internal EoS = one single firm grows larger. The statement describes a single firm growing → that is INTERNAL, not external.",
     explanation: "False. External economies of scale arise when whole industries cluster together and cost savings come from shared resources across many firms — not from any single firm's size. Internal economies of scale are what happen when one firm grows bigger. The distinction matters: external EoS explain why industries cluster geographically even when no single firm dominates."
   },
   {
@@ -912,6 +925,7 @@ var QUESTIONS = [
     question: "True or False: The overall gains from international trade to a society are generally considered to outweigh the overall losses, even though some individuals and industries are made worse off.",
     correct: true,
     hint: "Think about what economists mean when they say trade produces 'net gains' — not that everyone wins, but that the total benefits exceed the total costs.",
+    hint2: "True. Net gains = total benefits to winners (lower prices, specialisation, variety) exceed total losses (job losses in import-competing industries). Crucially, gains are diffuse (many consumers save a little) and losses are concentrated (specific workers lose a lot).",
     explanation: "True. Trade produces net gains through specialisation, lower prices, greater variety, innovation, and scale efficiencies. However, these aggregate gains do not mean everyone benefits — workers in import-competing industries and certain firms face real losses. The political challenge is that the gains are diffuse (spread across many consumers) while the losses are concentrated (hitting specific workers and regions hard)."
   },
   {
@@ -920,6 +934,7 @@ var QUESTIONS = [
     keywords: ["opportunity cost", "comparative advantage", "absolute advantage", "lower", "specialise", "exports", "gain"],
     minKeywords: 3,
     hint: "Define each concept, then explain the key insight: even a country that is worse at producing everything still has a comparative advantage in something — why?",
+    hint2: "Structure: (1) Absolute advantage = fewer resources to produce. (2) Comparative advantage = lower opportunity cost (give up less of something else). (3) Even if Country A is worse at everything, it still has a lower OC in whatever it gives up least to produce. That is its comparative advantage.",
     modelAnswer: "Absolute advantage means being able to produce something using fewer resources than a trading partner. Comparative advantage means having a lower opportunity cost for producing a good than your trading partner — i.e., giving up less of something else to produce it. Trade patterns are determined by comparative advantage because even if one country has an absolute advantage in everything, both countries still gain by specialising in what each gives up the least to produce. A less productive country will always have a lower opportunity cost in something, giving it a comparative advantage. By specialising according to comparative advantage, total output rises and both countries can consume more than they could in isolation."
   },
   {
@@ -928,6 +943,7 @@ var QUESTIONS = [
     keywords: ["specialisation", "cheaper", "variety", "innovation", "job losses", "shut down", "net", "gains outweigh", "winners", "losers"],
     minKeywords: 3,
     hint: "Be specific about who gains (consumers? efficient firms?) and who loses (which workers? which industries?). Then explain the 'net gains' argument.",
+    hint2: "Two gains: specialisation raises total output + cheaper goods/more variety for consumers. Two losses: job losses in import-competing industries + some sectors shut down entirely. Economists support free trade because total gains > total losses — in principle winners could compensate losers (though this rarely happens).",
     modelAnswer: "Gains: (1) Specialisation increases total output as countries produce what they are relatively best at. (2) Competition from imports lowers prices and gives consumers more variety. Losses: (1) Workers in import-competing industries lose jobs as domestic firms cannot compete. (2) Some local industries may shut down entirely, harming specific regions and communities. Economists support free trade because the aggregate gains outweigh the losses — in principle, the winners could compensate the losers and still be better off. However, this compensation rarely happens in practice, which is why the politics of trade are contentious even when the economics support openness."
   },
 
@@ -942,6 +958,7 @@ var QUESTIONS = [
     ],
     correct: 1,
     hint: "After the 1929 crash, governments reached for a specific tool to protect domestic industries. What was it, and what did it do to global trade?",
+    hint2: "Answer: option B — 1930s following the 1929 Depression. Governments raised tariffs (e.g. Smoot-Hawley Act). Global trade collapsed. Shows globalisation is NOT inevitable — political decisions can reverse it sharply.",
     explanation: "After the 1929 Great Depression, countries raised tariffs and trade barriers to protect domestic industries, causing a sharp and prolonged reversal of globalisation. This shows that globalisation is not inevitable or one-directional — political forces can push it into reverse. Post-WWII international agreements eventually reversed this, but the history confirms that commodity market integration has been interrupted, not linear."
   },
   {
@@ -955,6 +972,7 @@ var QUESTIONS = [
     ],
     correct: 1,
     hint: "Think about who loses from trade and whether they are more organised politically than the consumers who gain slightly lower prices.",
+    hint2: "Answer: option B. Losses are concentrated (specific workers, regions, industries) → they organise and lobby effectively. Gains are diffuse (millions of consumers saving small amounts) → hard to mobilise politically. This explains persistent protection despite economic consensus for free trade.",
     explanation: "The gains from trade are diffuse — spread thinly across millions of consumers as slightly lower prices. The losses are concentrated — specific workers and industries face job losses and closures. Concentrated groups organise politically far more effectively than dispersed consumers, so governments face intense pressure to protect losers even when the economic case for openness is clear."
   },
   {
@@ -968,6 +986,7 @@ var QUESTIONS = [
     ],
     correct: 2,
     hint: "When trade costs fall dramatically, what becomes possible that was not before for firms deciding where to locate each stage of production?",
+    hint2: "Answer: option C — global supply chains. Falling trade costs (shipping, tariffs, communication) allow firms to fragment production across countries, locating each stage where it's cheapest. Key terms: offshoring, multinationals, global supply chains.",
     explanation: "Global supply chains arise when falling trade costs — cheaper shipping, lower tariffs, faster communication — allow firms to locate each production stage in the country where it is cheapest. This is a defining feature of modern globalisation. It means most manufactured goods involve inputs from multiple countries. Offshoring by multinationals is a key driver of this fragmentation."
   },
   {
@@ -975,6 +994,7 @@ var QUESTIONS = [
     question: "True or False: Globalisation has caused both goods prices AND wages to converge across countries, so workers doing similar jobs now earn similar wages worldwide.",
     correct: false,
     hint: "Has the price of a phone become more similar globally? Now ask whether the factory worker assembling it in Vietnam earns the same as one in Australia.",
+    hint2: "False. Price convergence = yes (traded goods cost similarly worldwide). Wage convergence = no (workers doing similar jobs in rich vs poor countries still earn very different wages). The statement says BOTH converge — that's false. Only prices converged.",
     explanation: "False. Prices of traded goods have converged across countries — price convergence. But wages have NOT converged. Workers doing similar jobs in rich and poor countries still earn vastly different wages. Labour markets integrate far more slowly than goods markets, partly because of immigration controls. This wage divergence alongside price convergence is a key contradiction of globalisation — it creates both winners and losers within countries."
   },
   {
@@ -988,6 +1008,7 @@ var QUESTIONS = [
     ],
     correct: 2,
     hint: "Rodrik does not argue trade is harmful overall. His point is about what happens inside countries when trade creates clear winners and clear losers.",
+    hint2: "Answer: option C. Rodrik's key insight: the debate is not WHETHER trade creates net gains (it does). The issue is HOW gains are distributed WITHIN societies. Concentrated losers resist politically even when aggregate economics support openness.",
     explanation: "Rodrik's key insight is that the political problem with globalisation is not about overall welfare — economists agree trade creates net gains. The issue is that gains are unevenly distributed within countries. Export industries, competitive firms, and consumers gain. Workers in import-competing industries and regions dependent on declining sectors lose. This distributional conflict drives resistance to free trade and shapes real-world policy even when the aggregate economics support openness."
   },
   {
@@ -996,6 +1017,7 @@ var QUESTIONS = [
     keywords: ["tariff", "import", "tax", "price", "consumers", "protection", "efficiency", "concentrated", "diffuse", "trade-off"],
     minKeywords: 3,
     hint: "Define the tool first, then trace its effects on the protected industry, on consumers, and on the overall economy. Who wins and who pays?",
+    hint2: "Structure: (1) Tariff = tax on imports → raises their price. (2) Winners: domestic industry + workers (less competition). (3) Losers: consumers (higher prices) + downstream industries using the good as input. (4) Trade-off: protects jobs but keeps resources in uncompetitive sectors → efficiency loss.",
     modelAnswer: "A tariff is a tax on imported goods that raises their price, making domestically produced goods relatively more competitive. The domestic industry and its workers benefit — they face less foreign competition and can maintain employment and prices. However, consumers lose because they pay higher prices, and industries that use the protected good as an input also face higher costs. The broader trade-off is efficiency vs. protection: tariffs keep resources in sectors that cannot compete internationally, reducing overall output and consumer welfare. Governments impose them anyway because losses from trade are concentrated (specific workers losing jobs) and politically organised, while gains from removing the tariff are diffuse and hard to mobilise."
   },
 
@@ -1010,6 +1032,7 @@ var QUESTIONS = [
     ],
     correct: 1,
     hint: "Absolute advantage tells us who is more productive — but does that determine who produces what? Think about the role of opportunity costs instead.",
+    hint2: "Answer: option B. Absolute advantage (more productive overall) sets relative wage levels between countries — workers in the more productive country earn more. But it does NOT determine what each country exports. Comparative advantage (opportunity costs) determines trade patterns.",
     explanation: "Absolute advantage — being more productive overall — determines relative wage levels (workers in Country X earn more) but does NOT determine trade patterns. Comparative advantage (relative opportunity costs) determines what each country specialises in and exports. Even if Country X is better at producing both goods, both countries still gain from specialising in whatever each gives up the least to produce."
   },
   {
@@ -1023,6 +1046,7 @@ var QUESTIONS = [
     ],
     correct: 2,
     hint: "Is the cost saving coming from one firm getting bigger, or from many firms clustering together in the same region?",
+    hint2: "Answer: option C — internal EoS. One firm doubles its OWN factory → cost per unit falls. Key distinction: internal = one firm's own size → average cost falls. External = industry cluster → costs fall for all firms in the area.",
     explanation: "Internal economies of scale occur when a single firm grows and its average cost per unit falls — through spreading fixed costs, bulk purchasing, labour specialisation, or more efficient capital use. This differs from external economies of scale, which arise when whole industries cluster geographically and savings come from shared resources across many firms. Internal EoS explains why large dominant firms emerge in industries with high fixed costs."
   },
   {
@@ -1030,6 +1054,7 @@ var QUESTIONS = [
     question: "True or False: International trade today is mostly limited to physical goods — services like finance, education, and software cannot be meaningfully traded across borders.",
     correct: false,
     hint: "Can you access a foreign university course online, use software built overseas, or receive financial services from a foreign institution?",
+    hint2: "False. Services trade is large and growing — finance, education, software, consulting, tourism. Modern technology removed many barriers. When a student enrols at an overseas university or a business uses foreign cloud software — that is international trade in services.",
     explanation: "False. Services trade is a rapidly growing part of globalisation. Finance, education, software, consulting, tourism, and healthcare are increasingly traded across borders. Modern communication technology has dramatically lowered barriers to services trade. When a student enrols at an overseas university, a business uses foreign cloud software, or a bank offers services in another country — that is international trade in services, not goods."
   },
   {
@@ -1043,6 +1068,7 @@ var QUESTIONS = [
     ],
     correct: 1,
     hint: "Cheaper imports benefit people who BUY the good. Who suffers when lower import prices force down the price of what they produce and sell?",
+    hint2: "Answer: option B. Consumers and urban workers GAIN (cheaper food). Domestic farmers and landowners LOSE (their product faces cheaper competition, prices fall). Classic pattern: consumers/buyers gain, domestic producers in import-competing sector lose.",
     explanation: "The historical grain trade illustrates how trade creates winners and losers within the same country. Consumers and urban workers gained — cheaper grain cut food costs significantly. But domestic farmers and landowners lost because their product now competed with cheaper imports, driving down farm incomes. This domestic conflict between producers and consumers — not just between countries — is a recurring pattern that drives political pressure for tariffs and subsidies."
   },
   {
@@ -1056,6 +1082,7 @@ var QUESTIONS = [
     ],
     correct: 2,
     hint: "What makes it profitable to produce something far away and ship it back home? What changed over recent decades to make this strategy more common?",
+    hint2: "Answer: option C — offshoring. Firm-level decision: relocate production to exploit wage differences. Made viable by falling trade costs (shipping, tariffs, communication) that mean wage savings now outweigh logistics costs. Distinct from comparative advantage, which is a country-level concept.",
     explanation: "Offshoring is a firm-level decision to relocate production stages to another country, primarily to exploit wage differences. It is made viable by falling trade costs — cheaper shipping, lower tariffs, and faster communication mean the wage savings outweigh the cost of moving goods across borders. This is a key driver of global supply chains and is distinct from comparative advantage, which is a country-level concept about opportunity costs."
   },
   {
@@ -1063,6 +1090,7 @@ var QUESTIONS = [
     question: "True or False: International institutions like the WTO have strong enforcement powers that effectively allow them to override national governments on trade policy decisions.",
     correct: false,
     hint: "Can the WTO physically compel a country to remove a tariff it wants to keep? What actually happens when a country ignores a ruling?",
+    hint2: "False. WTO can rule against a country and authorise retaliatory tariffs — but cannot physically force compliance. Countries regularly ignore or delay rulings. No global enforcement authority exists with coercive power. Key limit of global governance.",
     explanation: "False. International economic institutions lack true enforcement powers. The WTO can rule against a country's policy and authorise retaliatory tariffs, but cannot force compliance. Countries regularly delay or ignore rulings they disagree with. This reflects the core limit of global governance — there is no global authority with the coercive power that domestic governments hold. Enforcing fairness across countries depends on political will and the threat of retaliation, not binding legal force."
   },
   {
@@ -1076,6 +1104,7 @@ var QUESTIONS = [
     ],
     correct: 1,
     hint: "What gives a country a comparative advantage in practice? Think about what each country has in abundance — soil, climate, educated workers — and how that shapes production costs.",
+    hint2: "Answer: option B. A country's comparative advantage in practice comes from its endowments: natural resources, climate, skills, existing industrial scale, policy history. Tropical country: climate/soil → low OC in agriculture. Skilled-workforce country: human capital → low OC in software/finance.",
     explanation: "Comparative advantage in practice arises from a country's endowments: natural resources, climate, accumulated skills, existing industrial scale, and policy history. The tropical country's climate and soil give it low opportunity costs in agriculture; the skilled-workforce country has low opportunity costs in knowledge-intensive services. Specialisation based on these endowments drives trade patterns — countries export what they can produce at relatively low cost compared to trading partners."
   },
   {
@@ -1084,6 +1113,7 @@ var QUESTIONS = [
     keywords: ["gains", "distribution", "losers", "concentrated", "diffuse", "welfare", "political", "protection", "within", "Rodrik"],
     minKeywords: 3,
     hint: "Think about the difference between aggregate welfare gains (the economist view) and who specifically wins and who loses (the political reality). What does Rodrik say is the real tension?",
+    hint2: "Key terms: gains = diffuse (spread thinly as small price reductions across millions of consumers); losses = concentrated (specific workers in specific industries face big losses). Rodrik: issue is distribution WITHIN countries. Concentrated losers organise politically → protectionism persists.",
     modelAnswer: "Economists support free trade because it increases total economic welfare — consumers benefit from lower prices, firms access larger markets, and specialisation raises total output. However, the gains are diffuse (spread thinly as small price reductions across millions of consumers) while the losses are concentrated (specific workers and industries face significant job losses and disruption). Concentrated losers can organise politically far more effectively than dispersed winners, which is why protectionist policies persist even when the economic case for openness is strong. Dani Rodrik argues that the core tension of globalisation is not whether trade creates net benefits — it does — but how those gains are distributed within societies. When the distributional conflict becomes intense enough, democratic politics pushes back against openness, producing tariffs, quotas, and sanctions."
   },
 
@@ -1093,6 +1123,7 @@ var QUESTIONS = [
     keywords: ["globalisation", "trade", "labour", "capital", "integration", "technology", "transport", "tariffs", "communication"],
     minKeywords: 3,
     hint: "Define globalisation first, then name the three areas. What specifically changed after WWII and especially in the last 30 years to make it possible?",
+    hint2: "Three areas: (1) trade in goods & services, (2) labour migration, (3) international capital flows. Drivers of acceleration: falling transport costs + communication technology (internet) + policy (WTO/GATT tariff reductions) + post-WWII international cooperation.",
     modelAnswer: "Globalisation refers to the rapid increase in the integration of global markets for goods, services, investment, and people across countries. The three key areas are: (1) trade in goods and services, (2) labour migration, and (3) international capital flows. Globalisation accelerated in the late 20th century due to falling transport and communication costs, the reduction of trade barriers through agreements like GATT and the WTO, and technological advances that made coordinating global supply chains feasible. This was not a smooth process — the 1929 Depression caused a sharp reversal as countries raised tariffs — but the post-WWII period saw sustained integration driven by deliberate policy and technology."
   },
   {
@@ -1101,6 +1132,7 @@ var QUESTIONS = [
     keywords: ["external", "cluster", "shared", "spillover", "skills", "suppliers", "industry", "cost", "geography"],
     minKeywords: 3,
     hint: "External EoS are about cost savings that come from outside any single firm. What shared resources become available when many firms in the same industry locate together?",
+    hint2: "Key components of what the cluster provides: (1) shared pool of specialised workers, (2) specialised suppliers nearby, (3) knowledge spillovers between firms. Self-reinforcing: more firms attract more workers/suppliers → stronger cluster. Examples: Silicon Valley (tech), Hollywood (film), Bangalore (software).",
     modelAnswer: "External economies of scale occur when cost savings arise from the clustering of an entire industry in one location, rather than from any single firm's size. When many firms in the same industry locate together, they share a pool of specialised workers, suppliers, and knowledge spillovers — reducing costs for everyone in the cluster. This creates a self-reinforcing pattern: firms locate where the industry is, which makes the industry stronger, attracting more firms. Examples include Silicon Valley (tech), Hollywood (film), Bangalore (software), and the City of London (finance). External EoS explain why industries concentrate geographically even when individual firms are not unusually large."
   },
   {
@@ -1109,6 +1141,7 @@ var QUESTIONS = [
     keywords: ["offshoring", "comparative advantage", "wages", "trade costs", "firm", "country", "production", "fragmentation", "supply chain"],
     minKeywords: 3,
     hint: "Comparative advantage is a country-level concept about opportunity costs. Offshoring is a firm-level decision. What specifically motivates a firm to offshore, and what makes it viable?",
+    hint2: "CA = country-level, based on opportunity costs. Offshoring = firm-level, driven by wage differences + logistics costs. Key: offshoring is viable when wage savings > shipping/logistics costs. Falling trade costs made this threshold easier to reach, driving global supply chains.",
     modelAnswer: "Comparative advantage is a country-level theory explaining specialisation based on relative opportunity costs — countries export what they produce at the lowest relative cost. Offshoring is a firm-level strategy where a business relocates specific production stages to another country, primarily to exploit wage differences rather than opportunity cost differences. A firm offshores because wages in another country are far lower for equivalent work, making it profitable even after the cost of moving goods. Falling trade costs — cheaper shipping, lower tariffs, and faster digital communication — make offshoring viable because the wage savings now outweigh the logistics costs. The result is global supply chains where different stages of one product are produced in different countries for cost reasons."
   },
   {
@@ -1117,6 +1150,7 @@ var QUESTIONS = [
     keywords: ["income effect", "labour demand", "Vietnam", "Nicaragua", "context", "trade", "child labour", "household", "wage"],
     minKeywords: 3,
     hint: "Two countries both experienced a commodity price boom through trade — but child labour moved in opposite directions. What was different about the mechanism in each case?",
+    hint2: "Vietnam: rice export boom → higher household income → income effect dominates → families afford school → child labour fell 9%. Nicaragua: coffee boom → demand for farm labour rose → labour demand effect dominates → children pulled onto farms → child labour rose. Lesson: direction depends on WHICH effect is stronger.",
     modelAnswer: "Trade liberalisation affects child labour through two competing forces. The income effect: when trade raises household incomes, families can afford to keep children in school rather than sending them to work — as in Vietnam, where rice export liberalisation raised household incomes enough to reduce child labour by 9%. The labour demand effect: when trade creates demand for labour in agriculture or manufacturing, children may be pulled into work — as in Nicaragua, where a coffee boom increased demand for farm labour faster than income gains could offset it. The direction of the effect depends on which force dominates in context. This illustrates a broader lesson: the impact of trade on social outcomes cannot be assumed — it depends on the structure of the local economy and which mechanism is stronger."
   },
   {
@@ -1125,6 +1159,7 @@ var QUESTIONS = [
     keywords: ["transport", "emissions", "production", "food miles", "what you eat", "beef", "vegetables", "carbon", "local"],
     minKeywords: 3,
     hint: "Think about what fraction of food's total emissions comes from transport vs. production. Does it matter more where your food comes from or what type of food it is?",
+    hint2: "Key numbers: transport ≈ 6% of food's emissions; production ≈ 25% of ALL global GHG emissions. Beef is highly emissions-intensive (land clearing, methane, feed). What you eat (type) matters far more than where it comes from (distance). Switching beef → veg = massive saving. Local vs imported beef = tiny difference.",
     modelAnswer: "The buy local argument correctly identifies that food transport produces emissions, but significantly overstates its importance. Food transport accounts for only around 6% of food's total carbon emissions, while food production itself accounts for roughly 25% of global greenhouse gas emissions. The type of food matters far more than the distance it travels — beef production is highly emissions-intensive due to land clearing, methane from livestock, and feed production. Switching from beef to vegetables cuts emissions far more dramatically than switching from imported to locally grown beef. The buy local campaign gets the intuition right but points people toward a minor lever while ignoring the major one: dietary choices rather than food miles."
   },
 
@@ -1143,6 +1178,7 @@ var QUESTIONS = [
     ],
     correct: 2,
     hint: "Think about the concept of diminishing returns. Does the 100th machine in a factory add as much output as the 1st machine?",
+    hint2: "Answer: option C. Diminishing returns to capital: the 1st machine adds a lot; the 100th adds a little. As the capital stock grows, the gain from each extra unit falls. Growth from capital accumulation gradually slows → 'steady state' where adding capital no longer raises growth. Only technology (A) can sustain growth.",
     explanation: "Diminishing returns to capital means each additional unit of capital adds less and less to output, holding other inputs constant. The Solow-Swan model predicts that growth from capital accumulation will slow over time and eventually stall — you cannot grow forever just by building more machines. This is why sustained long-run growth requires ongoing improvements in productivity."
   },
   {
@@ -1156,6 +1192,7 @@ var QUESTIONS = [
     ],
     correct: 1,
     hint: "If a firm uses a machine, can another firm use the same machine simultaneously? Now ask the same question about a piece of knowledge or a software algorithm.",
+    hint2: "Answer: option B — non-rivalry. Machine: can only be in one place (rival). Software algorithm or idea: both companies can use it simultaneously without reducing its availability. Non-rival goods don't get 'used up' → no diminishing returns → technology can grow indefinitely.",
     explanation: "Ideas are non-rival — one person using an idea does not prevent anyone else from using it at the same time. Unlike a machine that can only be in one place, an idea can spread freely and be used by everyone simultaneously. This means technology does not face diminishing returns — each new idea makes the next one easier to find ('standing on the shoulders of giants'), so growth can continue indefinitely."
   },
   {
@@ -1169,6 +1206,7 @@ var QUESTIONS = [
     ],
     correct: 2,
     hint: "Think about what drives long-run productivity growth in the Romer model. What institutions and policies create the conditions for ongoing innovation?",
+    hint2: "Answer: option C. Long-run growth requires sustained productivity improvements (A in Y = A × f(K,H,L)). Key policies: property rights (people invest), political stability (investment not disrupted), efficient regulation (no misallocation), R&D/education subsidies (incentivise innovation). One-off spending or rate cuts only affect the short run.",
     explanation: "Long-run growth requires sustained improvements in productivity (A), which depends on technological progress and how efficiently inputs are used. Policies that protect property rights (so people invest), maintain political stability, ensure efficient regulation, and incentivise R&D and education are what growth theory prescribes. One-off spending or temporary rate cuts affect the short run but do not change the long-run growth trajectory."
   },
   {
@@ -1182,6 +1220,7 @@ var QUESTIONS = [
     ],
     correct: 1,
     hint: "It is not just about how much capital or labour a country has — it is about whether those resources end up in the right places. What happens when regulations, corruption, or poor institutions misdirect investment?",
+    hint2: "Answer: option B. Misallocation = capital and labour flow to LOW-productivity activities (often due to corruption, poor regulation, weak property rights) instead of HIGH-productivity ones. Same total inputs → much less output. Key cause of the rich-poor income gap beyond just quantity of capital.",
     explanation: "Misallocation means that labour and capital end up in sectors or firms where their productivity is low — often due to poor institutions, corruption, excessive regulation, or lack of property rights. Even with identical quantities of inputs, a country where resources are misallocated will produce far less output than one where they are efficiently directed to productive uses."
   },
   {
@@ -1195,6 +1234,7 @@ var QUESTIONS = [
     ],
     correct: 2,
     hint: "Microeconomics studies individual decisions by firms and households. Macroeconomics studies the economy as a whole — growth, unemployment, inflation across entire nations.",
+    hint2: "Answer: option C — 'why do some countries sustain higher growth rates?' = macro (economy-wide, long-run). Options A (hire a worker), B (rent control on housing market), D (profit-maximising price) = micro (individual firm or market decisions).",
     explanation: "Macroeconomics studies economy-wide phenomena: why growth rates differ across countries, what drives unemployment cycles, and what causes inflation. The other options are microeconomic questions — they concern individual firm or market decisions. The distinction matters because macro behaviour emerges from the aggregate of millions of individual (micro) decisions."
   },
   {
@@ -1208,6 +1248,7 @@ var QUESTIONS = [
     ],
     correct: 1,
     hint: "In the production function Y = A x f(K, H, L), what happens when A increases while K, H, and L stay the same?",
+    hint2: "Answer: option B. Productivity A = how efficiently inputs are combined. Better institutions (property rights, rule of law) → better allocation of existing capital and labour → A rises → Y rises even with same K, H, L. This is why institutions matter for growth.",
     explanation: "Productivity (A) captures how efficiently inputs are combined — including the quality of institutions, rule of law, and property rights. Better institutions mean the same quantity of capital and labour generates more output, because resources are allocated more effectively and investment is no longer deterred by insecurity. This is why institutions are a key determinant of long-run income differences across countries."
   },
   {
@@ -1215,6 +1256,7 @@ var QUESTIONS = [
     question: "True or False: According to the Solow-Swan model, a country can sustain long-run growth indefinitely simply by continuously saving and investing in more physical capital.",
     correct: false,
     hint: "Think about what happens to the return on each new unit of capital as a country becomes more capital-intensive.",
+    hint2: "False. Diminishing returns to capital mean growth from capital accumulation eventually stalls at a 'steady state.' Only ongoing technological progress (Romer model: non-rival ideas, R&D) can sustain growth indefinitely. Solow model predicts the stall; Romer model explains how ideas avoid it.",
     explanation: "False. Physical capital faces diminishing returns — each additional unit of capital adds less and less to output. The Solow model predicts that growth from capital accumulation will eventually stall as the economy reaches a 'steady state.' Sustained long-run growth requires ongoing improvements in productivity (technology), which is what the Romer model adds to the story."
   },
   {
@@ -1222,6 +1264,7 @@ var QUESTIONS = [
     question: "True or False: Knowledge and ideas are described as 'non-rival' goods because using them does not reduce their availability — unlike a machine or a piece of land.",
     correct: true,
     hint: "Can two engineers in different companies both use the same programming concept simultaneously, without one 'using up' the idea?",
+    hint2: "True. Non-rival = doesn't get depleted. Machine: rival (one place at a time). Land: rival (one use at a time). Programming concept, scientific principle, recipe: non-rival (unlimited simultaneous use). Non-rivalry is why technology doesn't face diminishing returns → unlimited growth potential.",
     explanation: "True. Non-rivalry is the key property of ideas: one person or firm using an idea does not reduce the amount available for everyone else. This is fundamentally different from rival goods like machines or land, where use by one party prevents simultaneous use by another. Non-rivalry is what allows technology to drive unlimited growth — ideas can spread across the entire economy without being depleted."
   },
   {
@@ -1229,6 +1272,7 @@ var QUESTIONS = [
     question: "True or False: The primary driver of poverty reduction in countries like China and South Korea has been large-scale foreign aid transfers from wealthy nations.",
     correct: false,
     hint: "What actually happened in East Asian economies over the past 50 years? Think about domestic investment, export-led growth, and productivity improvements.",
+    hint2: "False. China, South Korea, Taiwan, Singapore grew through: domestic capital accumulation + human capital investment + export-led manufacturing + productivity improvements. Foreign aid was negligible. Consistent with growth theory: sustained income growth comes from internal accumulation and productivity improvement.",
     explanation: "False. Poverty reduction in East Asia was driven overwhelmingly by domestic economic growth — rising capital investment, improvements in human capital, productivity gains, and export-oriented industrialisation. Foreign aid played a negligible role. This is consistent with growth theory: sustained income growth comes from internal accumulation and productivity improvement, not from external transfers."
   },
   {
@@ -1237,6 +1281,7 @@ var QUESTIONS = [
     keywords: ["diminishing returns", "non-rival", "ideas", "technology", "capital", "stall", "unlimited", "productivity", "romer"],
     minKeywords: 3,
     hint: "First explain what happens as you keep adding capital (hint: diminishing returns). Then explain what is different about ideas — can they be 'used up'?",
+    hint2: "Structure: (1) Capital: diminishing returns → growth stalls at steady state (Solow). (2) Ideas: non-rival → not used up → can spread to whole economy at no extra cost → no diminishing returns. (3) Therefore technology (Romer) → unlimited growth. Key contrast: rival vs non-rival.",
     modelAnswer: "Physical capital faces diminishing returns: as you add more machines to a fixed workforce, each extra machine contributes less and less to output. Eventually the growth rate from capital accumulation stalls at a steady state. Technology (ideas) does not face this limit because ideas are non-rival — one firm using a concept or technique does not prevent others from using it simultaneously. This means the stock of useful knowledge can grow without limit, and each new idea can raise productivity across the entire economy. The Romer model therefore predicts that technological progress — not capital accumulation — is the engine of unlimited long-run growth."
   },
   {
@@ -1245,6 +1290,7 @@ var QUESTIONS = [
     keywords: ["externality", "global", "free rider", "incentive", "benefit", "cost", "cooperation", "multinational", "emissions"],
     minKeywords: 3,
     hint: "Who pays the cost when a country cuts emissions? Who gets the benefit? Does that create a problem for unilateral action?",
+    hint2: "Structure: (1) Externality = cost/benefit to parties outside the transaction. (2) Each country bears full domestic cost of cutting emissions but receives tiny fraction of global benefit. (3) Free-rider problem = every country lets others cut first. (4) Solution = multinational agreement (Montreal Protocol, Paris Agreement).",
     modelAnswer: "Climate change is a global externality because each country's emissions impose costs on the entire world, not just on the country producing them. When a country cuts its own emissions, it bears the full domestic cost but receives only a tiny fraction of the global benefit — since all other countries also benefit. This creates a free-rider problem: every country has an incentive to let others bear the cost of cutting emissions while enjoying the shared benefits. As a result, individual country action will always be insufficient. The solution requires multinational cooperation to align national incentives with the global interest — just as the Montreal Protocol successfully coordinated action on ozone-depleting substances."
   },
 
@@ -1259,6 +1305,7 @@ var QUESTIONS = [
     ],
     correct: 1,
     hint: "If flour is used to bake bread, should we count both the flour AND the bread in GDP? What would happen to the total if we did?",
+    hint2: "Answer: option B. Bakery: buys flour for $1, sells bread for $3 → value added = $2. Only count the $3 bread (final good). If we also counted the $1 flour, we'd count $4 total — double-counting the $1 in flour. Value added approach avoids this by subtracting intermediate inputs.",
     explanation: "Counting only value added avoids double-counting. If we counted total sales at every stage, intermediate goods like flour would be counted again when the bread is sold. Value added = revenue minus cost of inputs bought from other businesses. By summing value added across all businesses in all industries, we capture the same total as counting only final goods — without inflating the figure by counting inputs multiple times."
   },
   {
@@ -1272,6 +1319,7 @@ var QUESTIONS = [
     ],
     correct: 2,
     hint: "Nominal GDP is measured at current prices. If prices rise by 6% but quantities do not change, what does nominal GDP show? What does real GDP show?",
+    hint2: "Answer: option C. Formula: Real growth ≈ Nominal growth − Inflation = 6% − 6% = 0%. All the nominal GDP increase came from higher prices, not more production. Real GDP = unchanged. This is exactly why real GDP uses constant base-year prices — to remove the distortion of inflation.",
     explanation: "Real GDP adjusts for inflation using constant base-year prices. If nominal GDP rose 6% and inflation was also 6%, then the entire rise in nominal GDP was due to higher prices — not more goods and services being produced. Real GDP would show zero growth. This is why real GDP is used to track genuine economic growth: nominal GDP can increase simply because of inflation, giving a misleading picture."
   },
   {
@@ -1285,6 +1333,7 @@ var QUESTIONS = [
     ],
     correct: 1,
     hint: "GDP counts spending. Does it matter whether that spending makes society better off or merely restores what was lost?",
+    hint2: "Answer: option B. Accounting asymmetry: clean-up workers hired + equipment purchased = positive GDP. BUT the environmental destruction that necessitated the clean-up is never subtracted. GDP measures economic activity, not net welfare. A disaster + rebuild can show rising GDP even if society is no better off.",
     explanation: "This is the accounting asymmetry problem. Clean-up spending adds to GDP — workers are hired, equipment purchased, services rendered. But the environmental destruction that caused the clean-up is never subtracted. GDP measures economic activity, not net welfare. A disaster followed by reconstruction can show rising GDP even though society is clearly no better off than before the disaster. This is one of the key reasons GDP is an imperfect measure of wellbeing."
   },
   {
@@ -1292,6 +1341,7 @@ var QUESTIONS = [
     question: "True or False: Real GDP per capita is a reliable measure of the typical person's living standard because it adjusts for both inflation and population size.",
     correct: false,
     hint: "GDP per capita gives an average. What happens to averages when income is very unevenly distributed — does the average reflect what most households actually experience?",
+    hint2: "False. Real GDP per capita is an AVERAGE — pulled upward by very high earners. In an unequal society, GDP per capita can rise without the typical (median) person being better off. Key flaw: distribution invisible in a per capita figure. Better measures: median income, Gini coefficient.",
     explanation: "False. Real GDP per capita is the best single summary measure, but it is skewed by high earners. If a small number of very wealthy people drive up average income, GDP per capita can rise without the typical person being any better off. GDP per capita measures the size of the economic pie per person — not how that pie is distributed. High inequality means the average diverges significantly from the median experience."
   },
   {
@@ -1305,6 +1355,7 @@ var QUESTIONS = [
     ],
     correct: 2,
     hint: "Is the world really split neatly into 'developed' and 'developing'? Think about whether income levels form two clusters or a continuous spread.",
+    hint2: "Answer: option C. Continuous spread — not two distinct clusters. No clean 'rich vs poor' divide. BUT the extremes are vast: 1 billion+ on <$1/day; ~10 million on >$100/day. The 'developed vs developing' framing is misleading — people are spread across all income levels.",
     explanation: "Income data shows a continuous spread — not a clean rich/poor divide. Most people fall somewhere in the middle, not at the extremes. However, the range is vast: over 1 billion people live on less than $1/day while only around 10 million live on more than $100/day. The 'rich world vs. poor world' framing is misleading. The real issue is the enormous distance between the very top and very bottom of the distribution."
   },
   {
@@ -1313,6 +1364,7 @@ var QUESTIONS = [
     keywords: ["nominal", "real", "inflation", "prices", "constant", "production", "per capita", "population", "standard of living", "misleading"],
     minKeywords: 3,
     hint: "Cover three things: what nominal GDP measures, why it can be misleading for growth comparisons, and what real GDP per capita adds that raw GDP does not.",
+    hint2: "Structure: (1) Nominal GDP = current prices → can rise just because of inflation, not more production. (2) Real GDP = constant base-year prices → removes inflation distortion, shows actual output growth. (3) Real GDP per capita = also divides by population → adjusts for demographic growth. Best single measure of living standards (but still hides inequality).",
     modelAnswer: "Nominal GDP measures total output using current market prices — it rises when either production increases or prices rise due to inflation. This makes it unreliable for comparing growth over time, since a country could show higher nominal GDP simply because of inflation, not because more was actually produced. Real GDP adjusts for inflation by valuing output at constant base-year prices, so it only grows when actual production increases. Real GDP per capita divides real GDP by population, giving average output per person while accounting for both inflation and population changes. It is considered the best standard measure of living standards because it tells us how much goods and services are available per person on average — though it still has limitations, particularly its insensitivity to income inequality."
   },
 
@@ -1327,6 +1379,7 @@ var QUESTIONS = [
     ],
     correct: 2,
     hint: "The expenditure approach adds up spending on final goods and services. Which option describes income earned rather than spending made?",
+    hint2: "Answer: option C — compensation of employees (wages/salaries). This is an INCOME approach component. Expenditure approach = C + I + G + (X−M). The other three options (household consumption, business investment, net exports) are all expenditure approach components.",
     explanation: "The expenditure approach sums: C (household consumption — typically the largest component), I (business investment), G (government spending), and NX (net exports = exports minus imports). Compensation of employees belongs to the income approach, which breaks GDP into types of income — wages, profits, and rents — rather than types of spending. Knowing which component belongs to which approach helps diagnose what is driving changes in GDP."
   },
   {
@@ -1340,6 +1393,7 @@ var QUESTIONS = [
     ],
     correct: 1,
     hint: "Why would a government need a single consistent measure of the economy during a depression? And does measuring economic activity tell you whether people are living well?",
+    hint2: "Answer: option B. Kuznets designed GDP during the Great Depression to measure economic damage consistently. BUT it was designed for economic ACTIVITY, not wellbeing. It doesn't subtract pollution, doesn't count unpaid work, doesn't measure distribution. Its creator himself warned against using it as a welfare measure.",
     explanation: "Kuznets developed GDP during the Great Depression to consolidate diverse economic data into one consistent measure of national output — to gauge the scale of economic damage. However, GDP was designed to measure economic activity, not welfare. It excludes unpaid labour, environmental damage, inequality, and many factors that determine quality of life. Using GDP as a comprehensive measure of how well society is doing goes beyond what it was designed for."
   },
   {
@@ -1347,6 +1401,7 @@ var QUESTIONS = [
     question: "True or False: GDP captures all economic activity in a society, including unpaid work such as raising children, caring for relatives, and growing food for personal use.",
     correct: false,
     hint: "Does money change hands when a parent looks after their own child? Is that activity recorded anywhere in national accounts?",
+    hint2: "False. GDP = market transactions only (goods and services with a price). Unpaid labour (childcare at home, eldercare, volunteering, home cooking) = not counted. Paradox: if childcare moves from unpaid (home) to paid (nursery), GDP rises — even if total childcare is unchanged. A systematic blind spot.",
     explanation: "False. GDP only counts market transactions — goods and services bought and sold at a price. Unpaid labour — raising children, caring for elderly relatives, growing food at home, volunteering — generates real economic value but is not counted because no market price is attached. This creates a systematic gap: if childcare moves from unpaid (at home) to paid (at a nursery), GDP rises even if the total childcare provided has not changed."
   },
   {
@@ -1360,6 +1415,7 @@ var QUESTIONS = [
     ],
     correct: 1,
     hint: "The correlation is real and strong — but does a correlation mean GDP perfectly captures wellbeing? What does the per capita average hide about how income is distributed within a country?",
+    hint2: "Answer: option B. Correlation real and useful (richer countries do have better health, education, life expectancy). BUT imperfect: (1) average skewed by high earners, (2) excludes environmental quality, social trust, non-market factors, (3) some countries achieve high wellbeing at moderate income. Useful proxy, not a perfect measure.",
     explanation: "The strong correlation means GDP per capita is a useful proxy — richer countries do tend to have better health, education, and life expectancy outcomes. But it is not a perfect measure: it is an average skewed by high earners and tells us nothing about distribution; some countries achieve high wellbeing at moderate income levels through strong public services; and GDP excludes environmental quality, social trust, and other non-market factors that affect life quality."
   },
   {
@@ -1373,6 +1429,7 @@ var QUESTIONS = [
     ],
     correct: 2,
     hint: "Labour share = fraction of total income going to wages. If that fraction falls, where is the rest of national income going instead?",
+    hint2: "Answer: option C. Labour share = wages / total national income. If it FALLS → capital income (profits, dividends, rents) = rising share. Capital ownership is more concentrated than labour income → declining labour share widens inequality. Workers get smaller slice of a growing pie.",
     explanation: "Labour share of income is the proportion of national income paid as wages and salaries, as opposed to profits, dividends, or rents going to owners and shareholders. A declining labour share means that while the economic pie may be growing, workers as a group are capturing a smaller slice — capital owners are getting more. This connects directly to inequality debates and has been a persistent trend in many advanced economies over recent decades."
   },
   {
@@ -1380,6 +1437,7 @@ var QUESTIONS = [
     question: "True or False: According to the Solow-Swan model, poorer countries should grow faster than richer ones, because the returns to adding capital are higher when you start with very little of it.",
     correct: true,
     hint: "Think about diminishing returns to capital. If a country has almost no capital, what happens to output when it adds its first few machines? Compare this to a rich country that already has a huge stock of capital.",
+    hint2: "True. Convergence hypothesis. Poor country: tiny capital stock → first machines have HIGH returns → fast growth. Rich country: huge capital stock → each extra machine adds LITTLE (diminishing returns) → slow growth. If same technology is available: poor countries grow faster and catch up = conditional convergence.",
     explanation: "True — this is the convergence hypothesis. In the Solow model, capital faces diminishing returns: the return on each additional unit of capital falls as the capital stock grows. Poor countries start with very little capital, so each new investment has a high return and drives fast growth. Rich countries already have a large capital stock, so additional capital adds less. If poor countries can access the same technology, the model predicts they will grow faster and eventually converge toward similar income levels — a pattern called conditional convergence."
   },
   {
@@ -1393,6 +1451,7 @@ var QUESTIONS = [
     ],
     correct: 1,
     hint: "A bank approving home loans cares about whether borrowers will be able to repay. What economy-wide signals determine that?",
+    hint2: "Answer: option B — macroeconomic indicators. GDP growth = is the economy expanding? Unemployment = are borrowers keeping their jobs? Interest rates = can borrowers afford repayments? All are economy-wide = macro. Key point: businesses must look beyond internal metrics to the macro environment.",
     explanation: "Interest rates, GDP growth, and unemployment are macroeconomic indicators — they describe the state of the whole economy. A bank extending home loans needs to understand: whether borrowers can service debt (interest rates), whether the economy is growing or contracting (GDP), and whether job losses are likely (unemployment). This illustrates why businesses cannot focus only on their own internal performance — the broader macroeconomic environment directly shapes the risk and opportunity in almost every major business decision."
   },
   {
@@ -1401,6 +1460,7 @@ var QUESTIONS = [
     keywords: ["inequality", "unpaid", "environmental", "excludes", "asymmetry", "skewed", "average", "damage", "clean-up", "welfare"],
     minKeywords: 3,
     hint: "Think about what GDP cannot see or count. What real activity goes unmeasured? What gets added to GDP that arguably should not — or what gets ignored that should be subtracted?",
+    hint2: "Two strong shortcomings: (1) Unpaid labour not counted — home childcare, eldercare, volunteering (no market price). (2) Environmental asymmetry — clean-up spending ADDS to GDP but environmental destruction is never SUBTRACTED. Also good to mention: inequality invisible in per-capita average.",
     modelAnswer: "First, GDP excludes unpaid labour. Activities like raising children, caring for elderly relatives, or growing food at home generate real value but are not counted because no market transaction occurs. For example, if families move childcare from unpaid (home) to paid (nursery), GDP rises even though the total care provided has not changed — the measure is blind to non-market activity. Second, GDP has an accounting asymmetry problem with environmental costs. When a major oil spill occurs, the environmental destruction is never subtracted from GDP — but the money spent on clean-up is added. GDP can actually rise after an environmental disaster because it measures economic activity, not net welfare. Both shortcomings highlight a broader issue: GDP per capita is also skewed by high earners, meaning an average can rise while the typical person's experience stays the same or worsens."
   },
 
@@ -1410,6 +1470,7 @@ var QUESTIONS = [
     keywords: ["expenditure", "production", "income", "value added", "wages", "spending", "consumption", "final goods", "double counting"],
     minKeywords: 3,
     hint: "Name each approach and what it adds up. Then think about why they converge to the same number — what is the logical relationship between total spending, total production, and total income?",
+    hint2: "Three approaches: (1) Expenditure = C + I + G + (X−M). (2) Production = sum of value added (revenue − intermediate inputs). (3) Income = wages + profits + rents. All equal because GDP is a circular flow: every dollar spent becomes income for a producer, which equals the value they added. Three views of the same flow.",
     modelAnswer: "GDP can be measured three ways. The expenditure approach sums all spending on final goods and services: C (household consumption) + I (business investment) + G (government spending) + NX (net exports). The production approach sums value added at each stage of production across all industries, counting only final goods to avoid double-counting intermediate inputs. The income approach sums all income earned — wages, profits, rents, and mixed income. All three produce the same GDP figure because every dollar spent on a good becomes income for the producer, and every good's price equals the value added in producing it. They are three different views of the same circular flow of income in the economy."
   },
   {
@@ -1418,6 +1479,7 @@ var QUESTIONS = [
     keywords: ["labour share", "wages", "profits", "shareholders", "owners", "income", "inequality", "compensation", "employees"],
     minKeywords: 3,
     hint: "Labour share is the fraction of national income going to wages vs. profits. If it falls, who is getting more? What does that imply for workers vs. capital owners?",
+    hint2: "Labour share = compensation of employees / total national income. Falls → capital income (profits/dividends/rents) rising share. Capital ownership more concentrated than wages → declining labour share = rising inequality. Visible in income approach to GDP: compensation of employees = largest single component in Australia.",
     modelAnswer: "Labour share of income is the proportion of total national income paid out as wages and salaries to employees, as opposed to profits, dividends, and rents going to owners and shareholders. It is visible in the income approach to GDP — in Australia, compensation of employees is the largest component. A declining labour share means that economic growth is delivering a larger fraction of income gains to capital owners and a smaller fraction to workers. This matters for inequality because capital ownership is more concentrated than labour income — wealthy individuals own most shares and property. When the labour share falls, growth disproportionately benefits the wealthy, widening income inequality even if wages are rising in absolute terms."
   },
   {
@@ -1426,6 +1488,7 @@ var QUESTIONS = [
     keywords: ["average", "inequality", "skewed", "median", "top earners", "distribution", "wellbeing", "per capita", "Gini"],
     minKeywords: 3,
     hint: "Think about what an 'average' hides. If a small number of billionaires earn enormous incomes, how does that affect the GDP per capita figure for everyone else?",
+    hint2: "Key distinction: mean vs median. Billionaires pull up the MEAN (GDP per capita) without improving conditions for the MEDIAN person. Better measures: (1) median household income, (2) Gini coefficient (0=equal, 1=one person has all), (3) multidimensional indices like HDI. GDP per capita = useful for cross-country size comparison, not typical wellbeing.",
     modelAnswer: "GDP per capita divides total output by the total population, giving an average. In a highly unequal society, the average is skewed upward by very high earners — a small number of billionaires can significantly raise the mean without improving conditions for the median or lower-income household. The typical person's standard of living may be much lower than GDP per capita suggests. Better measures include median household income (the income of the person exactly in the middle of the distribution), the Gini coefficient (a measure of overall inequality), and multidimensional indices that incorporate health, education, and security. GDP per capita remains useful for cross-country comparisons of economic size, but should always be read alongside distributional data."
   },
   {
@@ -1434,6 +1497,7 @@ var QUESTIONS = [
     keywords: ["convergence", "diminishing returns", "capital", "poor", "rich", "catch-up", "institutions", "misallocation", "technology", "steady state"],
     minKeywords: 3,
     hint: "Convergence is predicted by diminishing returns to capital. Poor countries should grow faster because each new unit of capital adds more. Why does this not always happen?",
+    hint2: "Structure: (1) Mechanism: diminishing returns → poor countries grow faster → catch up. (2) Conditional: requires similar institutions + technology access. (3) Why some fail to converge: weak property rights, political instability, corruption, misallocation → capital goes to wrong places. Convergence is conditional, not automatic.",
     modelAnswer: "Convergence is the prediction from the Solow model that poorer countries should grow faster than richer ones and gradually catch up. Because capital faces diminishing returns, a country with very little capital gets a much higher return on each new investment than a country that is already capital-rich. If all countries have access to the same technology, growth rates should converge. However, convergence is conditional — it only holds if countries have similar institutions, policies, and ability to absorb investment. Many poor countries have failed to converge because of weak property rights, political instability, corruption, and misallocation of resources — where capital and labour flow to unproductive sectors instead of high-return activities. These institutional failures, not lack of capital alone, explain persistent income divergence."
   },
   {
@@ -1442,6 +1506,7 @@ var QUESTIONS = [
     keywords: ["GDP", "unemployment", "inflation", "interest rates", "exchange rates", "demand", "costs", "borrowing", "wages"],
     minKeywords: 3,
     hint: "Think about what each indicator tells you: Is the economy growing? Are customers employed and spending? Is the cost of borrowing rising? Are inputs getting more expensive?",
+    hint2: "Five indicators to cover: GDP growth (demand environment + recession risk), unemployment rate (consumer spending power + labour costs), inflation rate (input costs + pricing decisions + rate expectations), interest rates (borrowing costs for investment), exchange rates (import input costs + export competitiveness).",
     modelAnswer: "Businesses should monitor: GDP growth — tells them whether the economy is expanding (more demand) or contracting (reduced sales). Unemployment rate — low unemployment means more consumer spending power and potential labour shortages and higher wages; high unemployment signals weak demand. Inflation rate — rising prices affect input costs, pricing decisions, and contract values; persistent inflation may trigger interest rate rises. Interest rates — affect the cost of business borrowing, investment decisions, and consumer purchasing power (especially for mortgages and credit). Exchange rates — matter for firms that import inputs or export products; a stronger dollar makes exports less competitive. Understanding these indicators together gives businesses a picture of the economic environment in which they operate."
   },
 
@@ -1455,6 +1520,7 @@ var QUESTIONS = [
     options: ["$100 billion", "$180 billion", "$500 billion", "$800 billion"],
     correct: 2,
     hint: "First calculate the multiplier using the formula: 1 / (1 - MPC). Then multiply that by the $100b increase in spending.",
+    hint2: "Answer: option C — $500b. Step 1: Multiplier = 1/(1−0.8) = 1/0.2 = 5. Step 2: $100b × 5 = $500b. The chain: $100b → $80b → $64b → $51.2b → ... sums to $500b total. Higher MPC = more re-spent each round = bigger total effect.",
     explanation: "Multiplier = 1 / (1 - 0.8) = 1 / 0.2 = 5. So $100b x 5 = $500b total increase in GDP. The multiplier works because the initial spending becomes someone's income, who then spends 80% of it, which becomes more income, and so on in a chain of rounds."
   },
   {
@@ -1468,6 +1534,7 @@ var QUESTIONS = [
     ],
     correct: 1,
     hint: "The key word is 'sticky prices.' If prices adjusted instantly, what would happen to real output when demand increases?",
+    hint2: "Answer: option B. Sticky prices = core Keynesian assumption. If prices adjusted instantly (Neoclassical): demand rise → prices rise, real output unchanged. Sticky prices (Keynesian): demand rise → firms produce more, hire more → real output rises. Government can boost real GDP only if prices are sticky.",
     explanation: "Keynesians argue that prices are 'sticky' — they do not adjust instantly to changes in demand. When demand rises, firms respond by producing more and hiring more workers, rather than simply raising prices. This means government can boost real GDP in the short run. Neoclassicals believe prices adjust quickly, so demand shocks just change price levels — real output is only driven by technology and productive capacity."
   },
   {
@@ -1481,6 +1548,7 @@ var QUESTIONS = [
     ],
     correct: 2,
     hint: "To cool an overheating economy, the RBA needs to reduce spending. Which direction does the cash rate need to move, and what operation achieves that?",
+    hint2: "Answer: option C. To cool = raise rates. Operation: SELL government bonds → removes cash from banking system → cash rate rises → borrowing more expensive → spending falls. Opposite (buy bonds) = inject cash → rates fall = stimulate. Government spending = fiscal policy, NOT monetary policy.",
     explanation: "To cool the economy, the RBA sells government bonds, removing cash from the banking system. This reduces the supply of funds available for overnight lending, pushing the cash rate up. Higher rates make borrowing more expensive, reducing household consumption and business investment — slowing GDP growth and easing inflation. Government spending (option D) is fiscal policy, not monetary policy — that is the Treasury's domain."
   },
   {
@@ -1494,6 +1562,7 @@ var QUESTIONS = [
     ],
     correct: 2,
     hint: "The key word is 'automatically' — no new legislation required. What do economists call fiscal mechanisms that activate on their own in response to the cycle?",
+    hint2: "Answer: option C — automatic stabilisers. Recession: tax revenue falls automatically (lower incomes) + welfare payments rise automatically (more unemployed). Both support household income without any new legislation. Key advantage: no time lag. Key difference from discretionary fiscal policy (which requires new laws).",
     explanation: "Automatic stabilisers are built-in fiscal mechanisms that cushion economic fluctuations without any deliberate government action. In a recession: tax revenue falls (people earn less) and welfare payments rise (more people unemployed), both of which support household income. In a boom, the reverse happens — taxes rise and welfare falls, naturally cooling the economy. Their key advantage over discretionary policy is that they operate without legislative delays."
   },
   {
@@ -1507,6 +1576,7 @@ var QUESTIONS = [
     ],
     correct: 2,
     hint: "Rearrange the Fisher equation: real rate = nominal rate - expected inflation. If nominal rate falls but expected inflation stays fixed, what happens to the real rate?",
+    hint2: "Answer: option C. Fisher: real rate = nominal rate − expected inflation. RBA cuts nominal rate. Expected inflation unchanged. Real rate = lower − same = FALLS. Lower real rate = genuinely cheaper to borrow in purchasing-power terms → more household and business spending → GDP rises.",
     explanation: "Real rate = nominal rate - expected inflation. If the RBA cuts the nominal rate while inflation expectations are unchanged, the real rate falls by the same amount. A lower real rate means borrowing is genuinely cheaper in purchasing-power terms, stimulating household consumption and business investment. This is the mechanism through which monetary policy affects real spending — not just the nominal rate, but the real cost of borrowing."
   },
   {
@@ -1520,6 +1590,7 @@ var QUESTIONS = [
     ],
     correct: 1,
     hint: "Think about the MPC of each type. Who spends close to $1 of every $1 received, and who saves or smooths the windfall across future periods?",
+    hint2: "Answer: option B — hand-to-mouth households. Cannot borrow/save → MPC ≈ 1 → spend every dollar immediately. Consumption smoothers: spread windfall over lifetime → low effective MPC for temporary payments. Higher MPC → larger multiplier → stronger stimulus response. Targeting low-income households maximises fiscal multiplier.",
     explanation: "Hand-to-mouth households have an MPC close to 1 — because they cannot access credit, they spend essentially every dollar of income as soon as they receive it. A fiscal stimulus payment flows almost entirely into immediate spending. Consumption smoothers, by contrast, spread windfalls across their lifetime and save more of any temporary payment, resulting in a much lower immediate spending response and a smaller multiplier effect."
   },
   {
@@ -1527,6 +1598,7 @@ var QUESTIONS = [
     question: "True or False: Discretionary fiscal policy — such as a new government stimulus package — can typically be implemented faster than a change in monetary policy.",
     correct: false,
     hint: "Think about what is required to change each policy. How quickly can the RBA change the cash rate compared to how long it takes to pass new spending legislation through parliament?",
+    hint2: "False. Monetary policy: RBA board meets → rate decision → banks adjust rates within days/weeks. Discretionary fiscal: identify problem → design policy → pass parliament → implement = can take 6−18 months. Monetary is FASTER. The legislative time lag is the main weakness of discretionary fiscal policy as a stabilisation tool.",
     explanation: "False. Monetary policy can be changed quickly — the RBA board meets and announces a rate decision that takes effect almost immediately. Discretionary fiscal policy requires identifying the problem, designing a policy, passing legislation through parliament, and then implementing spending programmes — a process that can take many months. This legislative time lag is one of the main weaknesses of discretionary fiscal policy as a stabilisation tool."
   },
   {
@@ -1534,6 +1606,7 @@ var QUESTIONS = [
     question: "True or False: During a period of strong economic growth, automatic stabilisers naturally help prevent the economy from overheating by increasing tax revenue and reducing welfare payments.",
     correct: true,
     hint: "When incomes rise, what automatically happens to income tax collected? When unemployment falls, what happens to the total welfare bill?",
+    hint2: "True. Boom: rising incomes → more income tax collected automatically (fiscal drag). Falling unemployment → less welfare paid automatically. Both withdraw money from economy = natural braking effect. Symmetric with recession behaviour. Works without any government decision = key advantage.",
     explanation: "True. Automatic stabilisers work symmetrically: in a boom, rising incomes automatically generate more tax revenue (fiscal drag) and falling unemployment reduces welfare payments. Both effects withdraw money from the economy, acting as a natural brake on overheating — without any government decision required. In a recession, the reverse occurs, providing an automatic cushion."
   },
   {
@@ -1541,6 +1614,7 @@ var QUESTIONS = [
     question: "True or False: The 'zero lower bound' is only a theoretical concern — in practice, central banks can always stimulate the economy by cutting interest rates further.",
     correct: false,
     hint: "What happened to interest rates in Japan, Europe, and Australia around 2020? Was there still room to cut rates further?",
+    hint2: "False. Real constraint, not theoretical. Australia: cash rate cut to 0.1% in 2020. Japan: near zero for decades. Europe: negative rates. At zero lower bound, further rate cuts distort banking system (banks reluctant to lend at negative rates). Must turn to quantitative easing (buying assets directly) or forward guidance.",
     explanation: "False. The zero lower bound is a real and binding constraint. When the cash rate is already near zero, the RBA cannot cut it significantly further without entering negative territory — which creates distortions in the banking system. This means monetary policy 'runs out of ammunition' in deep recessions, as occurred in many countries during the 2008 financial crisis and COVID-19. Central banks must then turn to unconventional tools like quantitative easing (buying assets directly)."
   },
   {
@@ -1549,6 +1623,7 @@ var QUESTIONS = [
     keywords: ["multiplier", "mpc", "income", "spending", "rounds", "formula", "chain", "1 divided", "ripple", "larger"],
     minKeywords: 3,
     hint: "Define the multiplier and its formula. Then trace through what happens round-by-round when MPC is high vs. low — which creates a longer chain of spending?",
+    hint2: "Formula: Multiplier = 1/(1−MPC). Trace the chain: $100 spent → person earns $100, spends $80 (MPC=0.8) → that $80 becomes income, $64 is spent → and so on. Total = $500. If MPC=0.5: Multiplier=2, same $100 → only $200 total. Higher MPC = longer chain = larger total GDP effect.",
     modelAnswer: "The expenditure multiplier captures the total increase in GDP from an initial increase in spending. Formula: Multiplier = 1 / (1 - MPC). When the government spends $1, that becomes someone's income. They spend a fraction (MPC) of it, which becomes more income, and so on in a chain of rounds. A higher MPC means more of each round gets re-spent, making the chain longer and the total GDP effect larger. Example: MPC = 0.8, Multiplier = 1/(1-0.8) = 5. So $100b of government spending raises GDP by $500b total. If MPC were 0.5, the multiplier would only be 2, and the same $100b would raise GDP by just $200b."
   },
   {
@@ -1557,6 +1632,7 @@ var QUESTIONS = [
     keywords: ["automatic", "discretionary", "lag", "legislation", "immediate", "targeted", "timing", "unemployment", "tax", "stimulus"],
     minKeywords: 3,
     hint: "Think about speed, certainty, and size. Automatic stabilisers act immediately but cannot be targeted. Discretionary policy can be large and targeted but faces delays.",
+    hint2: "Automatic: pros = no lag, reliable, symmetric. Cons = limited size, can't be targeted. Discretionary: pros = large scale, can be targeted to hand-to-mouth households. Cons = legislative lag (months), timing risk (may arrive after recession ends). Australia COVID example: $120b (~7% GDP) = powerful but required rapid decisions.",
     modelAnswer: "Automatic stabilisers (e.g. unemployment benefits, progressive income tax) activate immediately without any government decision, providing a fast and reliable cushion to economic fluctuations. Their key advantage is no legislative lag — they respond the moment the economy turns. Their disadvantage is limited size and lack of targeting — they cannot be scaled up for a severe recession. Discretionary fiscal policy (e.g. a COVID stimulus package) can be large, targeted at specific groups, and flexible — but it faces significant time lags: identifying the problem, passing legislation, and implementing programmes all take time. By the time stimulus arrives, the recession may be over, risking overheating. Australia's COVID response ($120b, ~7% of GDP) shows discretionary policy can be powerful but requires timely execution."
   },
   {
@@ -1565,6 +1641,7 @@ var QUESTIONS = [
     keywords: ["Keynesian", "Neoclassical", "sticky prices", "demand", "output", "employment", "adjust", "stimulus", "real", "short run"],
     minKeywords: 3,
     hint: "The key difference is how quickly prices adjust. If prices adjust instantly, what happens to output when demand falls? If prices are sticky, what happens instead?",
+    hint2: "Neoclassical: prices flexible → demand falls → prices fall to clear market → real output unchanged → stimulus useless (just raises prices). Keynesian: prices sticky → demand falls → firms cut production, lay off workers → demand-driven recession → stimulus can boost real output. Modern consensus: Keynesian better for short run.",
     modelAnswer: "The Neoclassical view holds that prices adjust quickly and flexibly. When demand falls, prices fall to restore equilibrium — real output and employment are determined by productive capacity (technology, capital, labour), not by demand. Government stimulus just raises prices rather than real output. The Keynesian view holds that prices are sticky in the short run — wages and prices do not adjust instantly. When demand falls, firms respond by cutting production and laying off workers, not just lowering prices. This creates a demand-driven recession. In the Keynesian model, government stimulus can boost real output and employment in the short run because firms respond to higher demand by producing more. The debate underpins whether fiscal policy is effective: Keynesian analysis says yes in the short run; Neoclassical analysis says it only affects the price level."
   },
   {
@@ -1573,6 +1650,7 @@ var QUESTIONS = [
     keywords: ["RBA", "cash rate", "borrowing", "consumption", "investment", "exchange rate", "exports", "asset prices", "GDP", "stimulus"],
     minKeywords: 3,
     hint: "Start at the RBA's decision and trace each step: what happens to bank rates, then borrowing costs, then household and business spending, then GDP?",
+    hint2: "Transmission channels from rate cut: (1) lower mortgage/loan rates → cheaper household borrowing → C rises. (2) lower business loan rates → investment easier → I rises. (3) weaker exchange rate (lower rates reduce AUD attractiveness) → exports more competitive → NX rises. (4) higher asset prices (shares/property) → wealth effect → more spending. All feed into GDP = C + I + G + X − M.",
     modelAnswer: "When the RBA cuts the cash rate (the overnight interbank lending rate), several transmission channels activate. First, lower cash rates reduce borrowing costs for banks, which pass these on as lower mortgage and business loan rates — making it cheaper for households to borrow and spend, and for firms to invest. Second, lower rates reduce returns on savings, encouraging spending over saving. Third, lower rates tend to weaken the exchange rate, making Australian exports more competitive and boosting net exports. Fourth, lower rates raise asset prices (shares, property), increasing household wealth and encouraging spending. All of these effects raise C, I, and NX in the GDP equation, increasing aggregate demand and output. The multiplier amplifies the initial effect as rising incomes generate further rounds of spending."
   },
   {
@@ -1581,6 +1659,7 @@ var QUESTIONS = [
     keywords: ["zero lower bound", "nominal", "negative", "rates", "quantitative easing", "unconventional", "ammunition", "stimulus", "cash rate"],
     minKeywords: 3,
     hint: "What happens when the cash rate is already near zero and a recession hits? Can the RBA keep cutting? What tools remain?",
+    hint2: "Zero lower bound = can't cut nominal rate much below 0. Unconventional tools: (1) Quantitative easing (QE) = central bank buys government and corporate bonds → injects money → lowers long-term rates. (2) Forward guidance = commit to keeping rates low for defined period → shapes expectations. (3) Negative rates (some countries). Fiscal policy becomes more important when monetary ammunition is exhausted.",
     modelAnswer: "The zero lower bound refers to the constraint that nominal interest rates cannot be cut much below zero. If the cash rate is already near zero and a recession hits, the central bank cannot stimulate the economy through further rate cuts — monetary policy runs out of conventional ammunition. This was a real constraint in many countries after the 2008 financial crisis and during COVID-19. When the zero lower bound binds, central banks turn to unconventional tools: quantitative easing (buying government and corporate bonds to inject money directly into the financial system and lower long-term rates), forward guidance (committing to keeping rates low for a defined period to shape expectations), and in some cases negative interest rates. These tools have more uncertain effects than conventional rate cuts and highlight why fiscal policy becomes more important during deep recessions."
   },
   {
@@ -1589,6 +1668,7 @@ var QUESTIONS = [
     keywords: ["inflation", "CPI", "expected", "unexpected", "menu costs", "shoe leather", "redistribute", "contracts", "uncertainty", "price level"],
     minKeywords: 3,
     hint: "Define inflation and CPI first. Then think about two scenarios: if everyone knows prices will rise 5%, vs. if inflation surprises everyone — who gets hurt in each case?",
+    hint2: "Inflation = % change in price level. CPI = tracks cost of representative basket of goods. Expected inflation costs: menu costs (update price lists), shoe-leather costs (more bank trips), need to rewrite contracts. Unexpected inflation costs (more severe): redistributes from lenders to borrowers (debts repaid in cheaper dollars), undermines investment plans, distorts relative prices.",
     modelAnswer: "Inflation is the rate of increase in the general price level over time. It is measured by the Consumer Price Index (CPI), which tracks the cost of a representative basket of goods and services; headline inflation is the percentage change in CPI, while underlying (core) inflation strips out volatile items for a cleaner trend. Expected inflation — where households and businesses anticipate the price rise — imposes costs but they can be managed: menu costs (firms must update prices), shoe-leather costs (people make more frequent trips to the bank to avoid holding depreciating cash), and the need to rewrite contracts. Unexpected inflation is more damaging because it redistributes wealth arbitrarily — it hurts lenders and those on fixed incomes (the real value of repayments falls) and benefits borrowers and governments (debts are repaid in cheaper dollars). It also undermines investment by creating uncertainty about future real returns."
   },
   {
@@ -1597,6 +1677,7 @@ var QUESTIONS = [
     keywords: ["hand-to-mouth", "consumption smoother", "MPC", "borrow", "multiplier", "stimulus", "income", "spend", "credit"],
     minKeywords: 3,
     hint: "Think about how much of each extra dollar of income each type of household spends immediately. Now link that to the multiplier formula — what happens to the multiplier when MPC is higher?",
+    hint2: "Hand-to-mouth: can't borrow, MPC ≈ 1, spends every dollar immediately. Consumption smoother: saves windfall, low effective MPC for temporary income. Multiplier = 1/(1−MPC). Higher aggregate MPC → larger multiplier. Policy implication: target stimulus payments to lower-income hand-to-mouth households to maximise fiscal multiplier effect.",
     modelAnswer: "Consumption smoothers are households that plan spending based on lifetime income — they save windfalls and borrow in lean times, maintaining a relatively stable consumption path. Their marginal propensity to consume (MPC) from a temporary income boost is low. Hand-to-mouth households cannot access credit and spend essentially every dollar of current income immediately, giving them an MPC close to 1. When an economy has many hand-to-mouth households, fiscal stimulus has a larger multiplier effect because more of each dollar of government spending immediately flows into consumer spending, which becomes income for others, which is also largely spent again. The multiplier formula (1 / 1 - MPC) shows directly that higher MPC produces a larger total GDP effect from any given initial injection of government spending."
   }
 
@@ -1674,9 +1755,12 @@ function renderQuestion() {
   else                       { tb.textContent = "Short Answer";    tb.className = "badge badge-sa"; }
 
   document.getElementById("q-text").textContent = q.question;
-  document.getElementById("hint-box").textContent = q.hint;
+  document.getElementById("hint-box").textContent = q.hint || "";
   document.getElementById("hint-box").classList.remove("show");
-  document.getElementById("hint-btn").style.display = "inline-flex";
+  document.getElementById("hint-btn").style.display = q.hint ? "inline-flex" : "none";
+  document.getElementById("hint-box2").textContent = q.hint2 || "";
+  document.getElementById("hint-box2").classList.remove("show");
+  document.getElementById("hint-btn2").style.display = "none";
 
   var fb = document.getElementById("feedback");
   fb.className = "feedback";
@@ -1751,6 +1835,7 @@ async function submitAnswer() {
   var q = quizQuestions[currentIndex];
   answered = true;
   document.getElementById("hint-btn").style.display = "none";
+  document.getElementById("hint-btn2").style.display = "none";
   document.getElementById("hint-box").classList.remove("show");
 
   if (q.type === "sa") {
@@ -1882,6 +1967,15 @@ function nextQuestion() {
 function showHint() {
   document.getElementById("hint-box").classList.add("show");
   document.getElementById("hint-btn").style.display = "none";
+  var q = quizQuestions[currentIndex];
+  if (q && q.hint2) {
+    document.getElementById("hint-btn2").style.display = "inline-flex";
+  }
+}
+
+function showHint2() {
+  document.getElementById("hint-box2").classList.add("show");
+  document.getElementById("hint-btn2").style.display = "none";
 }
 
 function showSummary() {
