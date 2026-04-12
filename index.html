@@ -210,6 +210,14 @@
     .key-status.set { color: var(--green); }
     .key-status.unset { color: var(--text-3); }
 
+    /* ─── QUESTION COUNT ─── */
+    .count-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
+    .count-chip { background: var(--surface); border: 1.5px solid var(--border); border-radius: var(--r-sm); padding: 11px 6px; cursor: pointer; text-align: center; transition: border-color 0.15s, background 0.15s, box-shadow 0.15s; user-select: none; font-size: 15px; font-weight: 700; color: var(--text); }
+    .count-chip:active { transform: scale(0.97); }
+    .count-chip.selected { border-color: var(--indigo); background: var(--indigo-light); color: var(--indigo); box-shadow: 0 0 0 3px var(--indigo-mid); }
+    .count-chip-sub { font-size: 11px; font-weight: 500; color: var(--text-3); margin-top: 2px; }
+    .count-chip.selected .count-chip-sub { color: var(--indigo); opacity: 0.7; }
+
     /* ─── PAUSE BUTTON ─── */
     .btn-pause { background: none; border: 1.5px solid var(--border); border-radius: 8px; padding: 5px 11px; font-size: 12px; font-weight: 600; color: var(--text-3); cursor: pointer; font-family: inherit; transition: all 0.15s; white-space: nowrap; }
     .btn-pause:active { background: var(--bg); color: var(--text-2); }
@@ -294,9 +302,15 @@
       <div class="chip-sub">W5 · W7 · W8 combined</div>
     </div>
   </div>
+  <div class="section-label">Number of questions</div>
+  <div class="count-grid">
+    <div class="count-chip" data-count="5" onclick="selectCount(this)">5<div class="count-chip-sub">~5 min</div></div>
+    <div class="count-chip selected" data-count="10" onclick="selectCount(this)">10<div class="count-chip-sub">~10 min</div></div>
+    <div class="count-chip" data-count="15" onclick="selectCount(this)">15<div class="count-chip-sub">~15 min</div></div>
+    <div class="count-chip" data-count="20" onclick="selectCount(this)">20<div class="count-chip-sub">~20 min</div></div>
+  </div>
   <div class="section-label">What to expect</div>
   <div class="info-pills">
-    <span class="info-pill">10 questions</span>
     <span class="info-pill">MCQ + True/False + Short Answer</span>
     <span class="info-pill">Instant feedback</span>
     <span class="info-pill">Hints on demand</span>
@@ -1595,6 +1609,8 @@ var currentIndex   = 0;
 var score          = 0;
 var results        = [];
 var answered       = false;
+var questionCount  = 10;
+var maxScore       = 40;
 
 // check for paused quiz on load
 (function() { checkPausedState(); })();
@@ -1620,12 +1636,21 @@ function selectAll(el) {
   document.getElementById("start-btn").disabled = false;
 }
 
+function selectCount(el) {
+  document.querySelectorAll(".count-chip").forEach(function(c) { c.classList.remove("selected"); });
+  el.classList.add("selected");
+  questionCount = parseInt(el.dataset.count);
+}
+
 function startQuiz() {
   var pool = QUESTIONS.filter(function(q) { return selectedWeeks.has(q.week); });
   var mcqPool = shuffle(pool.filter(function(q) { return q.type === "mcq" || q.type === "tf"; }));
   var saPool  = shuffle(pool.filter(function(q) { return q.type === "sa"; }));
-  var picked  = mcqPool.slice(0, 5).concat(saPool.slice(0, 5));
+  var mcqCount = Math.ceil(questionCount / 2);
+  var saCount  = Math.floor(questionCount / 2);
+  var picked   = mcqPool.slice(0, mcqCount).concat(saPool.slice(0, saCount));
   quizQuestions = shuffle(picked);
+  maxScore = quizQuestions.reduce(function(sum, q) { return sum + (q.type === "sa" ? 5 : 3); }, 0);
   currentIndex = 0; score = 0; results = [];
   showScreen("screen-quiz");
   renderQuestion();
@@ -1858,7 +1883,6 @@ function showHint() {
 }
 
 function showSummary() {
-  var maxScore = 40;
   var pct = Math.round((score / maxScore) * 100);
   document.getElementById("final-score").textContent = score;
   document.getElementById("final-of").textContent    = "out of " + maxScore;
@@ -1921,7 +1945,8 @@ function pauseQuiz() {
     currentIndex: currentIndex,
     score: score,
     results: results,
-    selectedWeeks: Array.from(selectedWeeks)
+    selectedWeeks: Array.from(selectedWeeks),
+    maxScore: maxScore
   };
   localStorage.setItem("comm1150_paused", JSON.stringify(state));
   showScreen("screen-home");
@@ -1937,6 +1962,7 @@ function resumeQuiz() {
   score         = state.score;
   results       = state.results;
   selectedWeeks = new Set(state.selectedWeeks);
+  maxScore      = state.maxScore || quizQuestions.reduce(function(s, q) { return s + (q.type === "sa" ? 5 : 3); }, 0);
   localStorage.removeItem("comm1150_paused");
   document.getElementById("resume-banner").style.display = "none";
   showScreen("screen-quiz");
@@ -1973,8 +1999,8 @@ function saveResult() {
     date: new Date().toISOString(),
     weeks: weeksArr,
     score: score,
-    maxScore: 40,
-    pct: Math.round((score / 40) * 100),
+    maxScore: maxScore,
+    pct: Math.round((score / maxScore) * 100),
     results: results
   };
   history.unshift(entry);
