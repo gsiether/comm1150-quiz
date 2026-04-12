@@ -212,10 +212,12 @@
 
     /* ─── QUESTION COUNT ─── */
     .count-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
-    .count-chip { background: var(--surface); border: 1.5px solid var(--border); border-radius: var(--r-sm); padding: 11px 6px; cursor: pointer; text-align: center; transition: border-color 0.15s, background 0.15s, box-shadow 0.15s; user-select: none; font-size: 15px; font-weight: 700; color: var(--text); }
+    .count-chip { background: var(--surface); border: 1.5px solid var(--border); border-radius: var(--r-sm); padding: 12px 6px; cursor: pointer; text-align: center; transition: border-color 0.15s, background 0.15s, box-shadow 0.15s; user-select: none; }
     .count-chip:active { transform: scale(0.97); }
-    .count-chip.selected { border-color: var(--indigo); background: var(--indigo-light); color: var(--indigo); box-shadow: 0 0 0 3px var(--indigo-mid); }
-    .count-chip-sub { font-size: 11px; font-weight: 500; color: var(--text-3); margin-top: 2px; }
+    .count-chip.selected { border-color: var(--indigo); background: var(--indigo-light); box-shadow: 0 0 0 3px var(--indigo-mid); }
+    .count-chip-num { font-size: 18px; font-weight: 800; color: var(--text); line-height: 1; }
+    .count-chip.selected .count-chip-num { color: var(--indigo); }
+    .count-chip-sub { font-size: 11px; font-weight: 500; color: var(--text-3); margin-top: 3px; }
     .count-chip.selected .count-chip-sub { color: var(--indigo); opacity: 0.7; }
 
     /* ─── PAUSE BUTTON ─── */
@@ -304,10 +306,10 @@
   </div>
   <div class="section-label">Number of questions</div>
   <div class="count-grid">
-    <div class="count-chip" data-count="5" onclick="selectCount(this)">5<div class="count-chip-sub">~5 min</div></div>
-    <div class="count-chip selected" data-count="10" onclick="selectCount(this)">10<div class="count-chip-sub">~10 min</div></div>
-    <div class="count-chip" data-count="15" onclick="selectCount(this)">15<div class="count-chip-sub">~15 min</div></div>
-    <div class="count-chip" data-count="20" onclick="selectCount(this)">20<div class="count-chip-sub">~20 min</div></div>
+    <div class="count-chip" data-count="5" onclick="selectCount(this)"><div class="count-chip-num">5</div><div class="count-chip-sub">~5 min</div></div>
+    <div class="count-chip selected" data-count="10" onclick="selectCount(this)"><div class="count-chip-num">10</div><div class="count-chip-sub">~10 min</div></div>
+    <div class="count-chip" data-count="15" onclick="selectCount(this)"><div class="count-chip-num">15</div><div class="count-chip-sub">~15 min</div></div>
+    <div class="count-chip" data-count="20" onclick="selectCount(this)"><div class="count-chip-num">20</div><div class="count-chip-sub">~20 min</div></div>
   </div>
   <div class="section-label">What to expect</div>
   <div class="info-pills">
