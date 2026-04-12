@@ -210,6 +210,45 @@
     .key-status.set { color: var(--green); }
     .key-status.unset { color: var(--text-3); }
 
+    /* ─── PAUSE BUTTON ─── */
+    .btn-pause { background: none; border: 1.5px solid var(--border); border-radius: 8px; padding: 5px 11px; font-size: 12px; font-weight: 600; color: var(--text-3); cursor: pointer; font-family: inherit; transition: all 0.15s; white-space: nowrap; }
+    .btn-pause:active { background: var(--bg); color: var(--text-2); }
+
+    /* ─── RESUME BANNER ─── */
+    .resume-banner { background: var(--amber-light); border: 1.5px solid var(--amber-border); border-radius: var(--r); padding: 14px 16px; margin-bottom: 0; display: none; }
+    .resume-banner-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+    .resume-banner-text { font-size: 14px; font-weight: 700; color: #78350F; }
+    .resume-banner-sub { font-size: 12px; color: #92400E; margin-top: 2px; font-weight: 400; }
+    .resume-btn-row { display: flex; gap: 8px; flex-shrink: 0; }
+    .btn-resume { background: var(--amber); color: white; border: none; border-radius: 8px; padding: 8px 14px; font-size: 13px; font-weight: 700; cursor: pointer; font-family: inherit; white-space: nowrap; }
+    .btn-resume:active { opacity: 0.85; }
+    .btn-discard { background: none; border: 1.5px solid var(--amber-border); border-radius: 8px; padding: 8px 11px; font-size: 13px; font-weight: 600; color: var(--amber); cursor: pointer; font-family: inherit; }
+
+    /* ─── HISTORY ─── */
+    .btn-history { display: block; width: 100%; background: var(--surface); border: 1.5px solid var(--border); border-radius: 12px; padding: 13px 20px; font-size: 15px; font-weight: 600; cursor: pointer; font-family: inherit; color: var(--text-2); transition: all 0.15s; text-align: center; margin-top: 8px; -webkit-appearance: none; }
+    .btn-history:active { background: var(--bg); border-color: var(--indigo); color: var(--indigo); }
+    .history-header-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 4px; }
+    .btn-back { background: none; border: 1.5px solid var(--border); border-radius: 8px; padding: 7px 14px; font-size: 13px; font-weight: 600; cursor: pointer; font-family: inherit; color: var(--text-2); transition: all 0.15s; }
+    .btn-back:active { background: var(--bg); }
+    .btn-clear-hist { background: none; border: none; padding: 7px 2px; font-size: 13px; font-weight: 600; color: var(--red); cursor: pointer; font-family: inherit; }
+    .history-card { background: var(--surface); border: 1.5px solid var(--border); border-radius: var(--r-sm); padding: 14px 16px; margin-bottom: 8px; cursor: pointer; transition: border-color 0.15s, box-shadow 0.15s; }
+    .history-card:active { border-color: var(--indigo); box-shadow: 0 0 0 3px var(--indigo-mid); }
+    .history-card-row { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; }
+    .history-date { font-size: 13px; font-weight: 700; color: var(--text); }
+    .history-weeks { font-size: 12px; color: var(--text-3); margin-top: 3px; }
+    .history-score-block { text-align: right; flex-shrink: 0; }
+    .history-score-num { font-size: 22px; font-weight: 800; color: var(--text); line-height: 1; }
+    .history-score-num span { font-size: 13px; font-weight: 500; color: var(--text-3); }
+    .history-grade { font-size: 12px; font-weight: 700; margin-top: 3px; }
+    .history-empty { text-align: center; color: var(--text-3); padding: 44px 16px; font-size: 15px; line-height: 1.9; }
+    /* detail screen */
+    .detail-summary-row { display: flex; align-items: center; gap: 16px; padding: 14px 0; margin-bottom: 4px; }
+    .detail-ring { width: 68px; height: 68px; border-radius: 50%; background: var(--indigo); display: flex; flex-direction: column; align-items: center; justify-content: center; flex-shrink: 0; box-shadow: 0 4px 16px rgba(79,70,229,0.25); }
+    .detail-ring-score { font-size: 20px; font-weight: 800; color: white; line-height: 1; }
+    .detail-ring-of { font-size: 10px; color: rgba(255,255,255,0.65); }
+    .detail-meta-title { font-size: 20px; font-weight: 800; letter-spacing: -0.3px; }
+    .detail-meta-sub { font-size: 13px; color: var(--text-3); margin-top: 3px; }
+
     /* ─── AI SA FEEDBACK ─── */
     .sa-ai-badge { display: inline-flex; align-items: center; gap: 4px; background: var(--indigo-light); border: 1px solid var(--indigo-mid); border-radius: 99px; padding: 3px 9px; font-size: 11px; font-weight: 700; color: var(--indigo); margin-bottom: 10px; }
     .sa-improve-list { display: flex; flex-direction: column; gap: 7px; }
@@ -262,14 +301,30 @@
     <span class="info-pill">Instant feedback</span>
     <span class="info-pill">Hints on demand</span>
   </div>
+  <div class="resume-banner" id="resume-banner">
+    <div class="resume-banner-row">
+      <div>
+        <div class="resume-banner-text">⏸ Quiz paused</div>
+        <div class="resume-banner-sub" id="resume-banner-sub">Continue where you left off</div>
+      </div>
+      <div class="resume-btn-row">
+        <button class="btn-discard" onclick="discardPaused()">Discard</button>
+        <button class="btn-resume" onclick="resumeQuiz()">Resume →</button>
+      </div>
+    </div>
+  </div>
   <button class="btn btn-primary" id="start-btn" onclick="startQuiz()" disabled>Start Quiz →</button>
+  <button class="btn-history" onclick="showHistory()">📋 View Past Results</button>
 </div>
 
 <div class="screen" id="screen-quiz">
   <div class="progress-wrap">
     <div class="progress-top">
       <span class="progress-label" id="q-counter">Question 1 of 10</span>
-      <span class="progress-score" id="score-label">Score: 0</span>
+      <div style="display:flex;align-items:center;gap:8px;">
+        <span class="progress-score" id="score-label">Score: 0</span>
+        <button class="btn-pause" onclick="pauseQuiz()">⏸ Pause</button>
+      </div>
     </div>
     <div class="progress-track">
       <div class="progress-fill" id="progress-fill" style="width:0%"></div>
@@ -318,6 +373,35 @@
   <div class="section-label">Review</div>
   <div class="results-card" id="results-list"></div>
   <button class="btn btn-primary" onclick="restartQuiz()">Play Again →</button>
+  <button class="btn-history" onclick="showHistory()">📋 View Past Results</button>
+</div>
+
+<div class="screen" id="screen-history">
+  <div class="history-header-row">
+    <button class="btn-back" onclick="showScreen('screen-home');checkPausedState()">← Home</button>
+    <button class="btn-clear-hist" onclick="clearHistory()">Clear history</button>
+  </div>
+  <div class="section-label" style="margin-top:14px;">Past Results</div>
+  <div id="history-list"></div>
+</div>
+
+<div class="screen" id="screen-history-detail">
+  <button class="btn-back" onclick="showScreen('screen-history')" style="margin-bottom:16px;">← Back</button>
+  <div class="card">
+    <div class="detail-summary-row">
+      <div class="detail-ring">
+        <div class="detail-ring-score" id="det-score">0</div>
+        <div class="detail-ring-of" id="det-of">/ 40</div>
+      </div>
+      <div>
+        <div class="detail-meta-title" id="det-pct">0%</div>
+        <div class="detail-meta-sub" id="det-grade"></div>
+        <div class="detail-meta-sub" id="det-date"></div>
+      </div>
+    </div>
+  </div>
+  <div class="section-label">Question Breakdown</div>
+  <div class="results-card" id="det-results-list"></div>
 </div>
 
 <!-- ══ NOTES SHEET ══ -->
@@ -390,6 +474,9 @@
           <tr><td>Scale efficiencies</td><td></td></tr>
         </table>
         <div class="note-box">💡 Overall gains outweigh losses — but trade creates real winners and real losers. This matters politically.</div>
+        <ul class="note-ul">
+          <li><span class="nk">Specialisation</span> — countries (or firms) concentrate production on goods/services where they have a comparative advantage, increasing overall efficiency beyond what domestic-only production allows</li>
+        </ul>
 
         <div class="note-h1">Case Study: Vietnam &amp; Child Labour</div>
         <ul class="note-ul">
@@ -398,6 +485,10 @@
           <li><span class="nk">Nicaragua contrast:</span> coffee price boom <em>increased</em> child labour — demand for farm labour rose faster than income gains helped</li>
         </ul>
         <div class="note-box">💡 Trade's effect on child labour depends on context — which force is stronger: the income effect or the labour demand effect?</div>
+        <ul class="note-ul">
+          <li><span class="nk">Income effect</span> — when trade raises household income, families become wealthier and can afford to send children to school rather than having them work</li>
+          <li><span class="nk">Labour demand effect</span> — when trade increases demand for labour (e.g. more workers needed to harvest and export crops), wages for child labour rise, making work more attractive than school</li>
+        </ul>
 
         <div class="note-h1">The "Buy Local" Myth</div>
         <ul class="note-ul">
@@ -408,6 +499,9 @@
         </ul>
 
         <div class="note-h1">Winners &amp; Losers from Trade</div>
+        <ul class="note-ul">
+          <li><span class="nk">Import-competing industries</span> — domestic industries that produce goods similar to cheaper imports; they face direct foreign competition and are among the main losers from trade liberalisation</li>
+        </ul>
         <table class="note-table">
           <tr><th>Winners</th><th>Losers</th></tr>
           <tr><td>Export industries &amp; competitive firms</td><td>Workers in import-competing industries</td></tr>
@@ -418,6 +512,7 @@
 
         <div class="note-h1">Politics of Trade</div>
         <ul class="note-ul">
+          <li><span class="nk">Free trade</span> — the exchange of goods and services between countries without government-imposed barriers (tariffs, quotas, subsidies)</li>
           <li><span class="nk">Economists</span> broadly agree: free trade increases overall welfare</li>
           <li><span class="nk">Public opinion</span> is more sceptical — gains are unevenly distributed and some clearly lose</li>
           <li><span class="nk">Dani Rodrik's key insight:</span> The issue is not WHETHER trade is beneficial — it is HOW gains are distributed within society</li>
@@ -509,6 +604,7 @@
           <li>Only ~10 million people live on more than $100/day</li>
           <li><span class="nk">The "gap" myth:</span> the world is NOT cleanly split into "rich" and "poor" — people exist across all income levels, with most in the middle</li>
           <li><span class="nk">The real takeaway:</span> no clear divide, but the difference between the very richest and very poorest is enormous</li>
+          <li><span class="nk">Gini coefficient</span> — a summary measure of income inequality ranging from 0 (everyone earns the same) to 1 (one person earns everything). Higher value = more unequal distribution</li>
         </ul>
         <div class="note-box">💡 Describing the world as simply "developed vs developing" is misleading. The income distribution is a continuous spread — but the extremes are vast.</div>
 
@@ -558,12 +654,15 @@
           <tr><td>Productivity (A)</td><td>Better tech &amp; organisation</td><td>No — can keep growing</td></tr>
         </table>
         <div class="note-box">💡 Capital and human capital drive "catch-up growth." Long-run sustained growth requires ongoing improvements in productivity — i.e. technological progress.</div>
+        <ul class="note-ul">
+          <li><span class="nk">Convergence</span> — the tendency for poorer countries to grow faster than rich ones and "catch up" over time. Because poor countries have less capital, each new unit adds more output (diminishing returns work in their favour). This only occurs if institutions, governance, and policies are similar</li>
+        </ul>
 
         <div class="note-h1">Romer Model — Ideas &amp; Technology</div>
         <ul class="note-ul">
           <li>Technology comes from new ideas</li>
           <li>Ideas are <span class="nk">non-rival</span> — one person using an idea doesn't stop another from using it (unlike a machine)</li>
-          <li>This creates a positive externality — one person creates an idea, everyone benefits</li>
+          <li><span class="nk">Positive externality</span> — a benefit that spills over to third parties who did not pay for it. Ideas create a positive externality: one person's discovery can be used by everyone at no extra cost</li>
           <li>"Standing on the shoulders of giants" — each new idea makes the next one easier to find</li>
         </ul>
         <div class="note-box">💡 Because ideas are non-rival, technology can keep improving indefinitely — unlike physical capital which faces diminishing returns.</div>
@@ -572,13 +671,15 @@
         <ul class="note-ul">
           <li><span class="nk">Property rights</span> → people invest more when assets are protected</li>
           <li><span class="nk">Political stability</span> → instability kills investment (e.g. Argentina: 6 military coups 1930–1976)</li>
-          <li><span class="nk">Efficient regulation</span> → misallocation of resources (putting capital and labour in wrong places) explains much of the rich-poor gap</li>
+          <li><span class="nk">Efficient regulation</span> → <span class="nk">misallocation of resources</span> — capital and labour directed to low-productivity uses rather than where they generate the most output — explains much of the rich-poor gap</li>
           <li><span class="nk">IP laws &amp; R&amp;D subsidies</span> → encourage innovation by making it profitable</li>
         </ul>
 
         <div class="note-h1">Growth &amp; the Environment</div>
         <ul class="note-ul">
+          <li><span class="nk">Externality</span> — a cost or benefit that falls on parties not involved in the transaction. <em>Negative externality:</em> e.g. a factory pollutes a river, imposing costs on downstream communities without compensating them</li>
           <li>Production function doesn't account for resource depletion or pollution — these are negative externalities</li>
+          <li><span class="nk">Free-rider problem</span> — when individuals or countries benefit from a collective good without contributing to its cost, leading to under-provision. Each country can "free-ride" on others' emission reductions while bearing none of the cost</li>
           <li>Climate change = <span class="nk">global externality</span> — each country only gets a small share of the benefit from cutting its own emissions → free-rider problem → no country has enough incentive to act alone</li>
           <li>Solution requires multinational cooperation (e.g. Montreal Protocol for ozone, WTO for trade disputes)</li>
         </ul>
@@ -598,10 +699,14 @@
           <tr><td><strong>Im</strong></td><td>Imports</td></tr>
         </table>
         <div class="note-box">💡 Everything produced must be bought by someone — all models and policies connect back to changing one of these components.</div>
+        <ul class="note-ul">
+          <li><span class="nk">Aggregate demand (AD)</span> — the total demand for all goods and services in an economy at a given price level; equal to C + I + G + (Ex − Im). Shifts in AD drive short-run fluctuations in output and employment</li>
+        </ul>
 
         <div class="note-h1">Two Views of the Economy</div>
         <ul class="note-ul">
           <li><span class="nk">Neoclassical:</span> prices adjust quickly — demand changes → prices move → balance restored. Government spending doesn't change real output, only technology does</li>
+          <li><span class="nk">Sticky prices</span> — prices that adjust slowly to changes in supply or demand, due to factors like menu costs, long-term contracts, or wage rigidity. The core Keynesian assumption</li>
           <li><span class="nk">Keynesian:</span> prices are sticky — when demand rises, businesses produce more instead of just raising prices. Governments can boost real output</li>
         </ul>
         <div class="note-box">💡 Week 8 uses the Keynesian approach — sticky prices mean demand shocks change output and employment in the short run.</div>
@@ -649,12 +754,16 @@
         <div class="note-h1">Inflation</div>
         <ul class="note-ul">
           <li>Caused by too much money chasing too few goods — money growth drives inflation long-run</li>
+          <li><span class="nk">CPI (Consumer Price Index)</span> — measures the average change in prices paid by households for a fixed basket of goods and services. The main inflation indicator in Australia</li>
           <li><span class="nk">Headline inflation</span> = % change in CPI</li>
           <li><span class="nk">Underlying inflation</span> = excludes volatile items (e.g. weather-affected food) — cleaner trend</li>
           <li><span class="nk">Expected inflation costs:</span> menu costs (reprinting prices), shoe-leather costs (more bank trips), complicated contracts</li>
           <li><span class="nk">Unexpected inflation costs:</span> hard to plan, distorts relative prices, discourages investment, redistributes wealth</li>
         </ul>
         <div class="note-box">💡 <strong>Redistributive effect:</strong> unexpected inflation hurts lenders (retirees, banks) and helps borrowers (homeowners, govt) — debts repaid in dollars worth less than expected.</div>
+        <ul class="note-ul">
+          <li><span class="nk">Output gap</span> — the difference between actual GDP and potential GDP (what the economy could produce at full employment). A <em>positive</em> gap means running above capacity (inflationary pressure); a <em>negative</em> gap means below capacity (unemployment rises)</li>
+        </ul>
         <div class="note-box">💡 <strong>Phillips curve:</strong> when the economy runs above potential (positive output gap), inflation tends to be higher than expected. When weak, inflation tends to be lower.</div>
 
         <div class="note-h1">Monetary Policy — The RBA</div>
@@ -673,6 +782,7 @@
         <code class="note-formula">Fisher equation: i = r + πe &nbsp;(nominal rate = real rate + expected inflation)</code>
         <ul class="note-ul">
           <li>Lower rates affect the economy through: cheaper borrowing, higher asset prices, weaker dollar (boosts exports), lower government debt costs</li>
+          <li><span class="nk">Quantitative easing (QE)</span> — when the cash rate hits the zero lower bound and can't be cut further, the RBA buys financial assets (government bonds etc.) to inject money directly into the economy and push down long-term interest rates</li>
         </ul>
         <div class="note-warn">⚠️ Why policy is hard: <strong>Blunt instruments</strong> (few tools, many goals) · <strong>Data lags</strong> (don't know what's happening until weeks later) · <strong>Hard to measure potential output</strong> · <strong>Zero lower bound</strong> (can't cut nominal rates below ~0%, so monetary policy runs out of ammunition in deep recessions)</div>
       </div>
@@ -1485,6 +1595,9 @@ var currentIndex   = 0;
 var score          = 0;
 var results        = [];
 var answered       = false;
+
+// check for paused quiz on load
+(function() { checkPausedState(); })();
 var selectedOption = null;
 
 function toggleWeek(el) {
@@ -1771,6 +1884,7 @@ function showSummary() {
       "<div class='result-meta'>Week " + r.week + " &nbsp;·&nbsp; " + typeLabel + " &nbsp;·&nbsp; <strong>" + markLabel + "</strong></div></div>";
     list.appendChild(row);
   });
+  saveResult();
   showScreen("screen-summary");
 }
 
@@ -1779,6 +1893,7 @@ function restartQuiz() {
   document.querySelectorAll(".week-chip").forEach(function(c) { c.classList.remove("selected"); });
   document.getElementById("start-btn").disabled = true;
   showScreen("screen-home");
+  checkPausedState();
 }
 
 function showScreen(id) {
@@ -1797,6 +1912,160 @@ function shuffle(arr) {
     var tmp = arr[i]; arr[i] = arr[j]; arr[j] = tmp;
   }
   return arr;
+}
+
+// ─── PAUSE / RESUME ──────────────────────────────────────────────────────────
+function pauseQuiz() {
+  var state = {
+    quizQuestions: quizQuestions,
+    currentIndex: currentIndex,
+    score: score,
+    results: results,
+    selectedWeeks: Array.from(selectedWeeks)
+  };
+  localStorage.setItem("comm1150_paused", JSON.stringify(state));
+  showScreen("screen-home");
+  checkPausedState();
+}
+
+function resumeQuiz() {
+  var raw = localStorage.getItem("comm1150_paused");
+  if (!raw) return;
+  var state = JSON.parse(raw);
+  quizQuestions = state.quizQuestions;
+  currentIndex  = state.currentIndex;
+  score         = state.score;
+  results       = state.results;
+  selectedWeeks = new Set(state.selectedWeeks);
+  localStorage.removeItem("comm1150_paused");
+  document.getElementById("resume-banner").style.display = "none";
+  showScreen("screen-quiz");
+  renderQuestion();
+}
+
+function discardPaused() {
+  localStorage.removeItem("comm1150_paused");
+  document.getElementById("resume-banner").style.display = "none";
+}
+
+function checkPausedState() {
+  var banner = document.getElementById("resume-banner");
+  var raw = localStorage.getItem("comm1150_paused");
+  if (raw) {
+    try {
+      var state = JSON.parse(raw);
+      var prog = (state.currentIndex + 1) + " of " + state.quizQuestions.length;
+      document.getElementById("resume-banner-sub").textContent = "Question " + prog + " · Score so far: " + state.score;
+    } catch(e) {}
+    banner.style.display = "block";
+  } else {
+    banner.style.display = "none";
+  }
+}
+
+// ─── HISTORY ─────────────────────────────────────────────────────────────────
+function saveResult() {
+  var history = [];
+  try { history = JSON.parse(localStorage.getItem("comm1150_history") || "[]"); } catch(e) {}
+  var weeksArr = Array.from(selectedWeeks).sort();
+  var entry = {
+    id: Date.now(),
+    date: new Date().toISOString(),
+    weeks: weeksArr,
+    score: score,
+    maxScore: 40,
+    pct: Math.round((score / 40) * 100),
+    results: results
+  };
+  history.unshift(entry);
+  if (history.length > 50) history = history.slice(0, 50);
+  localStorage.setItem("comm1150_history", JSON.stringify(history));
+}
+
+function gradeLabel(pct) {
+  if (pct >= 85) return "High Distinction";
+  if (pct >= 75) return "Distinction";
+  if (pct >= 65) return "Credit";
+  if (pct >= 50) return "Pass";
+  return "Fail";
+}
+
+function gradeColor(pct) {
+  if (pct >= 75) return "var(--green)";
+  if (pct >= 50) return "var(--amber)";
+  return "var(--red)";
+}
+
+function showHistory() {
+  var history = [];
+  try { history = JSON.parse(localStorage.getItem("comm1150_history") || "[]"); } catch(e) {}
+  var listEl = document.getElementById("history-list");
+  if (history.length === 0) {
+    listEl.innerHTML = "<div class='history-empty'>No quiz history yet.<br>Complete a quiz to see your results here.</div>";
+  } else {
+    listEl.innerHTML = history.map(function(entry, i) {
+      var d = new Date(entry.date);
+      var dateStr = d.toLocaleDateString("en-AU", { day: "numeric", month: "short", year: "numeric" });
+      var timeStr = d.toLocaleTimeString("en-AU", { hour: "2-digit", minute: "2-digit" });
+      var weeksStr = entry.weeks.map(function(w) { return w === "all" ? "All Weeks" : "Week " + w; }).join(", ");
+      var gl = gradeLabel(entry.pct);
+      var gc = gradeColor(entry.pct);
+      return "<div class='history-card' onclick='showHistoryDetail(" + i + ")'>" +
+        "<div class='history-card-row'>" +
+          "<div>" +
+            "<div class='history-date'>" + dateStr + " · " + timeStr + "</div>" +
+            "<div class='history-weeks'>" + weeksStr + "</div>" +
+          "</div>" +
+          "<div class='history-score-block'>" +
+            "<div class='history-score-num'>" + entry.score + "<span> / " + entry.maxScore + "</span></div>" +
+            "<div class='history-grade' style='color:" + gc + "'>" + entry.pct + "% · " + gl + "</div>" +
+          "</div>" +
+        "</div>" +
+      "</div>";
+    }).join("");
+  }
+  showScreen("screen-history");
+}
+
+function showHistoryDetail(index) {
+  var history = [];
+  try { history = JSON.parse(localStorage.getItem("comm1150_history") || "[]"); } catch(e) {}
+  var entry = history[index];
+  if (!entry) return;
+
+  var d = new Date(entry.date);
+  var dateStr = d.toLocaleDateString("en-AU", { weekday: "short", day: "numeric", month: "short", year: "numeric" });
+  var timeStr = d.toLocaleTimeString("en-AU", { hour: "2-digit", minute: "2-digit" });
+  var weeksStr = entry.weeks.map(function(w) { return w === "all" ? "All Weeks" : "Week " + w; }).join(", ");
+  var gl = gradeLabel(entry.pct);
+  var gc = gradeColor(entry.pct);
+
+  document.getElementById("det-score").textContent = entry.score;
+  document.getElementById("det-of").textContent    = "/ " + entry.maxScore;
+  document.getElementById("det-pct").textContent   = entry.pct + "%";
+  document.getElementById("det-grade").innerHTML   = "<span style='color:" + gc + ";font-weight:700'>" + gl + "</span> · " + weeksStr;
+  document.getElementById("det-date").textContent  = dateStr + " at " + timeStr;
+
+  var list = document.getElementById("det-results-list");
+  list.innerHTML = "";
+  (entry.results || []).forEach(function(r) {
+    var row = document.createElement("div");
+    row.className = "result-row";
+    var short = r.question.length > 72 ? r.question.slice(0, 72) + "..." : r.question;
+    var typeLabel = r.type === "mcq" ? "MCQ" : r.type === "tf" ? "True/False" : "Short Answer";
+    row.innerHTML = "<div class='result-icon'>" + (r.correct ? "✅" : "❌") + "</div>" +
+      "<div class='result-right'><div class='result-q'>" + escHtml(short) + "</div>" +
+      "<div class='result-meta'>Week " + r.week + " &nbsp;·&nbsp; " + typeLabel + " &nbsp;·&nbsp; <strong>" + r.mark + " / " + r.maxMark + "</strong></div></div>";
+    list.appendChild(row);
+  });
+
+  showScreen("screen-history-detail");
+}
+
+function clearHistory() {
+  if (!confirm("Clear all quiz history? This cannot be undone.")) return;
+  localStorage.removeItem("comm1150_history");
+  showHistory();
 }
 
 function openNotes() {
