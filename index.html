@@ -269,6 +269,53 @@
     .sa-improve-arrow { color: var(--amber); font-weight: 800; flex-shrink: 0; }
     .sa-feedback-summary { margin-top: 12px; padding: 10px 13px; background: var(--indigo-light); border-left: 3px solid var(--indigo); border-radius: 0 8px 8px 0; font-size: 13.5px; color: var(--text); line-height: 1.55; font-style: italic; }
     .btn-check.loading { background: var(--indigo-dark); pointer-events: none; }
+
+    /* ─── ADMIN ─── */
+    .admin-lock-btn { margin-left: 4px; background: none; border: none; padding: 6px; font-size: 16px; cursor: pointer; color: var(--text-3); line-height: 1; opacity: 0.5; transition: opacity 0.15s; }
+    .admin-lock-btn:active { opacity: 1; }
+    /* password gate */
+    .admin-pw-overlay { position: fixed; inset: 0; background: rgba(15,23,42,0.6); z-index: 300; display: none; align-items: center; justify-content: center; -webkit-backdrop-filter: blur(4px); backdrop-filter: blur(4px); }
+    .admin-pw-overlay.open { display: flex; }
+    .admin-pw-card { background: var(--surface); border-radius: var(--r); padding: 28px 24px; width: min(360px, 90vw); box-shadow: 0 20px 60px rgba(0,0,0,0.2); }
+    .admin-pw-title { font-size: 18px; font-weight: 800; color: var(--text); margin-bottom: 6px; }
+    .admin-pw-sub { font-size: 13px; color: var(--text-2); margin-bottom: 18px; line-height: 1.5; }
+    .admin-pw-input { width: 100%; border: 1.5px solid var(--border); border-radius: 10px; padding: 11px 13px; font-size: 16px; font-family: inherit; color: var(--text); background: var(--bg); box-sizing: border-box; outline: none; transition: border-color 0.15s; -webkit-appearance: none; }
+    .admin-pw-input:focus { border-color: var(--indigo); }
+    .admin-pw-error { font-size: 13px; color: var(--red); min-height: 18px; margin: 8px 0 4px; font-weight: 600; }
+    .admin-pw-btns { display: flex; gap: 8px; margin-top: 12px; }
+    .admin-pw-cancel { flex: 1; background: var(--bg); border: 1.5px solid var(--border); border-radius: 10px; padding: 12px; font-size: 14px; font-weight: 600; cursor: pointer; font-family: inherit; color: var(--text-2); }
+    .admin-pw-enter { flex: 2; background: var(--indigo); color: white; border: none; border-radius: 10px; padding: 12px; font-size: 14px; font-weight: 700; cursor: pointer; font-family: inherit; }
+    .admin-pw-enter:active { background: var(--indigo-dark); }
+    /* admin panel */
+    .admin-overlay { position: fixed; inset: 0; background: var(--bg); z-index: 250; display: none; flex-direction: column; }
+    .admin-overlay.open { display: flex; }
+    .admin-hdr { background: var(--surface); border-bottom: 1px solid var(--border); padding: 14px 20px; padding-top: max(14px, env(safe-area-inset-top)); display: flex; align-items: center; justify-content: space-between; flex-shrink: 0; }
+    .admin-hdr-left { display: flex; flex-direction: column; gap: 1px; }
+    .admin-hdr-title { font-size: 16px; font-weight: 800; color: var(--text); }
+    .admin-hdr-sub { font-size: 12px; color: var(--text-3); }
+    .admin-close-btn { background: var(--bg); border: 1.5px solid var(--border); border-radius: 8px; padding: 7px 14px; font-size: 13px; font-weight: 600; cursor: pointer; font-family: inherit; color: var(--text-2); }
+    .admin-body { flex: 1; overflow-y: auto; padding: 20px 16px 60px; max-width: 760px; margin: 0 auto; width: 100%; -webkit-overflow-scrolling: touch; }
+    .admin-week-hdr { font-size: 18px; font-weight: 800; color: var(--text); margin: 24px 0 12px; padding-bottom: 8px; border-bottom: 2px solid var(--indigo-light); display: flex; align-items: center; justify-content: space-between; }
+    .admin-week-hdr:first-child { margin-top: 0; }
+    .admin-week-count { font-size: 13px; font-weight: 600; color: var(--text-3); }
+    .admin-q-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--r-sm); padding: 14px 16px; margin-bottom: 8px; }
+    .admin-q-meta { display: flex; align-items: center; gap: 6px; margin-bottom: 10px; flex-wrap: wrap; }
+    .admin-q-num { font-size: 11px; font-weight: 700; color: var(--text-3); }
+    .admin-q-text { font-size: 14px; font-weight: 600; color: var(--text); line-height: 1.5; margin-bottom: 10px; }
+    .admin-opts { display: flex; flex-direction: column; gap: 4px; margin-bottom: 10px; }
+    .admin-opt { font-size: 13px; color: var(--text-2); padding: 5px 10px; border-radius: 6px; line-height: 1.4; }
+    .admin-opt.correct { background: var(--green-light); color: var(--green); font-weight: 700; border: 1px solid var(--green-border); }
+    .admin-answer-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: var(--text-3); margin-bottom: 5px; }
+    .admin-model-ans { font-size: 13px; color: var(--text-2); line-height: 1.65; background: var(--bg); border-radius: 8px; padding: 10px 12px; border: 1px solid var(--border); }
+    .admin-keywords { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 8px; }
+    .admin-kw { font-size: 11px; font-weight: 600; padding: 3px 8px; border-radius: 99px; background: var(--indigo-light); color: var(--indigo); border: 1px solid var(--indigo-mid); }
+    .admin-search-wrap { position: sticky; top: 0; background: var(--bg); padding: 12px 0 8px; z-index: 10; }
+    .admin-search { width: 100%; border: 1.5px solid var(--border); border-radius: 10px; padding: 10px 14px; font-size: 14px; font-family: inherit; color: var(--text); background: var(--surface); outline: none; transition: border-color 0.15s; -webkit-appearance: none; box-sizing: border-box; }
+    .admin-search:focus { border-color: var(--indigo); }
+    .admin-stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 20px; }
+    .admin-stat { background: var(--surface); border: 1px solid var(--border); border-radius: var(--r-sm); padding: 12px 14px; text-align: center; }
+    .admin-stat-num { font-size: 24px; font-weight: 800; color: var(--indigo); }
+    .admin-stat-label { font-size: 11px; font-weight: 600; color: var(--text-3); text-transform: uppercase; letter-spacing: 0.05em; margin-top: 2px; }
   </style>
 </head>
 <body>
@@ -280,6 +327,7 @@
     <h1>Economics Lens Quiz</h1>
   </div>
   <button class="notes-open-btn" onclick="openNotes()">📖 Notes</button>
+  <button class="admin-lock-btn" onclick="openAdminPw()" title="Admin">🔒</button>
 </div>
 
 <div class="screen active" id="screen-home">
@@ -812,6 +860,31 @@
   </div><!-- end notes-sheet -->
 </div><!-- end notes-overlay -->
 
+<!-- ══ ADMIN PASSWORD GATE ══ -->
+<div class="admin-pw-overlay" id="admin-pw-overlay">
+  <div class="admin-pw-card">
+    <div class="admin-pw-title">🔒 Admin Access</div>
+    <div class="admin-pw-sub">Enter the password to view all questions and model answers.</div>
+    <input type="password" id="admin-pw-input" class="admin-pw-input" placeholder="Password" onkeydown="if(event.key==='Enter')adminLogin()">
+    <div class="admin-pw-error" id="admin-pw-error"></div>
+    <div class="admin-pw-btns">
+      <button class="admin-pw-cancel" onclick="closeAdminPw()">Cancel</button>
+      <button class="admin-pw-enter" onclick="adminLogin()">Enter →</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ ADMIN PANEL ══ -->
+<div class="admin-overlay" id="admin-overlay">
+  <div class="admin-hdr">
+    <div class="admin-hdr-left">
+      <div class="admin-hdr-title">Admin — Question Bank</div>
+      <div class="admin-hdr-sub" id="admin-hdr-sub">All questions &amp; model answers</div>
+    </div>
+    <button class="admin-close-btn" onclick="closeAdmin()">✕ Close</button>
+  </div>
+  <div class="admin-body" id="admin-body"></div>
+</div>
 
 <script>
 var QUESTIONS = [
@@ -1679,6 +1752,189 @@ var QUESTIONS = [
     hint: "Think about how much of each extra dollar of income each type of household spends immediately. Now link that to the multiplier formula — what happens to the multiplier when MPC is higher?",
     hint2: "Hand-to-mouth: can't borrow, MPC ≈ 1, spends every dollar immediately. Consumption smoother: saves windfall, low effective MPC for temporary income. Multiplier = 1/(1−MPC). Higher aggregate MPC → larger multiplier. Policy implication: target stimulus payments to lower-income hand-to-mouth households to maximise fiscal multiplier effect.",
     modelAnswer: "Consumption smoothers are households that plan spending based on lifetime income — they save windfalls and borrow in lean times, maintaining a relatively stable consumption path. Their marginal propensity to consume (MPC) from a temporary income boost is low. Hand-to-mouth households cannot access credit and spend essentially every dollar of current income immediately, giving them an MPC close to 1. When an economy has many hand-to-mouth households, fiscal stimulus has a larger multiplier effect because more of each dollar of government spending immediately flows into consumer spending, which becomes income for others, which is also largely spent again. The multiplier formula (1 / 1 - MPC) shows directly that higher MPC produces a larger total GDP effect from any given initial injection of government spending."
+  },
+
+  // ══ W5 GAP QUESTIONS — Subsidies, Quotas, Sanctions ══
+
+  {
+    week: 5, type: "mcq",
+    question: "A government wants to support its domestic steel industry without taxing imported steel. Instead it provides $3 billion in annual payments directly to local steelmakers to help them compete on price. This policy is best described as:",
+    options: [
+      "A tariff — raising the effective price of imports",
+      "A quota — limiting the quantity of steel imports allowed",
+      "A subsidy — a direct payment to domestic producers to reduce their costs",
+      "A sanction — restricting trade for political reasons"
+    ],
+    correct: 2,
+    hint: "A tariff is a tax ON imports. This policy is a payment TO the domestic industry — not a tax on foreign goods.",
+    hint2: "Answer: option C — subsidy. Key distinction: tariff = tax on imports (consumers pay more for imports). Subsidy = government payment to domestic producers (cost falls on taxpayers, not consumers directly). Both protect the domestic industry but through different mechanisms with different distributional effects.",
+    explanation: "A subsidy is a direct government payment to domestic producers, lowering their costs and making them more price-competitive against imports. Unlike a tariff (which raises the price of imports directly), a subsidy reduces domestic producer costs — so consumer import prices do not rise. The fiscal cost falls on taxpayers rather than consumers at the checkout. Subsidies can sustain industries that would otherwise shrink under competition, creating long-run efficiency costs."
+  },
+  {
+    week: 5, type: "mcq",
+    question: "A government caps the number of imported vehicles at 200,000 units per year. Once that limit is reached, no further imports are permitted regardless of price. This is an example of:",
+    options: [
+      "A tariff — it makes imports more expensive by adding a price penalty",
+      "A quota — a hard quantity limit on imports regardless of price",
+      "A subsidy — it supports domestic producers by reducing foreign competition",
+      "A sanction — it is a political measure rather than an economic one"
+    ],
+    correct: 1,
+    hint: "Think about the difference between a price-based restriction (makes imports cost more) and a quantity-based restriction (caps how many can enter at any price).",
+    hint2: "Answer: option B — quota. Tariff = price restriction (tax raises import price, any quantity allowed at higher price). Quota = quantity restriction (hard cap on units — no more imports once limit hit regardless of price). Both reduce import competition. Quotas can create 'quota rents' — windfall profits for whoever holds the import licences.",
+    explanation: "A quota is a quantity restriction — a hard cap on how much of a good can be imported, regardless of price. Unlike a tariff, which discourages imports by raising their price but allows unlimited quantity at that higher price, a quota directly limits the volume. Both protect domestic producers, but quotas are less transparent and can create 'quota rents': whoever holds the limited import licences can charge above world price and pocket the difference."
+  },
+  {
+    week: 5, type: "tf",
+    question: "True or False: Compared to a tariff, a subsidy to domestic producers is less visible to consumers because it does not directly raise the price they pay for imported goods.",
+    correct: true,
+    hint: "Think about who pays the cost in each case — do consumers see higher import prices under a subsidy, or does the cost appear elsewhere?",
+    hint2: "True. Tariff = consumers directly pay higher prices for every import. Subsidy = taxpayers fund the government payment; import prices do not rise, so consumers may not notice the policy. However, both have economic costs — subsidies are just less transparent. The cost is hidden in tax bills rather than at the checkout.",
+    explanation: "True. A tariff raises import prices directly — consumers pay more for every unit. A subsidy funds domestic producers through government payments (taxpayer money), so import prices do not rise. Consumers can still buy imports at world prices, making the cost of protection less visible. However, subsidies are not free: they cost taxpayers, can sustain inefficient industries indefinitely, and distort resource allocation. Their political advantage is precisely that the cost is spread across taxpayers rather than concentrated in obvious price rises."
+  },
+  {
+    week: 5, type: "mcq",
+    question: "Following a political dispute, Country X bans all imports and exports with Country Y, restricting trade as a tool of foreign policy pressure. This is an example of:",
+    options: [
+      "A tariff — because it raises the effective cost of trade",
+      "A quota — because it limits the volume of trade to zero",
+      "A sanction — trade restrictions imposed for political rather than purely economic reasons",
+      "Comparative advantage being reversed by government decree"
+    ],
+    correct: 2,
+    hint: "Is this restriction imposed to protect a domestic industry or to pressure another country politically? The motivation matters for how economists classify it.",
+    hint2: "Answer: option C — sanction. Key distinction: tariffs/quotas/subsidies = primarily economic tools to protect domestic industry. Sanctions = trade restrictions imposed for political purposes (punishment, coercion, foreign policy pressure). Sanctions can have significant mixed economic effects — harming both the target country and the country imposing them.",
+    explanation: "Sanctions are trade restrictions imposed for political rather than primarily economic reasons — to punish, coerce, or pressure another country. Unlike tariffs (protecting domestic industries) or quotas (managing import volumes), sanctions prioritise foreign policy goals. The economic effects can be significant and mixed: they harm the targeted country but also impose costs on the sanctioning country's exporters and consumers. The Russia-Ukraine conflict sanctions illustrate how political decisions can override economic logic with complex distributional consequences."
+  },
+
+  // ══ W7 GAP QUESTIONS — Production function, CRS, Gini ══
+
+  {
+    week: 7, type: "mcq",
+    question: "In the Solow-Swan production function Y = A × K^α × (hL)^(1−α), what does the term 'A' represent?",
+    options: [
+      "The stock of physical capital — machines, buildings and equipment",
+      "The labour force — number of people employed in the economy",
+      "Total factor productivity — technology and institutional efficiency that makes inputs more effective",
+      "The capital share parameter — the fraction of income going to capital owners"
+    ],
+    correct: 2,
+    hint: "Think about what drives output beyond just having more machines and more workers. What makes the same inputs produce more output?",
+    hint2: "Answer: option C. A = total factor productivity (TFP). It captures how efficiently all inputs are combined — technology, management quality, rule of law, institutions. K = physical capital. L = labour. h = human capital per worker. α = capital's share of income. A is the key to unlimited long-run growth because unlike K, it has no diminishing returns.",
+    explanation: "A represents total factor productivity (TFP) — the efficiency with which labour and capital are combined. It captures technology, management quality, institutions, and rule of law that make inputs more productive. A is the key driver of sustained long-run growth because, unlike physical capital K (which faces diminishing returns), TFP can grow indefinitely through innovation and institutional improvement. Better technology, better governance, and better resource allocation all raise A."
+  },
+  {
+    week: 7, type: "mcq",
+    question: "What does it mean when economists say the production function has 'constant returns to scale'?",
+    options: [
+      "Output grows at a constant rate regardless of which inputs increase",
+      "Doubling all inputs simultaneously — capital, human capital, and labour — exactly doubles output",
+      "Adding one more unit of capital always produces the same additional output",
+      "Technology remains constant as the economy expands"
+    ],
+    correct: 1,
+    hint: "Imagine replicating an entire economy — the same factories, workers, and skills — somewhere else. How much would the copy produce?",
+    hint2: "Answer: option B. Constant returns to scale (CRS): scale ALL inputs by the same factor → output scales by the same factor. Double K, h, and L → output exactly doubles. This is different from diminishing returns to ONE input (e.g. adding more capital while labour stays fixed). CRS applies when you scale everything together.",
+    explanation: "Constant returns to scale means if you proportionally increase all inputs simultaneously — capital, labour, and human capital — output increases by the same proportion. Double everything and output exactly doubles, like replicating an entire factory complex with all its workers. This differs from diminishing marginal returns to a single input (adding more machines to a fixed workforce). CRS is a realistic assumption for economies: a second identical economy would produce as much as the first."
+  },
+  {
+    week: 7, type: "mcq",
+    question: "Country A has a Gini coefficient of 0.28 and Country B has a Gini coefficient of 0.52. Both have similar GDP per capita. What does this comparison tell us?",
+    options: [
+      "Country A has a faster-growing economy than Country B",
+      "Country A has more equally distributed income than Country B, despite similar average income",
+      "Country B has higher absolute poverty rates than Country A",
+      "Country A has lower GDP than Country B because equality reduces growth incentives"
+    ],
+    correct: 1,
+    hint: "Recall what the Gini coefficient measures and what the scale from 0 to 1 means — and note that both countries have similar GDP per capita.",
+    hint2: "Answer: option B. Gini: 0 = perfect equality. 1 = perfect inequality. Lower Gini = more equal. Country A (0.28) = relatively equal distribution. Country B (0.52) = high inequality. Crucially: same GDP per capita but different Gini means the AVERAGE income is similar — but distribution differs. In Country B, high earners pull up the average while most people earn much less.",
+    explanation: "The Gini coefficient measures income inequality from 0 (everyone earns identically) to 1 (one person earns everything). With similar GDP per capita but different Gini coefficients, both countries have the same average income — but Country B's income is far more concentrated. In Country B, high earners pull the average up, meaning most households earn below the mean. This illustrates why GDP per capita is an incomplete measure of living standards: two countries can look equally 'rich' on average while offering very different typical lived experiences."
+  },
+  {
+    week: 7, type: "sa",
+    question: "Explain the Solow-Swan production function Y = A × f(K, hL). What does each input represent, and what does the production function tell us about the sources of economic growth?",
+    keywords: ["capital", "labour", "human capital", "productivity", "technology", "diminishing returns", "constant returns", "TFP", "A", "growth"],
+    minKeywords: 3,
+    hint: "Identify each variable, explain its role, then connect the function to what actually drives long-run growth. Which inputs face limits and which do not?",
+    hint2: "Variables: Y = output. A = total factor productivity (technology/institutions). K = physical capital (machines, buildings). h = human capital per worker (skills, education). L = labour (workforce size). Growth sources: more K (diminishing returns — hits steady state), more hL (human capital investments), higher A (no diminishing returns — unlimited growth). Key: only A can sustain indefinite long-run growth.",
+    modelAnswer: "The production function Y = A × f(K, hL) describes how an economy converts inputs into output. Y is total output (GDP). K is the stock of physical capital — machines, buildings, and equipment. L is the size of the labour force, and h represents human capital per worker — skills, education, and health that make each worker more productive (so hL is the effective labour input). A is total factor productivity (TFP), capturing technology, institutions, management quality, and all other factors that affect how efficiently inputs are used. The function tells us growth can come from: accumulating more capital K (but this faces diminishing returns and stalls at a steady state), improving human capital h (through education and training), or raising A through technological progress and institutional improvement. Since A does not face diminishing returns — ideas and better institutions can spread without limit — sustained long-run growth ultimately depends on ongoing improvements in productivity rather than simply accumulating more machines."
+  },
+
+  // ══ W8 GAP QUESTIONS — Money, C function, Output gap, Phillips curve ══
+
+  {
+    week: 8, type: "mcq",
+    question: "Which of the following correctly identifies all three functions of money?",
+    options: [
+      "Medium of exchange, unit of account, and store of value",
+      "Legal tender, reserve requirement, and liquidity ratio",
+      "Commodity backing, fiat issuance, and central bank control",
+      "Interest-bearing, government-issued, and inflation-proof"
+    ],
+    correct: 0,
+    hint: "Think about the three distinct jobs money does: what makes it useful for transactions, for comparing prices, and for saving?",
+    hint2: "Answer: option A. Three functions: (1) Medium of exchange — universally accepted in transactions (solves barter's double coincidence of wants). (2) Unit of account — prices quoted in a common unit, allowing comparison. (3) Store of value — preserves purchasing power over time so you can save and spend later.",
+    explanation: "Money performs three distinct functions: (1) Medium of exchange — it is universally accepted in transactions, eliminating the need for barter (where both parties must want what the other has — the 'double coincidence of wants' problem). (2) Unit of account — prices are quoted in money, providing a common measure that makes comparison and calculation possible. (3) Store of value — money holds purchasing power over time, allowing people to save and defer spending. All modern currencies are fiat money, meaning their value comes from government decree and social trust rather than intrinsic worth."
+  },
+  {
+    week: 8, type: "mcq",
+    question: "Australian dollar notes have no intrinsic value — they are pieces of paper. Yet they function as money. What type of money is this, and what gives it value?",
+    options: [
+      "Commodity money — the paper itself has physical value as a raw material",
+      "Fiat money — it has value by government decree and social convention, backed by institutional trust",
+      "Reserve money — because it is backed 1-for-1 by gold in RBA vaults",
+      "M3 money — the broadest monetary aggregate, which includes savings deposits"
+    ],
+    correct: 1,
+    hint: "What is the difference between money that has value in itself (like gold or salt) versus money that only has value because everyone agrees it does?",
+    hint2: "Answer: option B — fiat money. 'Fiat' = Latin for 'by decree.' The government declares it legal tender (must be accepted for debts). Value rests on social trust and convention — if everyone accepts it, it works as money. Contrast: commodity money (gold, silver, salt, cattle) has intrinsic value independent of its monetary role. All modern currencies are fiat.",
+    explanation: "Fiat money has no intrinsic value — its worth comes entirely from government declaration ('legal tender') and the social convention that everyone will accept it. This contrasts with commodity money (gold, silver, salt) which had value independent of its use as currency. Fiat money's strength is flexibility — governments and central banks can adjust the money supply without needing physical commodities. Its weakness is that value depends on trust: if people lose confidence in the issuing institution, hyperinflation can follow."
+  },
+  {
+    week: 8, type: "tf",
+    question: "True or False: In the consumer spending function C = C̄ + a(Y − T), a rise in taxes (T) while gross income (Y) stays unchanged will reduce household consumption.",
+    correct: true,
+    hint: "Look at the formula carefully — what happens to disposable income (Y − T) when T rises and Y does not change?",
+    hint2: "True. C = C̄ + a(Y−T). C̄ = autonomous consumption (baseline). a = MPC (marginal propensity to consume, between 0 and 1). (Y−T) = disposable income. If T rises and Y unchanged → (Y−T) falls → C falls by a × ΔT. Example: MPC = 0.8, tax rises by $100 → consumption falls by $80. This is the mechanism through which tax policy affects aggregate demand.",
+    explanation: "True. The consumer spending function shows consumption depends on disposable income (Y − T) multiplied by the MPC (a), plus autonomous consumption (C̄). If taxes rise while gross income is unchanged, disposable income falls — consumers have less to spend. Consumption falls by MPC × the tax increase. This is why tax cuts stimulate spending and tax rises dampen it. The multiplier effect works in reverse too: the fall in consumption reduces incomes elsewhere, causing further falls in spending."
+  },
+  {
+    week: 8, type: "mcq",
+    question: "The economy is running above its potential output — unemployment is below its natural rate and firms are near full capacity. According to the Phillips curve relationship, what would you expect to happen to inflation?",
+    options: [
+      "Inflation will fall because higher productivity reduces production costs",
+      "Inflation will rise above expectations as the positive output gap creates upward price pressure",
+      "Inflation will be unaffected — the output gap and inflation are unrelated in the short run",
+      "Inflation will stabilise automatically as wage growth slows to match productivity"
+    ],
+    correct: 1,
+    hint: "The Phillips curve links the output gap to inflation. When the economy is running 'hot' — above potential — what happens to wage and price pressure?",
+    hint2: "Answer: option B. Phillips curve: positive output gap (actual GDP > potential GDP) → capacity constraints + low unemployment → workers have bargaining power, firms can raise prices → inflation rises above expected. Negative output gap → spare capacity, weak demand → inflation below expected. RBA watches output gap as early inflation signal.",
+    explanation: "The Phillips curve describes how the output gap drives inflation. When actual GDP exceeds potential GDP (a positive output gap), the economy is running above capacity: unemployment is low, workers can demand higher wages, and firms facing supply constraints can raise prices. These pressures push inflation above expectations. The RBA monitors the output gap as a leading indicator and raises interest rates to cool the economy before inflation becomes entrenched. In the short run, there is a trade-off between a tight labour market and price stability."
+  },
+  {
+    week: 8, type: "mcq",
+    question: "Which of the following best describes the 'output gap' in macroeconomics?",
+    options: [
+      "The difference between a country's GDP and its government spending",
+      "The gap between nominal GDP and real GDP caused by inflation",
+      "The difference between actual GDP and potential GDP — what the economy could produce at full employment without accelerating inflation",
+      "The productivity gap between rich and poor countries in the Solow model"
+    ],
+    correct: 2,
+    hint: "Think about two versions of the economy: what it is currently producing versus what it could sustainably produce if all resources were fully employed.",
+    hint2: "Answer: option C. Output gap = actual GDP − potential GDP. Positive gap: above full capacity → inflationary pressure. Negative gap: below full capacity → unemployment above natural rate, spare capacity, disinflationary. Potential GDP = sustainable full-employment output without accelerating inflation. Central banks and governments both use output gap estimates to guide policy.",
+    explanation: "The output gap measures the difference between actual GDP and potential GDP — the sustainable level of output at full employment without generating accelerating inflation. A positive gap means the economy is running 'hot' — above capacity, causing inflationary pressure. A negative gap means there is spare capacity — unemployment exceeds the natural rate and demand is weak. The output gap is a central concept in both fiscal and monetary policy: the RBA raises rates when the gap is positive, and government stimulus is most justified when the gap is deeply negative."
+  },
+  {
+    week: 8, type: "sa",
+    question: "What is money, what are its three functions, and what is the difference between commodity money and fiat money? Why do modern economies use fiat money?",
+    keywords: ["medium of exchange", "unit of account", "store of value", "fiat", "commodity", "intrinsic", "trust", "government", "barter", "legal tender"],
+    minKeywords: 3,
+    hint: "Define money, list each function with a brief explanation, then contrast the two types by explaining what gives each its value.",
+    hint2: "Three functions: (1) Medium of exchange (solves barter double coincidence problem). (2) Unit of account (common price measure). (3) Store of value (preserves purchasing power). Commodity = intrinsic value (gold, salt). Fiat = value by government decree and social trust, no intrinsic value. Modern economies use fiat: more flexible, central bank can manage supply, doesn't require hoarding a physical commodity.",
+    modelAnswer: "Money is any asset widely accepted in exchange for goods and services. It performs three functions: (1) Medium of exchange — accepted in all transactions, eliminating the need for barter (which requires a double coincidence of wants: both parties must want what the other has). (2) Unit of account — prices are denominated in money, providing a common measure that enables easy comparison and economic calculation. (3) Store of value — money preserves purchasing power over time, allowing saving and deferred spending. Commodity money (gold, silver, salt, cattle) has intrinsic value independent of its monetary role. Fiat money (all modern currencies) has no intrinsic value — it is paper or digital money whose worth rests entirely on government decree ('legal tender') and social trust. Modern economies use fiat money because it is flexible: central banks can expand or contract the money supply as needed, without being constrained by physical commodity stocks. The risk is that fiat money requires maintaining institutional credibility — if trust collapses, hyperinflation can follow."
   }
 
 ];
@@ -2188,6 +2444,130 @@ function clearHistory() {
   if (!confirm("Clear all quiz history? This cannot be undone.")) return;
   localStorage.removeItem("comm1150_history");
   showHistory();
+}
+
+// ─── ADMIN ───────────────────────────────────────────────────────────────────
+function openAdminPw() {
+  document.getElementById("admin-pw-input").value = "";
+  document.getElementById("admin-pw-error").textContent = "";
+  document.getElementById("admin-pw-overlay").classList.add("open");
+  setTimeout(function() { document.getElementById("admin-pw-input").focus(); }, 120);
+}
+
+function closeAdminPw() {
+  document.getElementById("admin-pw-overlay").classList.remove("open");
+}
+
+function adminLogin() {
+  var pw = document.getElementById("admin-pw-input").value;
+  if (pw === "abc123") {
+    closeAdminPw();
+    openAdmin();
+  } else {
+    var err = document.getElementById("admin-pw-error");
+    err.textContent = "Incorrect password.";
+    document.getElementById("admin-pw-input").value = "";
+    document.getElementById("admin-pw-input").focus();
+  }
+}
+
+function openAdmin() {
+  renderAdmin("");
+  document.getElementById("admin-overlay").classList.add("open");
+  document.body.style.overflow = "hidden";
+}
+
+function closeAdmin() {
+  document.getElementById("admin-overlay").classList.remove("open");
+  document.body.style.overflow = "";
+}
+
+function renderAdmin(filter) {
+  var q = filter ? filter.toLowerCase() : "";
+  var weeks = [5, 7, 8];
+  var weekNames = { 5: "Week 5 — Trade & Globalisation", 7: "Week 7 — Growth & Inequality", 8: "Week 8 — Short-run Fluctuations & Policy" };
+  var total = QUESTIONS.length;
+  var sa = QUESTIONS.filter(function(x) { return x.type === "sa"; }).length;
+  var mcqtf = total - sa;
+
+  var body = document.getElementById("admin-body");
+
+  // search bar
+  var searchHtml = "<div class='admin-search-wrap'>" +
+    "<input class='admin-search' id='admin-search' type='text' placeholder='🔍  Search questions…' value='" + escHtml(filter || "") + "' oninput='renderAdmin(this.value)'>" +
+    "</div>";
+
+  // stats
+  var statsHtml = "<div class='admin-stats'>" +
+    "<div class='admin-stat'><div class='admin-stat-num'>" + total + "</div><div class='admin-stat-label'>Total Questions</div></div>" +
+    "<div class='admin-stat'><div class='admin-stat-num'>" + mcqtf + "</div><div class='admin-stat-label'>MCQ / True-False</div></div>" +
+    "<div class='admin-stat'><div class='admin-stat-num'>" + sa + "</div><div class='admin-stat-label'>Short Answer</div></div>" +
+    "</div>";
+
+  var contentHtml = "";
+  weeks.forEach(function(week) {
+    var qs = QUESTIONS.filter(function(x) {
+      if (x.week !== week) return false;
+      if (!q) return true;
+      return (x.question + " " + (x.modelAnswer || "") + " " + (x.explanation || "")).toLowerCase().indexOf(q) !== -1;
+    });
+    if (qs.length === 0) return;
+
+    contentHtml += "<div class='admin-week-hdr'>" + weekNames[week] +
+      "<span class='admin-week-count'>" + qs.length + " question" + (qs.length !== 1 ? "s" : "") + "</span></div>";
+
+    qs.forEach(function(item, i) {
+      var typeLabel = item.type === "mcq" ? "MCQ" : item.type === "tf" ? "True / False" : "Short Answer";
+      var typeCls   = item.type === "mcq" ? "badge-mcq" : item.type === "tf" ? "badge-tf" : "badge-sa";
+
+      var answerHtml = "";
+      if (item.type === "mcq") {
+        answerHtml = "<div class='admin-opts'>";
+        var letters = ["A","B","C","D"];
+        item.options.forEach(function(opt, oi) {
+          var cls = oi === item.correct ? "admin-opt correct" : "admin-opt";
+          answerHtml += "<div class='" + cls + "'>" + letters[oi] + ". " + escHtml(opt) + "</div>";
+        });
+        answerHtml += "</div>";
+      } else if (item.type === "tf") {
+        answerHtml = "<div class='admin-opts'>" +
+          "<div class='admin-opt" + (item.correct === true  ? " correct" : "") + "'>True</div>" +
+          "<div class='admin-opt" + (item.correct === false ? " correct" : "") + "'>False</div>" +
+          "</div>";
+      } else {
+        answerHtml = "<div class='admin-answer-label'>Model Answer</div>" +
+          "<div class='admin-model-ans'>" + escHtml(item.modelAnswer || "") + "</div>";
+        if (item.keywords && item.keywords.length) {
+          answerHtml += "<div class='admin-keywords'>" +
+            item.keywords.map(function(k) { return "<span class='admin-kw'>" + escHtml(k) + "</span>"; }).join("") +
+            "</div>";
+        }
+      }
+
+      contentHtml += "<div class='admin-q-card'>" +
+        "<div class='admin-q-meta'>" +
+          "<span class='admin-q-num'>#" + (i + 1) + "</span>" +
+          "<span class='badge " + typeCls + "'>" + typeLabel + "</span>" +
+        "</div>" +
+        "<div class='admin-q-text'>" + escHtml(item.question) + "</div>" +
+        answerHtml +
+        "</div>";
+    });
+  });
+
+  if (!contentHtml) {
+    contentHtml = "<div style='text-align:center;color:var(--text-3);padding:48px 0;font-size:15px;'>No questions match your search.</div>";
+  }
+
+  body.innerHTML = searchHtml + statsHtml + contentHtml;
+
+  var total_shown = QUESTIONS.filter(function(x) {
+    if (!q) return true;
+    return (x.question + " " + (x.modelAnswer || "") + " " + (x.explanation || "")).toLowerCase().indexOf(q) !== -1;
+  }).length;
+  document.getElementById("admin-hdr-sub").textContent = q
+    ? total_shown + " result" + (total_shown !== 1 ? "s" : "") + " for "" + filter + """
+    : total + " questions across Weeks 5, 7 & 8";
 }
 
 function openNotes() {
