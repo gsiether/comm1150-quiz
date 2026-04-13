@@ -239,9 +239,14 @@
     .topic-match-count.has-match { color: var(--green); }
     .topic-match-count.no-match { color: var(--red); }
     .topic-preset-label { font-size: 11px; font-weight: 700; color: var(--text-3); text-transform: uppercase; letter-spacing: 0.07em; margin-bottom: 10px; }
-    .topic-chips { display: flex; flex-wrap: wrap; gap: 8px; }
-    .topic-chip { background: var(--surface); border: 1.5px solid var(--border); border-radius: 99px; padding: 7px 14px; font-size: 13px; font-weight: 600; cursor: pointer; font-family: inherit; color: var(--text-2); transition: all 0.15s; white-space: nowrap; }
+    .topic-week-group { margin-bottom: 14px; }
+    .topic-week-divider { font-size: 11px; font-weight: 700; color: var(--text-3); text-transform: uppercase; letter-spacing: 0.07em; margin-bottom: 8px; display: flex; align-items: center; gap: 8px; }
+    .topic-week-divider::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+    .topic-chips-row { display: flex; flex-wrap: wrap; gap: 6px; }
+    .topic-chip { background: var(--surface); border: 1.5px solid var(--border); border-radius: 99px; padding: 7px 13px; font-size: 12.5px; font-weight: 600; cursor: pointer; font-family: inherit; color: var(--text-2); transition: all 0.15s; white-space: nowrap; }
     .topic-chip.selected { background: var(--indigo-light); color: var(--indigo); border-color: var(--indigo-mid); }
+    .topic-clear-btn { font-size: 12px; font-weight: 600; color: var(--text-3); background: none; border: none; cursor: pointer; font-family: inherit; padding: 0; text-decoration: underline; margin-left: 6px; }
+    .topic-clear-btn:hover { color: var(--text-2); }
 
     /* ─── RESUME BANNER ─── */
     .resume-banner { background: var(--amber-light); border: 1.5px solid var(--amber-border); border-radius: var(--r); padding: 14px 16px; margin-bottom: 0; display: none; }
@@ -382,9 +387,12 @@
   <div id="topic-section" style="display:none">
     <div class="section-label">Search by topic</div>
     <input type="text" class="topic-search" id="topic-input" placeholder="e.g. comparative advantage, multiplier, Phillips curve…" oninput="onTopicInput(this.value)" autocomplete="off">
-    <div class="topic-match-count" id="topic-match-count"></div>
+    <div style="display:flex;align-items:center;min-height:20px;margin-bottom:12px;">
+      <div class="topic-match-count" id="topic-match-count"></div>
+      <button class="topic-clear-btn" id="topic-clear-btn" onclick="clearTopicSelection()" style="display:none">Clear all</button>
+    </div>
     <div class="topic-preset-label">Suggested topics</div>
-    <div class="topic-chips" id="topic-chips"></div>
+    <div id="topic-chips"></div>
   </div>
   <div class="section-label">Number of questions</div>
   <div class="count-grid">
@@ -1981,42 +1989,61 @@ var results        = [];
 var answered       = false;
 var questionCount  = 10;
 var maxScore       = 40;
-var quizMode       = "week";
-var topicFilter    = "";
+var quizMode            = "week";
+var topicTextFilter     = "";          // free-text input value
+var selectedTopicQueries = [];         // array of active chip query strings
 
 var PRESET_TOPICS = [
-  { label: "Comparative advantage",  query: "comparative advantage" },
-  { label: "Absolute advantage",     query: "absolute advantage" },
-  { label: "Gains from trade",       query: "gains from" },
-  { label: "Tariffs",                query: "tariff" },
-  { label: "Quotas",                 query: "quota" },
-  { label: "Subsidies",              query: "subsid" },
-  { label: "Sanctions",              query: "sanction" },
-  { label: "Solow model",            query: "solow" },
-  { label: "Production function",    query: "production function" },
-  { label: "TFP",                    query: "total factor productivity" },
-  { label: "Human capital",          query: "human capital" },
-  { label: "Diminishing returns",    query: "diminishing returns" },
-  { label: "Gini coefficient",       query: "gini" },
-  { label: "Fiscal policy",          query: "fiscal" },
-  { label: "Multiplier & MPC",       query: "multiplier" },
-  { label: "Consumption function",   query: "consumer spending function" },
-  { label: "Fiat money",             query: "fiat" },
-  { label: "Output gap",             query: "output gap" },
-  { label: "Phillips curve",         query: "phillips" },
-  { label: "Monetary policy",        query: "monetary policy" }
+  { week: 5, label: "Comparative advantage",  query: "comparative advantage" },
+  { week: 5, label: "Absolute advantage",     query: "absolute advantage" },
+  { week: 5, label: "Gains from trade",       query: "gains from" },
+  { week: 5, label: "Tariffs",                query: "tariff" },
+  { week: 5, label: "Quotas",                 query: "quota" },
+  { week: 5, label: "Subsidies",              query: "subsid" },
+  { week: 5, label: "Sanctions",              query: "sanction" },
+  { week: 7, label: "Solow model",            query: "solow" },
+  { week: 7, label: "Production function",    query: "production function" },
+  { week: 7, label: "TFP",                    query: "total factor productivity" },
+  { week: 7, label: "Human capital",          query: "human capital" },
+  { week: 7, label: "Diminishing returns",    query: "diminishing returns" },
+  { week: 7, label: "Gini coefficient",       query: "gini" },
+  { week: 8, label: "Fiscal policy",          query: "fiscal" },
+  { week: 8, label: "Multiplier & MPC",       query: "multiplier" },
+  { week: 8, label: "Consumption function",   query: "consumer spending function" },
+  { week: 8, label: "Fiat money",             query: "fiat" },
+  { week: 8, label: "Output gap",             query: "output gap" },
+  { week: 8, label: "Phillips curve",         query: "phillips" },
+  { week: 8, label: "Monetary policy",        query: "monetary policy" }
 ];
 
 (function renderTopicChips() {
   var wrap = document.getElementById("topic-chips");
   if (!wrap) return;
-  PRESET_TOPICS.forEach(function(t) {
-    var btn = document.createElement("button");
-    btn.className = "topic-chip";
-    btn.textContent = t.label;
-    btn.dataset.query = t.query;
-    btn.onclick = function() { selectTopicChip(this); };
-    wrap.appendChild(btn);
+  var weekMeta = {
+    5: "W5 · Trade & Globalisation",
+    7: "W7 · Growth & Inequality",
+    8: "W8 · Short-run Fluctuations"
+  };
+  var weeks = [5, 7, 8];
+  weeks.forEach(function(w) {
+    var group = document.createElement("div");
+    group.className = "topic-week-group";
+    var div = document.createElement("div");
+    div.className = "topic-week-divider";
+    div.textContent = weekMeta[w];
+    group.appendChild(div);
+    var row = document.createElement("div");
+    row.className = "topic-chips-row";
+    PRESET_TOPICS.filter(function(t) { return t.week === w; }).forEach(function(t) {
+      var btn = document.createElement("button");
+      btn.className = "topic-chip";
+      btn.textContent = "W" + t.week + ": " + t.label;
+      btn.dataset.query = t.query;
+      btn.onclick = function() { selectTopicChip(this); };
+      row.appendChild(btn);
+    });
+    group.appendChild(row);
+    wrap.appendChild(group);
   });
 })();
 
@@ -2053,53 +2080,70 @@ function switchMode(mode) {
   updateStartBtn();
 }
 
-function getTopicPool(query) {
-  if (!query) return [];
-  var lq = query.toLowerCase();
-  return QUESTIONS.filter(function(item) {
-    var haystack = [item.question, item.hint || "", item.hint2 || "",
-                    item.explanation || "", item.modelAnswer || "",
-                    (item.keywords || []).join(" ")].join(" ").toLowerCase();
-    return haystack.indexOf(lq) !== -1;
+function getTopicPool() {
+  var seen = new Set();
+  var results = [];
+  // Build list of all active query strings (chips + free text)
+  var queries = selectedTopicQueries.slice();
+  if (topicTextFilter.trim()) queries.push(topicTextFilter.trim());
+  if (queries.length === 0) return [];
+  queries.forEach(function(q) {
+    var lq = q.toLowerCase();
+    QUESTIONS.forEach(function(item) {
+      if (!seen.has(item)) {
+        var hay = [item.question, item.hint || "", item.hint2 || "",
+                   item.explanation || "", item.modelAnswer || "",
+                   (item.keywords || []).join(" ")].join(" ").toLowerCase();
+        if (hay.indexOf(lq) !== -1) { seen.add(item); results.push(item); }
+      }
+    });
   });
+  return results;
 }
 
 function updateTopicCount() {
   var el = document.getElementById("topic-match-count");
-  if (!topicFilter.trim()) { el.textContent = ""; el.className = "topic-match-count"; return; }
-  var n = getTopicPool(topicFilter).length;
-  if (n === 0) {
-    el.textContent = "No questions found for this topic.";
-    el.className = "topic-match-count no-match";
-  } else {
-    el.textContent = n + " question" + (n !== 1 ? "s" : "") + " found";
-    el.className = "topic-match-count has-match";
+  var clearBtn = document.getElementById("topic-clear-btn");
+  var hasAny = selectedTopicQueries.length > 0 || topicTextFilter.trim();
+  if (!hasAny) {
+    el.textContent = ""; el.className = "topic-match-count";
+    clearBtn.style.display = "none"; return;
   }
+  var n = getTopicPool().length;
+  var parts = [];
+  if (selectedTopicQueries.length > 0)
+    parts.push(selectedTopicQueries.length + " topic" + (selectedTopicQueries.length !== 1 ? "s" : "") + " selected");
+  if (topicTextFilter.trim()) parts.push('searching "' + topicTextFilter.trim() + '"');
+  el.textContent = parts.join(" · ") + " — " + n + " question" + (n !== 1 ? "s" : "");
+  el.className = "topic-match-count " + (n === 0 ? "no-match" : "has-match");
+  clearBtn.style.display = hasAny ? "inline" : "none";
 }
 
 function onTopicInput(val) {
-  topicFilter = val;
-  document.querySelectorAll(".topic-chip").forEach(function(c) {
-    c.classList.toggle("selected", c.dataset.query.toLowerCase() === val.trim().toLowerCase());
-  });
+  topicTextFilter = val;
   updateTopicCount();
   updateStartBtn();
 }
 
 function selectTopicChip(el) {
   var query = el.dataset.query;
-  var input = document.getElementById("topic-input");
-  if (topicFilter.toLowerCase() === query.toLowerCase()) {
-    // deselect
+  var idx = selectedTopicQueries.indexOf(query);
+  if (idx !== -1) {
+    selectedTopicQueries.splice(idx, 1);
     el.classList.remove("selected");
-    topicFilter = "";
-    input.value = "";
   } else {
-    document.querySelectorAll(".topic-chip").forEach(function(c) { c.classList.remove("selected"); });
+    selectedTopicQueries.push(query);
     el.classList.add("selected");
-    topicFilter = query;
-    input.value = query;
   }
+  updateTopicCount();
+  updateStartBtn();
+}
+
+function clearTopicSelection() {
+  selectedTopicQueries = [];
+  topicTextFilter = "";
+  document.getElementById("topic-input").value = "";
+  document.querySelectorAll(".topic-chip").forEach(function(c) { c.classList.remove("selected"); });
   updateTopicCount();
   updateStartBtn();
 }
@@ -2109,7 +2153,7 @@ function updateStartBtn() {
   if (quizMode === "week") {
     btn.disabled = selectedWeeks.size === 0;
   } else {
-    btn.disabled = getTopicPool(topicFilter).length === 0;
+    btn.disabled = getTopicPool().length === 0;
   }
 }
 
@@ -2121,7 +2165,7 @@ function selectCount(el) {
 
 function startQuiz() {
   var pool = quizMode === "topic"
-    ? getTopicPool(topicFilter)
+    ? getTopicPool()
     : QUESTIONS.filter(function(q) { return selectedWeeks.has(q.week); });
   var mcqPool = shuffle(pool.filter(function(q) { return q.type === "mcq" || q.type === "tf"; }));
   var saPool  = shuffle(pool.filter(function(q) { return q.type === "sa"; }));
