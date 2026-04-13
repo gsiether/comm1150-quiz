@@ -291,6 +291,20 @@
     .sa-feedback-summary { margin-top: 12px; padding: 10px 13px; background: var(--indigo-light); border-left: 3px solid var(--indigo); border-radius: 0 8px 8px 0; font-size: 13.5px; color: var(--text); line-height: 1.55; font-style: italic; }
     .btn-check.loading { background: var(--indigo-dark); pointer-events: none; }
 
+    /* ─── I'M CONFUSED ─── */
+    .confused-row { margin-top: 14px; }
+    .btn-confused { display: inline-flex; align-items: center; gap: 6px; background: none; border: 1.5px solid var(--amber-border); border-radius: 99px; padding: 8px 16px; font-size: 13px; font-weight: 600; color: #92400E; cursor: pointer; font-family: inherit; transition: all 0.15s; }
+    .btn-confused:hover { background: var(--amber-light); }
+    .btn-confused.loading { opacity: 0.6; pointer-events: none; }
+    .explain-panel { margin-top: 12px; background: var(--amber-light); border: 1.5px solid var(--amber-border); border-radius: var(--r); padding: 16px; animation: fadeIn 0.25s ease; }
+    .explain-concept { font-size: 13px; font-weight: 800; color: #78350F; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 6px; }
+    .explain-summary { font-size: 14px; color: #78350F; font-weight: 500; line-height: 1.5; margin-bottom: 12px; }
+    .explain-points { list-style: none; padding: 0; margin: 0 0 12px; display: flex; flex-direction: column; gap: 7px; }
+    .explain-points li { display: flex; gap: 8px; font-size: 13.5px; color: #78350F; line-height: 1.5; }
+    .explain-points li::before { content: "•"; font-weight: 900; flex-shrink: 0; color: #D97706; }
+    .explain-example { font-size: 13px; color: #92400E; background: rgba(255,255,255,0.5); border-radius: 8px; padding: 9px 12px; border-left: 3px solid #D97706; line-height: 1.5; font-style: italic; }
+    .explain-example-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: #D97706; margin-bottom: 4px; }
+
     /* ─── ADMIN ─── */
     .admin-lock-btn { margin-left: 4px; background: none; border: none; padding: 6px; font-size: 16px; cursor: pointer; color: var(--text-3); line-height: 1; opacity: 0.5; transition: opacity 0.15s; }
     .admin-lock-btn:active { opacity: 1; }
@@ -449,6 +463,10 @@
       <button class="hint-toggle hint-toggle-2" id="hint-btn2" onclick="showHint2()" style="display:none">🔍 Further hint</button>
       <div class="hint-box hint-box-2" id="hint-box2"></div>
     </div>
+    <div class="confused-row">
+      <button class="btn-confused" id="confused-btn" onclick="explainTopic()">😕 I'm Confused?</button>
+    </div>
+    <div id="explain-panel" style="display:none"></div>
     <div class="feedback" id="feedback">
       <div class="feedback-head" id="feedback-head">
         <div class="feedback-icon" id="feedback-icon"></div>
@@ -2183,6 +2201,7 @@ function renderQuestion() {
   var q = quizQuestions[currentIndex];
   answered = false;
   selectedOption = null;
+  resetExplain();
 
   document.getElementById("progress-fill").style.width = (currentIndex / quizQuestions.length * 100) + "%";
   document.getElementById("q-counter").textContent = "Question " + (currentIndex + 1) + " of " + quizQuestions.length;
@@ -2770,6 +2789,66 @@ function switchTab(el, panelId) {
   document.querySelectorAll(".notes-panel").forEach(function(p) { p.classList.remove("active"); });
   el.classList.add("active");
   document.getElementById(panelId).classList.add("active");
+}
+
+// ── AI Explain — "I'm Confused?" ─────────────────────────────────────────────
+async function explainTopic() {
+  var q = quizQuestions[currentIndex];
+  if (!q) return;
+
+  var btn = document.getElementById("confused-btn");
+  var panel = document.getElementById("explain-panel");
+
+  // If already showing, toggle off
+  if (panel.style.display !== "none" && panel.innerHTML.trim()) {
+    panel.style.display = "none";
+    btn.textContent = "😕 I'm Confused?";
+    return;
+  }
+
+  btn.classList.add("loading");
+  btn.textContent = "🤔 Explaining…";
+  panel.style.display = "none";
+  panel.innerHTML = "";
+
+  try {
+    var resp = await fetch("/.netlify/functions/explain", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ question: q.question, week: q.week, type: q.type })
+    });
+
+    if (!resp.ok) throw new Error("API error");
+    var data = await resp.json();
+    if (data.error) throw new Error(data.error);
+
+    var pointsHtml = (data.points || []).map(function(p) {
+      return "<li>" + escHtml(p) + "</li>";
+    }).join("");
+
+    panel.innerHTML =
+      "<div class='explain-concept'>" + escHtml(data.concept || "") + "</div>" +
+      "<div class='explain-summary'>" + escHtml(data.summary || "") + "</div>" +
+      "<ul class='explain-points'>" + pointsHtml + "</ul>" +
+      (data.example ? "<div class='explain-example-label'>Example</div><div class='explain-example'>" + escHtml(data.example) + "</div>" : "");
+
+    panel.style.display = "block";
+    btn.textContent = "😕 Hide explanation";
+  } catch(e) {
+    panel.innerHTML = "<div style='font-size:13px;color:#92400E;'>Couldn't load explanation — check your connection and try again.</div>";
+    panel.style.display = "block";
+    btn.textContent = "😕 I'm Confused?";
+  }
+
+  btn.classList.remove("loading");
+}
+
+// reset explain panel when moving to next question
+function resetExplain() {
+  var panel = document.getElementById("explain-panel");
+  var btn = document.getElementById("confused-btn");
+  if (panel) { panel.innerHTML = ""; panel.style.display = "none"; }
+  if (btn) { btn.textContent = "😕 I'm Confused?"; btn.classList.remove("loading"); }
 }
 
 // ── Settings ──
