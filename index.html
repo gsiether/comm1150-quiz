@@ -141,6 +141,9 @@
     .btn-next { display: none; width: 100%; background: var(--indigo); color: white; border: none; border-radius: 12px; padding: 15px; font-size: 16px; font-weight: 700; cursor: pointer; font-family: inherit; transition: all 0.15s; -webkit-appearance: none; }
     .btn-next.show { display: block; animation: fadeUp 0.18s ease; }
     .btn-next:active { background: var(--indigo-dark); transform: scale(0.98); }
+    .btn-skip { display: block; width: 100%; background: none; border: 1.5px solid var(--border); border-radius: 12px; padding: 13px; font-size: 14px; font-weight: 600; color: var(--text-3); cursor: pointer; font-family: inherit; transition: all 0.15s; -webkit-appearance: none; }
+    .btn-skip:hover { border-color: var(--text-3); color: var(--text-2); }
+    .btn-skip:active { transform: scale(0.98); }
 
     .summary-hero { text-align: center; padding: 8px 0 4px; }
     .score-ring { width: 110px; height: 110px; border-radius: 50%; background: var(--indigo); display: flex; flex-direction: column; align-items: center; justify-content: center; margin: 0 auto 16px; box-shadow: 0 6px 24px rgba(79,70,229,0.3); }
@@ -482,6 +485,7 @@
   <div class="action-row">
     <button class="btn-check" id="check-btn" onclick="submitAnswer()" disabled>Check Answer</button>
     <button class="btn-next"  id="next-btn"  onclick="nextQuestion()">Next →</button>
+    <button class="btn-skip"  id="skip-btn"  onclick="skipQuestion()">⏭ Skip question</button>
   </div>
 </div>
 
@@ -2230,6 +2234,7 @@ function renderQuestion() {
   document.getElementById("check-btn").disabled = true;
   document.getElementById("check-btn").style.display = "block";
   document.getElementById("next-btn").classList.remove("show");
+  document.getElementById("skip-btn").style.display = "block";
 
   var area = document.getElementById("q-answer-area");
   area.innerHTML = "";
@@ -2293,6 +2298,7 @@ function renderSA(q, area) {
 async function submitAnswer() {
   var q = quizQuestions[currentIndex];
   answered = true;
+  document.getElementById("skip-btn").style.display = "none";
   document.getElementById("hint-btn").style.display = "none";
   document.getElementById("hint-btn2").style.display = "none";
   document.getElementById("hint-box").classList.remove("show");
@@ -2423,6 +2429,14 @@ function nextQuestion() {
   else renderQuestion();
 }
 
+function skipQuestion() {
+  var q = quizQuestions[currentIndex];
+  results.push({ question: q.question, week: q.week, type: q.type,
+                 correct: false, skipped: true, mark: 0,
+                 maxMark: q.type === "sa" ? 5 : 3 });
+  nextQuestion();
+}
+
 function showHint() {
   document.getElementById("hint-box").classList.add("show");
   document.getElementById("hint-btn").style.display = "none";
@@ -2458,9 +2472,9 @@ function showSummary() {
     var short = r.question.length > 72 ? r.question.slice(0, 72) + "..." : r.question;
     var typeLabel = r.type === "mcq" ? "MCQ" : r.type === "tf" ? "True/False" : "Short Answer";
     var markLabel = r.mark + " / " + r.maxMark;
-    row.innerHTML = "<div class='result-icon'>" + (r.correct ? "✅" : "❌") + "</div>" +
+    row.innerHTML = "<div class='result-icon'>" + (r.skipped ? "⏭" : r.correct ? "✅" : "❌") + "</div>" +
       "<div class='result-right'><div class='result-q'>" + short + "</div>" +
-      "<div class='result-meta'>Week " + r.week + " &nbsp;·&nbsp; " + typeLabel + " &nbsp;·&nbsp; <strong>" + markLabel + "</strong></div></div>";
+      "<div class='result-meta'>Week " + r.week + " &nbsp;·&nbsp; " + typeLabel + " &nbsp;·&nbsp; <strong>" + (r.skipped ? "Skipped" : markLabel) + "</strong></div></div>";
     list.appendChild(row);
   });
   saveResult();
@@ -2634,9 +2648,9 @@ function showHistoryDetail(index) {
     row.className = "result-row";
     var short = r.question.length > 72 ? r.question.slice(0, 72) + "..." : r.question;
     var typeLabel = r.type === "mcq" ? "MCQ" : r.type === "tf" ? "True/False" : "Short Answer";
-    row.innerHTML = "<div class='result-icon'>" + (r.correct ? "✅" : "❌") + "</div>" +
+    row.innerHTML = "<div class='result-icon'>" + (r.skipped ? "⏭" : r.correct ? "✅" : "❌") + "</div>" +
       "<div class='result-right'><div class='result-q'>" + escHtml(short) + "</div>" +
-      "<div class='result-meta'>Week " + r.week + " &nbsp;·&nbsp; " + typeLabel + " &nbsp;·&nbsp; <strong>" + r.mark + " / " + r.maxMark + "</strong></div></div>";
+      "<div class='result-meta'>Week " + r.week + " &nbsp;·&nbsp; " + typeLabel + " &nbsp;·&nbsp; <strong>" + (r.skipped ? "Skipped" : r.mark + " / " + r.maxMark) + "</strong></div></div>";
     list.appendChild(row);
   });
 
