@@ -2566,7 +2566,7 @@ function renderAdmin(filter) {
     return (x.question + " " + (x.modelAnswer || "") + " " + (x.explanation || "")).toLowerCase().indexOf(q) !== -1;
   }).length;
   document.getElementById("admin-hdr-sub").textContent = q
-    ? total_shown + " result" + (total_shown !== 1 ? "s" : "") + " for "" + filter + """
+    ? total_shown + " result" + (total_shown !== 1 ? "s" : "") + ' for "' + filter + '"'
     : total + " questions across Weeks 5, 7 & 8";
 }
 
